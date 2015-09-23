@@ -1,4 +1,3 @@
-
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -21,9 +20,6 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * @author groppe
- * @version $Id: $Id
  */
 package lupos.io.serializer;
 
@@ -37,6 +33,8 @@ import java.util.HashMap;
 
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleKey;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.IntArrayDBBPTreeStatisticsNodeDeSerializer;
+import lupos.datastructures.paged_dbbptree.node.nodedeserializer.IntArrayNodeDeSerializer;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.LazyLiteralDBBPTreeStatisticsNodeDeSerializer;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.LazyLiteralNodeDeSerializer;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.NodeDeSerializer;
@@ -81,7 +79,9 @@ public class NODEDESERIALIZER<K, V> extends DeSerializerConsideringSubClasses<No
 				new DSStandardNodeDeSerializer(),
 				new DSLazyLiteralNodeDeSerializer(),
 				new DSLazyLiteralDBBPTreeStatisticsNodeDeSerializer(),
-				new DSStringIntegerNodeDeSerializer());
+				new DSStringIntegerNodeDeSerializer(),
+				new DSIntArrayNodeDeSerializer(),
+				new DSIntArrayDBBPTreeStatisticsNodeDeSerializer());
 	}
 
 	/** {@inheritDoc} */
@@ -223,6 +223,56 @@ public class NODEDESERIALIZER<K, V> extends DeSerializerConsideringSubClasses<No
 		@Override
 		public Class<? extends NodeDeSerializer<TripleKey, Triple>>[] getRegisteredClasses() {
 			return new Class[]{ LazyLiteralDBBPTreeStatisticsNodeDeSerializer.class };
+		}
+	}
+
+	public static class DSIntArrayNodeDeSerializer implements DSNodeDeSerializer<int[], int[]>{
+
+		@Override
+		public int length(final NodeDeSerializer<int[], int[]> t) {
+			return LengthHelper.lengthLuposByte();
+		}
+
+		@Override
+		public void serialize(final NodeDeSerializer<int[], int[]> t, final OutputStream out) throws IOException {
+			final IntArrayNodeDeSerializer tc = (IntArrayNodeDeSerializer) t;
+			OutHelper.writeLuposByte((byte) tc.getCollationOrder().ordinal(), out);
+		}
+
+		@Override
+		public  NodeDeSerializer<int[], int[]> deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
+			return new IntArrayNodeDeSerializer(RDF3XIndexScan.CollationOrder.values()[InputHelper.readLuposByte(in)]);
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public Class<? extends NodeDeSerializer<int[], int[]>>[] getRegisteredClasses() {
+			return new Class[]{ IntArrayNodeDeSerializer.class };
+		}
+	}
+
+	public static class DSIntArrayDBBPTreeStatisticsNodeDeSerializer implements DSNodeDeSerializer<int[], int[]>{
+
+		@Override
+		public int length(final NodeDeSerializer<int[], int[]> t) {
+			return LengthHelper.lengthLuposByte();
+		}
+
+		@Override
+		public void serialize(final NodeDeSerializer<int[], int[]> t, final OutputStream out) throws IOException {
+			final IntArrayDBBPTreeStatisticsNodeDeSerializer tc = (IntArrayDBBPTreeStatisticsNodeDeSerializer) t;
+			OutHelper.writeLuposByte((byte) tc.getCollationOrder().ordinal(), out);
+		}
+
+		@Override
+		public  NodeDeSerializer<int[], int[]> deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
+			return new IntArrayDBBPTreeStatisticsNodeDeSerializer(RDF3XIndexScan.CollationOrder.values()[InputHelper.readLuposByte(in)]);
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public Class<? extends NodeDeSerializer<int[], int[]>>[] getRegisteredClasses() {
+			return new Class[]{ IntArrayDBBPTreeStatisticsNodeDeSerializer.class };
 		}
 	}
 

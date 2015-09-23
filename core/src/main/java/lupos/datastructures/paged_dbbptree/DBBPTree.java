@@ -1,4 +1,3 @@
-
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -21,9 +20,6 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * @author groppe
- * @version $Id: $Id
  */
 package lupos.datastructures.paged_dbbptree;
 
@@ -63,7 +59,7 @@ import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.FileHelper;
 import lupos.misc.Tuple;
-public class DBBPTree<K extends Comparable<K> & Serializable, V extends Serializable>
+public class DBBPTree<K extends Serializable, V extends Serializable>
 implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 	private static final long serialVersionUID = -3345017876896171725L;
@@ -1223,7 +1219,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 						return oldValue;
 					} else {
 						if (pos > 0) {
-							if (arg0.compareTo(leafNode.getKeys().get(pos - 1)) < 0) {
+							if (this.comparator.compare(arg0, leafNode.getKeys().get(pos - 1)) < 0) {
 								pos--;
 							}
 						}
@@ -2477,7 +2473,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			super(arg0, smallest);
 			this.largest = largest;
 			if (this.next != null) {
-				if (largest.compareTo(this.lastKey) < 0) {
+				if (DBBPTree.this.comparator.compare(this.largest, this.lastKey) < 0) {
 					this.next = null;
 				}
 			}
@@ -2489,7 +2485,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			if (result != null) {
 				this.next = this.getNext();
 				if (this.next != null) {
-					if (this.largest.compareTo(this.lastKey) < 0) {
+					if (DBBPTree.this.comparator.compare(this.largest, this.lastKey) < 0) {
 						this.next = null;
 					}
 				}
@@ -2506,7 +2502,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			super(arg0, smallest);
 			this.largest = largest;
 			if (this.next != null) {
-				if (largest.compareTo(this.lastKey) < 0) {
+				if (DBBPTree.this.comparator.compare(largest, this.lastKey) < 0) {
 					this.next = null;
 				}
 			}
@@ -2518,7 +2514,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			if (result != null) {
 				this.next = this.getNext();
 				if (this.next != null) {
-					if (this.largest.compareTo(this.lastKey) < 0) {
+					if (DBBPTree.this.comparator.compare(this.largest, this.lastKey) < 0) {
 						this.next = null;
 					}
 				}
@@ -2532,11 +2528,11 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			if (result != null) {
 				this.next = this.getNext(k);
 			}
-			while (result != null && k.compareTo(this.lastKey) > 0) {
+			while (result != null && DBBPTree.this.comparator.compare(k, this.lastKey) > 0) {
 				result = this.next;
 				this.next = this.getNext(k);
 				if (this.next != null) {
-					if (this.largest.compareTo(this.lastKey) < 0) {
+					if (DBBPTree.this.comparator.compare(this.largest, this.lastKey) < 0) {
 						this.next = null;
 					}
 				}
@@ -2619,8 +2615,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 							this.innerNodes.add(new Tuple<K, InputStream>(null, in));
 							return this.getFirst(nextEntry.getSecond());
 						}
-						final int compare = DBBPTree.this.comparator.compare(nextEntry
-								.getFirst(), this.arg0);
+						final int compare = DBBPTree.this.comparator.compare(nextEntry.getFirst(), this.arg0);
 						if (compare >= 0) {
 							this.innerNodes.add(new Tuple<K, InputStream>(nextEntry.getFirst(), in));
 							return this.getFirst(nextEntry.getSecond());
@@ -2938,7 +2933,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 			if (result != null) {
 				this.next = this.getNext(k);
 			}
-			while (result != null && k.compareTo(this.lastKey) > 0) {
+			while (result != null && DBBPTree.this.comparator.compare(k, this.lastKey) > 0) {
 				result = this.next;
 				this.next = this.getNext(k);
 				// next = getNext();

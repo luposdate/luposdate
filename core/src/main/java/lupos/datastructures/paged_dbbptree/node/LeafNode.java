@@ -1,4 +1,3 @@
-
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -21,9 +20,6 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * @author groppe
- * @version $Id: $Id
  */
 package lupos.datastructures.paged_dbbptree.node;
 
@@ -40,7 +36,7 @@ import lupos.datastructures.buffermanager.PageManager;
 import lupos.datastructures.buffermanager.PageOutputStream;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.NodeDeSerializer;
 import lupos.io.helper.OutHelper;
-public class LeafNode<K extends Comparable<K> & Serializable, V extends Serializable> extends Node<K, V> {
+public class LeafNode<K extends Serializable, V extends Serializable> extends Node<K, V> {
 
 	public List<V> readValues = new LinkedList<V>();
 	public Integer nextLeafNode = null;

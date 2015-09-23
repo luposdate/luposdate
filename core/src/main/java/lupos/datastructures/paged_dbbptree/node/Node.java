@@ -1,4 +1,3 @@
-
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -21,9 +20,6 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * @author groppe
- * @version $Id: $Id
  */
 package lupos.datastructures.paged_dbbptree.node;
 
@@ -32,7 +28,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-public abstract class Node<K extends Comparable<K> & Serializable, V extends Serializable> {
+public abstract class Node<K extends Serializable, V extends Serializable> {
 	public InputStream in;
 	public int filename;
 	public List<K> readKeys;

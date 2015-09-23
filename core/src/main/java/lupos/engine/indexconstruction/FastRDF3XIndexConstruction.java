@@ -94,8 +94,8 @@ public class FastRDF3XIndexConstruction {
 	private static final Logger log = LoggerFactory.getLogger(FastRDF3XIndexConstruction.class);
 
 	// the parameters are used for the B+-trees
-	private static final int k = 1000;
-	private static final int k_ = 1000;
+	protected static final int k = 1000;
+	protected static final int k_ = 1000;
 
 	private static final int NUMBER_OF_THREADS = 8;
 
@@ -118,18 +118,22 @@ public class FastRDF3XIndexConstruction {
 	 *            command line arguments
 	 */
 	public static void main(final String[] args) {
+
+		log.info("Starting program to construct an RDF3X Index for LUPOSDATE...");
+		log.debug("[help is printed when using less than 5 command line arguments]");
+		log.debug("_______________________________________________________________");
+
+		if (args.length < 5) {
+			log.error("Usage: java -Xmx768M lupos.engine.indexconstruction.FastRDF3XIndexConstruction <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [LIMIT_TRIPLES_IN_MEMORY [<datafile2> [<datafile3> ...]]]");
+			log.error("Example: java -Xmx768M lupos.engine.indexconstruction.FastRDF3XIndexConstruction data.n3 N3 UTF-8 NONE /luposdateindex 500000");
+			return;
+		}
+
+		main(FastRDF3XIndexConstruction::generateIndicesAndWriteOut, args);
+	}
+
+	public static void main(final GenerateIndicesAndWriteOut generateIndicesAndWriteOut, final String[] args) {
 		try {
-
-			log.info("Starting program to construct an RDF3X Index for LUPOSDATE...");
-			log.debug("[help is printed when using less than 5 command line arguments]");
-			log.debug("_______________________________________________________________");
-
-			if (args.length < 5) {
-				log.error("Usage: java -Xmx768M lupos.engine.indexconstruction.FastRDF3XIndexConstruction <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [LIMIT_TRIPLES_IN_MEMORY [<datafile2> [<datafile3> ...]]]");
-				log.error("Example: java -Xmx768M lupos.engine.indexconstruction.FastRDF3XIndexConstruction data.n3 N3 UTF-8 NONE /luposdateindex 500000");
-				return;
-			}
-
 			// analyze command line parameters
 			final Date start = new Date();
 			log.debug("Starting time: {}", start);
@@ -317,49 +321,60 @@ public class FastRDF3XIndexConstruction {
 				size = FastRDF3XIndexConstruction.mergeRuns(dir, listOfTries.size(), primaryPos, other_condition2, other_condition1);
 			}
 
-			// generate indices (evaluation indices plus histogram indices)
-			final SixIndices indices = new SixIndices(defaultGraphs.iterator().next());
+			generateIndicesAndWriteOut.generateIndicesAndWriteOut(defaultGraphs, size, dir, writeindexinfo);
 
-			for(int primaryPos=0; primaryPos<3; primaryPos++) {
-				final int other_condition1 = (primaryPos==0)?1:0;
-				final int other_condition2 = (primaryPos==2)?1:2;
-				final CollationOrder order1 = CollationOrder.valueOf(FastRDF3XIndexConstruction.map[primaryPos] + FastRDF3XIndexConstruction.map[other_condition1] + FastRDF3XIndexConstruction.map[other_condition2]);
-				final String prefixFilename = dir + FastRDF3XIndexConstruction.map[primaryPos] + "_Final_Run_";
-				indices.generate(order1, new GeneratorFromFinalRun(prefixFilename + FastRDF3XIndexConstruction.map[other_condition1] + FastRDF3XIndexConstruction.map[other_condition2], size, primaryPos, other_condition1, other_condition2));
-				indices.generateStatistics(order1);
-
-				final CollationOrder order2 = CollationOrder.valueOf(FastRDF3XIndexConstruction.map[primaryPos] + FastRDF3XIndexConstruction.map[other_condition2] + FastRDF3XIndexConstruction.map[other_condition1]);
-				indices.generate(order2, new GeneratorFromFinalRun(prefixFilename + FastRDF3XIndexConstruction.map[other_condition2] + FastRDF3XIndexConstruction.map[other_condition1], size, primaryPos, other_condition2, other_condition1));
-				indices.generateStatistics(order2);
-			}
-
-			indices.constructCompletely();
-
-			// write out index info
-
-			final OutputStream out = new BufferedOutputStream(new FileOutputStream(writeindexinfo));
-
-			BufferManager.getBufferManager().writeAllModifiedPages();
-
-			OutHelper.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID(), out);
-
-			((lupos.datastructures.paged_dbbptree.DBBPTree) ((StringIntegerMapJava) LazyLiteral.getHm()).getOriginalMap()).writeLuposObject(out);
-			((StringArray) LazyLiteral.getV()).writeLuposStringArray(out);
-			OutHelper.writeLuposInt(1, out);
-			LiteralFactory.writeLuposLiteral(defaultGraphs.iterator().next(), out);
-			indices.writeIndexInfo(out);
-			OutHelper.writeLuposInt(0, out);
-			out.close();
 			final Date end = new Date();
 			log.debug("_______________________________________________________________");
 			log.info("Done, RDF3X index constructed!");
 			log.debug("End time: {}", end);
 
 			log.debug("Used time: {}", new TimeInterval(start, end));
-			log.debug("Number of imported triples: {}", indices.getIndex(CollationOrder.SPO).size());
+			log.debug("Number of imported triples: {}", size);
 		} catch (final Exception e) {
 			log.error(e.getMessage(), e);
 		}
+	}
+
+	public static interface GenerateIndicesAndWriteOut {
+		public int generateIndicesAndWriteOut(final Collection<URILiteral> defaultGraphs, final int size, final String dir, final String writeindexinfo) throws IOException;
+	}
+
+	@SuppressWarnings("rawtypes")
+	protected static int generateIndicesAndWriteOut(final Collection<URILiteral> defaultGraphs, final int size, final String dir, final String writeindexinfo) throws IOException{
+		// generate indices (evaluation indices plus histogram indices)
+		final SixIndices indices = new SixIndices(defaultGraphs.iterator().next());
+
+		for(int primaryPos=0; primaryPos<3; primaryPos++) {
+			final int other_condition1 = (primaryPos==0)?1:0;
+			final int other_condition2 = (primaryPos==2)?1:2;
+			final CollationOrder order1 = CollationOrder.valueOf(FastRDF3XIndexConstruction.map[primaryPos] + FastRDF3XIndexConstruction.map[other_condition1] + FastRDF3XIndexConstruction.map[other_condition2]);
+			final String prefixFilename = dir + FastRDF3XIndexConstruction.map[primaryPos] + "_Final_Run_";
+			indices.generate(order1, new GeneratorFromFinalRun(prefixFilename + FastRDF3XIndexConstruction.map[other_condition1] + FastRDF3XIndexConstruction.map[other_condition2], size, primaryPos, other_condition1, other_condition2));
+			indices.generateStatistics(order1);
+
+			final CollationOrder order2 = CollationOrder.valueOf(FastRDF3XIndexConstruction.map[primaryPos] + FastRDF3XIndexConstruction.map[other_condition2] + FastRDF3XIndexConstruction.map[other_condition1]);
+			indices.generate(order2, new GeneratorFromFinalRun(prefixFilename + FastRDF3XIndexConstruction.map[other_condition2] + FastRDF3XIndexConstruction.map[other_condition1], size, primaryPos, other_condition2, other_condition1));
+			indices.generateStatistics(order2);
+		}
+
+		indices.constructCompletely();
+
+		// write out index info
+
+		final OutputStream out = new BufferedOutputStream(new FileOutputStream(writeindexinfo));
+
+		BufferManager.getBufferManager().writeAllModifiedPages();
+
+		OutHelper.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID(), out);
+
+		((lupos.datastructures.paged_dbbptree.DBBPTree) ((StringIntegerMapJava) LazyLiteral.getHm()).getOriginalMap()).writeLuposObject(out);
+		((StringArray) LazyLiteral.getV()).writeLuposStringArray(out);
+		OutHelper.writeLuposInt(1, out);
+		LiteralFactory.writeLuposLiteral(defaultGraphs.iterator().next(), out);
+		indices.writeIndexInfo(out);
+		OutHelper.writeLuposInt(0, out);
+		out.close();
+		return indices.getIndex(CollationOrder.SPO).size();
 	}
 
 	/**

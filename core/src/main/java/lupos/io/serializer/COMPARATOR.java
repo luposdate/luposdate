@@ -1,4 +1,3 @@
-
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -21,9 +20,6 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * @author groppe
- * @version $Id: $Id
  */
 package lupos.io.serializer;
 
@@ -36,6 +32,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import lupos.datastructures.dbmergesortedds.StandardComparator;
+import lupos.datastructures.items.IntArrayComparator;
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.TripleComparator;
 import lupos.io.Registration.DeSerializerConsideringSubClasses;
@@ -73,7 +70,8 @@ public class COMPARATOR<T> extends DeSerializerConsideringSubClasses<Comparator<
 	static {
 		COMPARATOR.registerDeSerializer(
 				new StandardComparatorDeSerializer(),
-				new TripleComparatorDeSerializer());
+				new TripleComparatorDeSerializer(),
+				new IntArrayComparatorDeSerializer());
 	}
 
 	/** {@inheritDoc} */
@@ -192,4 +190,28 @@ public class COMPARATOR<T> extends DeSerializerConsideringSubClasses<Comparator<
 		}
 	}
 
+	public static class IntArrayComparatorDeSerializer implements ComparatorDeSerializer<int[]>{
+
+		@Override
+		public int length(final Comparator<int[]> t) {
+			return LengthHelper.lengthLuposByte();
+		}
+
+		@Override
+		public void serialize(final Comparator<int[]> t, final OutputStream out) throws IOException {
+			final IntArrayComparator tc = (IntArrayComparator) t;
+			OutHelper.writeLuposByte(tc.getBytePattern(), out);
+		}
+
+		@Override
+		public Comparator<int[]> deserialize(final InputStream in) throws IOException, URISyntaxException, ClassNotFoundException {
+			return new IntArrayComparator(InputHelper.readLuposByte(in));
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public Class<? extends Comparator<int[]>>[] getRegisteredClasses() {
+			return new Class[]{ IntArrayComparator.class };
+		}
+	}
 }

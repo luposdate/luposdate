@@ -1,4 +1,3 @@
-
 /**
  * Copyright (c) 2007-2015, Institute of Information Systems (Sven Groppe and contributors of LUPOSDATE), University of Luebeck
  *
@@ -21,9 +20,6 @@
  * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * @author groppe
- * @version $Id: $Id
  */
 package lupos.io;
 
@@ -43,6 +39,7 @@ import lupos.io.serializer.DBSORTEDSET;
 import lupos.io.serializer.DISKCOLLECTION;
 import lupos.io.serializer.ENTRY;
 import lupos.io.serializer.INT;
+import lupos.io.serializer.INTARRAY;
 import lupos.io.serializer.LONG;
 import lupos.io.serializer.MAPENTRY;
 import lupos.io.serializer.MEMORYSORTEDSET;
@@ -1304,6 +1301,7 @@ public class Registration {
 				new VARBUCKET(),
 				new VARBUCKETARRAY(),
 				new COMPARATOR(),
-				new NODEDESERIALIZER());
+				new NODEDESERIALIZER(),
+				new INTARRAY());
 	}
 }
