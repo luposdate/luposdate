@@ -42,11 +42,10 @@ public class TestStringArrayDBBPTree {
 		// get result of triple pattern <http://localhost/persons/Paul_Erdoes> ?p ?o
 
 		// now choose SPO collation order (ordinal value is 0) and prefix key <http://localhost/persons/Paul_Erdoes>
-		// Unused components in the prefix key must be set to -1
+		// Unused components in the prefix key must be set to null
 		final SIPParallelIterator<String[], String[]> it = indices.prefixSearchInDefaultGraphs(0, new String[]{"<http://localhost/persons/Paul_Erdoes>",null,null});
-		// final SIPParallelIterator<String[], String[]> it = indices.prefixSearchInDefaultGraphs(0, new String[]{null,null,null});
 		int i=0;
-		// first print out all matching id-triples:
+		// print out all matching string-triples:
 		while(it.hasNext()){
 			System.out.println(i+": "+Arrays.toString(it.next()));
 			i++;
