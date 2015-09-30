@@ -25,6 +25,7 @@ package lupos.engine.operators.singleinput;
 
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.engine.operators.messages.ComputeIntermediateResultMessage;
+import lupos.engine.operators.messages.EndOfEvaluationMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.misc.debug.DebugStep;
 public class GroupByAddComputedBinding extends AddComputedBinding {
@@ -54,6 +55,16 @@ public class GroupByAddComputedBinding extends AddComputedBinding {
 	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessageDebug(final ComputeIntermediateResultMessage msg, final DebugStep debugstep) {
+		return msg;
+	}
+
+	@Override
+	public Message preProcessMessage(final EndOfEvaluationMessage msg){
+		return msg;
+	}
+
+	@Override
+	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg, final DebugStep debugstep) {
 		return msg;
 	}
 }
