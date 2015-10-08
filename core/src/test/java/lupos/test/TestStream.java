@@ -231,7 +231,7 @@ public class TestStream {
 		// triples
 		final String query = 	"SELECT DISTINCT (avg(?o) as ?avg)\n"
 								+ "STREAM INTERMEDIATERESULT DURATION 1000\n" + "WHERE {\n"
-								+ "       WINDOW TYPE SLIDINGTRIPLES 1 {?s ?p ?o.} }";
+								+ "       WINDOW TYPE SLIDINGTRIPLES 10 {?s ?p ?o.} }";
 
 		// now generate the query...
 		final Stream stream = this.generateQuery(query, notifyStreamResult);
