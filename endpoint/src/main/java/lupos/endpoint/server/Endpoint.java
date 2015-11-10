@@ -172,7 +172,16 @@ public class Endpoint {
 		final int port = Endpoint.init(args);
 		Endpoint.registerStandardFormattersAndContexts(args[0]);
 		Endpoint.initAndStartServer(port);
-		Endpoint.listenForStopSignal();
+		boolean listenForStopSignal = true;
+		for(int i=1; i<args.length; i++){
+			if(args[i].toLowerCase().compareTo("nostopsignal")==0){
+				listenForStopSignal = false;
+				break;
+			}
+		}
+		if(listenForStopSignal){
+			Endpoint.listenForStopSignal();
+		}
 	}
 
 	/**

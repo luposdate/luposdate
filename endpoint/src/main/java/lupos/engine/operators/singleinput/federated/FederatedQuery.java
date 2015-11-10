@@ -60,6 +60,8 @@ public abstract class FederatedQuery  extends SingleInputOperator {
 
 	protected BindingsFactory bindingsFactory;
 
+	public static final int MAX_BINDINGS_IN_ENDPOINT_REQUEST = 300;
+
 	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final BindingsFactoryMessage msg){

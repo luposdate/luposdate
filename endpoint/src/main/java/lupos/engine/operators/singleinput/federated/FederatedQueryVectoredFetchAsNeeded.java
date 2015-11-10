@@ -38,6 +38,7 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.queryresult.ParallelIteratorMultipleQueryResults;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.datastructures.queryresult.QueryResult.TYPE;
 import lupos.endpoint.client.Client;
 import lupos.engine.operators.multiinput.join.Join;
 import lupos.engine.operators.singleinput.federated.FederatedQueryFetchAsNeeded.FetchAsNeededDumper;
@@ -57,6 +58,21 @@ public class FederatedQueryVectoredFetchAsNeeded extends FederatedQueryWithoutSu
 
 	@Override
 	public QueryResult process(final QueryResult queryresult, final int operandID) {
+		final ParallelIteratorMultipleQueryResults pimqr = new ParallelIteratorMultipleQueryResults();
+		final Iterator<Bindings> it = queryresult.oneTimeIterator();
+		while(it.hasNext()){
+			final QueryResult qr = QueryResult.createInstance(TYPE.MEMORY);
+			int i=0;
+			while(i<FederatedQuery.MAX_BINDINGS_IN_ENDPOINT_REQUEST && it.hasNext()){
+				qr.add(it.next());
+				i++;
+			}
+			pimqr.addQueryResult(this.process(qr));
+		}
+		return QueryResult.createInstance(pimqr);
+	}
+
+	private QueryResult process(final QueryResult queryresult) {
 		if(queryresult.isEmpty()){
 			return null;
 		}

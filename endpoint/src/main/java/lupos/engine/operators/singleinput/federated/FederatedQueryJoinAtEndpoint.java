@@ -24,11 +24,14 @@
 package lupos.engine.operators.singleinput.federated;
 
 import java.util.HashSet;
+import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.items.literal.Literal;
+import lupos.datastructures.queryresult.ParallelIteratorMultipleQueryResults;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.datastructures.queryresult.QueryResult.TYPE;
 import lupos.sparql1_1.Node;
 public class FederatedQueryJoinAtEndpoint extends FederatedQueryWithoutSucceedingJoin {
 
@@ -44,7 +47,18 @@ public class FederatedQueryJoinAtEndpoint extends FederatedQueryWithoutSucceedin
 	/** {@inheritDoc} */
 	@Override
 	public QueryResult process(final QueryResult queryResult, final int operandID) {
-		return FederatedQueryWithSucceedingJoin.process(queryResult, this.endpoint, this.toStringQuery(queryResult), this.bindingsFactory);
+		final ParallelIteratorMultipleQueryResults pimqr = new ParallelIteratorMultipleQueryResults();
+		final Iterator<Bindings> it = queryResult.oneTimeIterator();
+		while(it.hasNext()){
+			final QueryResult qr = QueryResult.createInstance(TYPE.MEMORY);
+			int i=0;
+			while(i<FederatedQuery.MAX_BINDINGS_IN_ENDPOINT_REQUEST && it.hasNext()){
+				qr.add(it.next());
+				i++;
+			}
+			pimqr.addQueryResult(FederatedQueryWithSucceedingJoin.process(qr, this.endpoint, this.toStringQuery(qr), this.bindingsFactory));
+		}
+		return QueryResult.createInstance(pimqr);
 	}
 
 	/**
