@@ -45,6 +45,7 @@ import java.util.Map.Entry;
 
 import lupos.datastructures.bindings.Bindings;
 import lupos.datastructures.bindings.BindingsArrayReadTriples;
+import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.endpoint.server.format.CSVFormatter;
 import lupos.endpoint.server.format.Formatter;
@@ -56,6 +57,7 @@ import lupos.endpoint.server.format.TSVFormatter;
 import lupos.endpoint.server.format.XMLFormatter;
 import lupos.engine.evaluators.BasicIndexQueryEvaluator;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
+import lupos.engine.evaluators.MemoryIndexQueryEvaluator;
 import lupos.engine.evaluators.RDF3XQueryEvaluator;
 import lupos.engine.operators.singleinput.federated.BitVectorFilterFunction;
 import lupos.sparql1_1.ASTAskQuery;
@@ -94,6 +96,42 @@ public class Endpoint {
 
 	private static final int delayForStoppingInSeconds = 30; // the time the server gets for stopping to finish its work
 	public static final int portForStopping = 4242; // the port on which the server listens for stop signal
+
+	public static enum EVALUATOR {
+		RDF3X {
+			@Override
+			public BasicIndexQueryEvaluator createEvaluator(final String data) {
+				try {
+					final RDF3XQueryEvaluator evaluator = new RDF3XQueryEvaluator();
+					evaluator.loadLargeScaleIndices(data);
+					defaultBindingsClass = Bindings.instanceClass;
+					return evaluator;
+				} catch (final Exception e) {
+					System.err.println(e);
+					e.printStackTrace();
+					return null;
+				}
+			}
+		}, MEMORY {
+			@Override
+			public BasicIndexQueryEvaluator createEvaluator(final String data) {
+				final LiteralFactory.MapType mapType = LiteralFactory.getMapType();
+				try {
+					final BasicIndexQueryEvaluator eval = new MemoryIndexQueryEvaluator(new String[]{"--codemap", mapType.toString()});
+					eval.prepareInputData(data);
+					defaultBindingsClass = Bindings.instanceClass;
+					return eval;
+				} catch (final Exception e) {
+					System.err.println(e);
+					e.printStackTrace();
+					return null;
+				}
+			}
+		};
+		public abstract BasicIndexQueryEvaluator createEvaluator(String data);
+	}
+
+	public static EVALUATOR evaluator = EVALUATOR.RDF3X;
 
 	/**
 	 * The http server
@@ -192,11 +230,13 @@ public class Endpoint {
 	 */
 	public static int init(final String[] args){
 		if (args.length < 1) {
-			System.err.println("Usage:\njava -Xmx768M lupos.endpoint.server.Endpoint <directory for indices> [portX] [output] [size]");
+			System.err.println("Usage:\njava -Xmx768M lupos.endpoint.server.Endpoint <directory for indices> [portX] [output] [size] [MEMORY] [TRIEMAP|HASHMAP|DBBPTREE|SMALLERINHASHMAPLARGERINDBBPTREE|NOCODEMAP|PREFIXCODEMAP|URICODEMAP|LAZYLITERAL|LAZYLITERALWITHOUTINITIALPREFIXCODEMAP]");
 			System.err.println("(The indices can be constructed using lupos.engine.indexconstruction.FastRDF3XIndexConstruction)");
 			System.err.println("If \"portX\" is given, the port X (default 8080) is used, X must be a non-negative number.");
 			System.err.println("If \"output\" is given, the response is written to console.");
 			System.err.println("If \"size\" is given, the size of the received query and the size of the response is written to console.");
+			System.err.println("If \"MEMORY\" is given, the MEMORY query evaluator (instead of RDF3X) is used.");
+			System.err.println("Only in case of MEMORY query evaluator: Sets the map type for literals for one of the following values: TRIEMAP, HASHMAP, DBBPTREE, SMALLERINHASHMAPLARGERINDBBPTREE, NOCODEMAP, PREFIXCODEMAP, URICODEMAP, LAZYLITERAL, LAZYLITERALWITHOUTINITIALPREFIXCODEMAP");
 			System.exit(0);
 		}
 		int port = 8080;
@@ -207,6 +247,14 @@ public class Endpoint {
 				Endpoint.sizelog = true;
 			} else if(args[i].startsWith("port")){
 				port = Integer.parseInt(args[i].substring("port".length()));
+			} else if(args[i].compareTo("MEMORY")==0){
+				evaluator = EVALUATOR.MEMORY;
+			} else {
+				try {
+					final LiteralFactory.MapType mapType = LiteralFactory.MapType.valueOf(args[i]);
+					LiteralFactory.setType(mapType);
+				} catch(final IllegalArgumentException e){
+				}
 			}
 		}
 		return port;
@@ -238,20 +286,11 @@ public class Endpoint {
 	/**
 	 * <p>createQueryEvaluator.</p>
 	 *
-	 * @param directory a {@link java.lang.String} object.
+	 * @param data a {@link java.lang.String} object.
 	 * @return a {@link lupos.engine.evaluators.BasicIndexQueryEvaluator} object.
 	 */
-	public static BasicIndexQueryEvaluator createQueryEvaluator(final String directory){
-		try {
-			final RDF3XQueryEvaluator evaluator = new RDF3XQueryEvaluator();
-			evaluator.loadLargeScaleIndices(directory);
-			defaultBindingsClass = Bindings.instanceClass;
-			return evaluator;
-		} catch (final Exception e) {
-			System.err.println(e);
-			e.printStackTrace();
-			return null;
-		}
+	public static BasicIndexQueryEvaluator createQueryEvaluator(final String data){
+		return evaluator.createEvaluator(data);
 	}
 
 	/**

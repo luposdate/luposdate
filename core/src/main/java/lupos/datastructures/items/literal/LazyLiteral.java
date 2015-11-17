@@ -27,8 +27,11 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
+import lupos.datastructures.buffermanager.BufferManager_CachedFiles;
+import lupos.datastructures.buffermanager.BufferManager_CachedFiles.REPLACEMENTSTRATEGY;
 import lupos.datastructures.items.literal.codemap.IntegerStringMap;
 import lupos.datastructures.items.literal.codemap.StringIntegerMap;
 import lupos.io.helper.InputHelper;
@@ -64,10 +67,15 @@ public class LazyLiteral extends Literal {
 	 */
 	private static final long serialVersionUID = 2768495922178003010L;
 	private int code;
-	private String materializedContent = null;
 	private Literal materializedLiteral = null;
 	/** Constant <code>lock</code> */
 	protected static ReentrantLock lock = new ReentrantLock();
+
+	public static int MAX_LITERALS_IN_CACHE = 100000;
+
+	protected static REPLACEMENTSTRATEGY<Integer> replacementstrategy =
+			new BufferManager_CachedFiles.LeastRecentlyUsed<Integer>(MAX_LITERALS_IN_CACHE);
+	protected static HashMap<Integer, Literal> cache = new HashMap<Integer, Literal>(MAX_LITERALS_IN_CACHE);
 
 	/**
 	 * <p>Constructor for LazyLiteral.</p>
@@ -118,7 +126,6 @@ public class LazyLiteral extends Literal {
 	public LazyLiteral(final int code, final Literal materializedLiteral) {
 		this.code = code;
 		this.materializedLiteral = materializedLiteral;
-		this.materializedContent = materializedLiteral.toString();
 	}
 
 	/** {@inheritDoc} */
@@ -145,8 +152,19 @@ public class LazyLiteral extends Literal {
 	 * @return a {@link lupos.datastructures.items.literal.Literal} object.
 	 */
 	public Literal getLiteral() {
+		return this.getLiteral(false);
+	}
+	private Literal getLiteral(final boolean lookup) {
 		if (this.materializedLiteral == null) {
-			this.materializedLiteral = getLiteral(this.originalString());
+			this.materializedLiteral = cache.get(this.code);
+			if(this.materializedLiteral==null){
+				this.materializedLiteral = getLiteral(lookup? v.get(this.code) : this.originalString());
+				if(cache.size()>MAX_LITERALS_IN_CACHE){
+					final Integer r = replacementstrategy.getToBeReplaced();
+					cache.remove(r);
+				}
+			}
+			replacementstrategy.accessNow(this.code);
 		}
 		return this.materializedLiteral;
 	}
@@ -164,10 +182,11 @@ public class LazyLiteral extends Literal {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		if (this.materializedContent == null){
-			this.materializedContent = v.get(this.code);
+		if (this.materializedLiteral == null){
+			final Literal literal = this.getLiteral(true);
+			return literal.toString();
 		}
-		return this.materializedContent;
+		return this.materializedLiteral.toString();
 	}
 
 	/** {@inheritDoc} */
