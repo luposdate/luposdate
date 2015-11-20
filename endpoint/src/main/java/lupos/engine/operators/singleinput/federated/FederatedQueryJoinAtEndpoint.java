@@ -32,6 +32,7 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.queryresult.ParallelIteratorMultipleQueryResults;
 import lupos.datastructures.queryresult.QueryResult;
 import lupos.datastructures.queryresult.QueryResult.TYPE;
+import lupos.optimizations.sparql2core_sparql.SPARQLParserVisitorImplementationDumper;
 import lupos.sparql1_1.Node;
 public class FederatedQueryJoinAtEndpoint extends FederatedQueryWithoutSucceedingJoin {
 
@@ -69,10 +70,11 @@ public class FederatedQueryJoinAtEndpoint extends FederatedQueryWithoutSucceedin
 	 */
 	public String toStringQuery(final QueryResult queryResult) {
 		queryResult.materialize();
-		String query = FederatedQuerySemiJoin.toStringQuery(this.surelyBoundVariablesInServiceCall, this.variablesInServiceCall, this.federatedQuery, queryResult);
 		if(queryResult.isEmpty()){
-			return query;
+			return "SELECT * WHERE {}";
 		}
+		final SPARQLParserVisitorImplementationDumper dumper = new SPARQLParserVisitorImplementationDumper();
+		String query = "SELECT * " + this.federatedQuery.jjtGetChild(1).accept(dumper);
 		final HashSet<Variable> vars = new HashSet<Variable>();
 		for(final Bindings bindings: queryResult){
 			vars.addAll(bindings.getVariableSet());

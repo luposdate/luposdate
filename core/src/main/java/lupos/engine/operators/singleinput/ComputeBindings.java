@@ -27,9 +27,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import lupos.datastructures.bindings.Bindings;
+import lupos.datastructures.bindings.BindingsFactory;
 import lupos.datastructures.items.Variable;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.engine.operators.messages.BindingsFactoryMessage;
 import lupos.engine.operators.messages.BoundVariablesMessage;
 import lupos.engine.operators.messages.Message;
 import lupos.rdf.Prefix;
@@ -40,6 +42,7 @@ public class ComputeBindings extends SingleInputOperator {
 	private static final long serialVersionUID = 6315017556187823149L;
 
 	protected QueryResult queryResult;
+	private BindingsFactory bindingsFactory = null;
 
 	/**
 	 * <p>Constructor for ComputeBindings.</p>
@@ -50,6 +53,11 @@ public class ComputeBindings extends SingleInputOperator {
 		this.queryResult = qr;
 	}
 
+	@Override
+	public Message preProcessMessage(final BindingsFactoryMessage msg) {
+		this.bindingsFactory  = msg.getBindingsFactory();
+		return msg;
+	}
 	/**
 	 * {@inheritDoc}
 	 *
@@ -57,7 +65,7 @@ public class ComputeBindings extends SingleInputOperator {
 	 */
 	@Override
 	public synchronized QueryResult process(final QueryResult bindings, final int operandID) {
-		return QueryResult.createInstance(new TransformBindings(this.queryResult));
+		return QueryResult.createInstance(new TransformBindings(this.queryResult, this.bindingsFactory));
 	}
 
 	/**
@@ -105,9 +113,11 @@ public class ComputeBindings extends SingleInputOperator {
 	public static class TransformBindings implements ParallelIterator<Bindings>{
 
 		private final Iterator<Bindings> iterator;
+		private final BindingsFactory bindingsFactory;
 
-		public TransformBindings(final QueryResult queryResult){
+		public TransformBindings(final QueryResult queryResult, final BindingsFactory bindingsFactory){
 			this.iterator = queryResult.oneTimeIterator();
+			this.bindingsFactory = bindingsFactory;
 		}
 
 		@Override
@@ -121,12 +131,11 @@ public class ComputeBindings extends SingleInputOperator {
 			if(bindings==null){
 				return null;
 			}
-			if(bindings.getClass() == Bindings.instanceClass){
-				return bindings;
-			} else {
-				final Bindings bnew = bindings.clone();
-				return bnew;
+			final Bindings result = this.bindingsFactory.createInstance();
+			for(final Variable v: bindings.getVariableSet()){
+				result.add(v, bindings.get(v));
 			}
+			return result;
 		}
 
 		@Override

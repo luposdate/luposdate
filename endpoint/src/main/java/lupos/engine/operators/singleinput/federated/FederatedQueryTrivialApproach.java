@@ -33,14 +33,23 @@ public class FederatedQueryTrivialApproach extends FederatedQueryWithSucceedingJ
 	 *
 	 * @param federatedQuery a {@link lupos.sparql1_1.Node} object.
 	 */
-	public FederatedQueryTrivialApproach(Node federatedQuery) {
+	public FederatedQueryTrivialApproach(final Node federatedQuery) {
 		super(federatedQuery);
+	}
+
+	@Override
+	protected String toStringQuery(final QueryResult bindings) {
+		return this.toStringQuery();
+	}
+
+	public String toStringQuery() {
+		final SPARQLParserVisitorImplementationDumper dumper = new SPARQLParserVisitorImplementationDumper();
+		return "SELECT * " + this.federatedQuery.jjtGetChild(1).accept(dumper);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public String toStringQuery(QueryResult bindings) {
-		final SPARQLParserVisitorImplementationDumper dumper = new SPARQLParserVisitorImplementationDumper();
-		return "SELECT * " + this.federatedQuery.jjtGetChild(1).accept(dumper);
+	public QueryResult process(final QueryResult bindings, final int operandID) {
+		return FederatedQueryWithSucceedingJoin.process(bindings, this.endpoint, this.toStringQuery(), this.bindingsFactory);
 	}
 }

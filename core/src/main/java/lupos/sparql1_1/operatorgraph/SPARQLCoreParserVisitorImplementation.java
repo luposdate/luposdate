@@ -1687,8 +1687,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 					final Node litNode = node.jjtGetChild(j)
 							.jjtGetChild(m);
 					if (!(litNode instanceof ASTUndef)) {
-						final Literal lit = LazyLiteral.getLiteral(litNode,
-								true);
+						final Literal lit = LazyLiteral.getLiteral(litNode,true);
 						binding.add(varList.get(m), lit);
 					}
 				}
