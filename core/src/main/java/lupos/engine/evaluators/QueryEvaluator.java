@@ -30,7 +30,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import lupos.datastructures.buffermanager.BufferManager;
 import lupos.datastructures.dbmergesortedds.DiskCollection;
 import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.LiteralFactory;
@@ -39,14 +41,15 @@ import lupos.datastructures.items.literal.codemap.IntegerStringMapJava;
 import lupos.datastructures.items.literal.codemap.StringIntegerMapJava;
 import lupos.datastructures.paged_dbbptree.DBBPTree;
 import lupos.datastructures.queryresult.QueryResult;
+import lupos.datastructures.stringarray.StringArray;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.application.Application;
 import lupos.engine.operators.application.IterateOneTimeThrough;
-import lupos.misc.debug.BasicOperatorByteArray;
-import lupos.misc.debug.DebugStep;
 import lupos.misc.ArgumentParser;
 import lupos.misc.FileHelper;
 import lupos.misc.Tuple;
+import lupos.misc.debug.BasicOperatorByteArray;
+import lupos.misc.debug.DebugStep;
 import lupos.optimizations.logical.rules.DebugContainer;
 import lupos.rdf.Prefix;
 import lupos.sparql1_1.Node;
@@ -67,8 +70,8 @@ public abstract class QueryEvaluator<A> {
 	 * @throws java.lang.Exception if any.
 	 */
 	public QueryEvaluator() throws Exception {
-		setupArguments();
-		init();
+		this.setupArguments();
+		this.init();
 	}
 
 	/**
@@ -78,11 +81,11 @@ public abstract class QueryEvaluator<A> {
 	 * @throws java.lang.Exception if any.
 	 */
 	public QueryEvaluator(final String[] arguments) throws Exception {
-		setupArguments();
-		args.parse(arguments, false);
-		init();
+		this.setupArguments();
+		this.args.parse(arguments, false);
+		this.init();
 	}
-	
+
 	/**
 	 * <p>Constructor for QueryEvaluator.</p>
 	 *
@@ -93,8 +96,8 @@ public abstract class QueryEvaluator<A> {
 	 * @param times a int.
 	 * @param dataset a {@link java.lang.String} object.
 	 */
-	public QueryEvaluator(DEBUG debug, boolean multiplequeries, compareEvaluator compare, String compareoptions, int times, String dataset){
-		init(debug, multiplequeries, compare, compareoptions, times, dataset);
+	public QueryEvaluator(final DEBUG debug, final boolean multiplequeries, final compareEvaluator compare, final String compareoptions, final int times, final String dataset){
+		this.init(debug, multiplequeries, compare, compareoptions, times, dataset);
 	}
 
 	protected DEBUG debug;
@@ -110,9 +113,9 @@ public abstract class QueryEvaluator<A> {
 	 * @throws java.lang.Exception if any.
 	 */
 	public void init() throws Exception {
-		init((DEBUG) args.getEnum("debug"),args.getBool("multiplequeries"),(compareEvaluator) args.getEnum("compare"),args.getString("compareoptions"),args.getInt("times"),args.getString("dataset"));
+		this.init((DEBUG) this.args.getEnum("debug"),this.args.getBool("multiplequeries"),(compareEvaluator) this.args.getEnum("compare"),this.args.getString("compareoptions"),this.args.getInt("times"),this.args.getString("dataset"));
 	}
-	
+
 	/**
 	 * <p>init.</p>
 	 *
@@ -123,7 +126,7 @@ public abstract class QueryEvaluator<A> {
 	 * @param times a int.
 	 * @param dataset a {@link java.lang.String} object.
 	 */
-	public void init(DEBUG debug, boolean multiplequeries, compareEvaluator compare, String compareoptions, int times, String dataset){
+	public void init(final DEBUG debug, final boolean multiplequeries, final compareEvaluator compare, final String compareoptions, final int times, final String dataset){
 		this.debug = debug;
 		this.multiplequeries = multiplequeries;
 		this.compare = compare;
@@ -138,7 +141,7 @@ public abstract class QueryEvaluator<A> {
 	 * @return a {@link lupos.misc.ArgumentParser} object.
 	 */
 	public ArgumentParser getArgs() {
-		return args;
+		return this.args;
 	}
 
 	public enum DEBUG {
@@ -151,32 +154,32 @@ public abstract class QueryEvaluator<A> {
 	 * accepts. (Make sure to call super if you do).
 	 */
 	public void setupArguments() {
-		args.addEnumOption("rdfs",
-				"Usage of ontology reasoning based on RDF Schema", defaultRDFS);
-		args.addEnumOption("debug",
+		this.args.addEnumOption("rdfs",
+				"Usage of ontology reasoning based on RDF Schema", this.defaultRDFS);
+		this.args.addEnumOption("debug",
 				"Displays additional information for debugging purposes.",
 				DEBUG.NONE);
-		args
+		this.args
 				.addBooleanOption(
 						"multiplequeries",
 						"Whether the queryfile contains the query itself (no-multiplequeries) or a filename of a query in each line of the queryfile.",
 						false);
-		args.addEnumOption("compare",
+		this.args.addEnumOption("compare",
 				"For comparing the result of this engine with another.",
 				compareEvaluator.NONE);
-		args
+		this.args
 				.addStringOption(
 						"compareoptions",
 						"The options of the evaluator specified in compare with which the results of this evaluator will be compared to.");
-		args
+		this.args
 				.addIntegerOption("times",
 						"For measuring the execution times x-times and present the average in seconds.");
-		args
+		this.args
 				.addStringOption(
 						"type",
 						"Specify the type of input data, e.g. \"N3\" (default) or \"RDFXML\". If the string starts with \"Multiple\", then the given file contains the filenames of several datafiles (separated by line breaks).",
 						"N3");
-		args.addStringOption("dataset", "Specify a dataset", "");
+		this.args.addStringOption("dataset", "Specify a dataset", "");
 	}
 
 	/**
@@ -188,8 +191,8 @@ public abstract class QueryEvaluator<A> {
 	 */
 	public long compileQueryFromFile(final String queryFile) throws Exception {
 		final Date a = new Date();
-		queryString = FileHelper.fastReadFile(queryFile);
-		compileQuery(queryString);
+		this.queryString = FileHelper.fastReadFile(queryFile);
+		this.compileQuery(this.queryString);
 		return ((new Date()).getTime() - a.getTime());
 	}
 
@@ -199,7 +202,7 @@ public abstract class QueryEvaluator<A> {
 	 * @return a {@link java.lang.String} object.
 	 */
 	public String getQueryString() {
-		return queryString;
+		return this.queryString;
 	}
 
 	/**
@@ -210,7 +213,7 @@ public abstract class QueryEvaluator<A> {
 	 * @throws java.lang.Exception if any.
 	 */
 	public abstract long compileQuery(String query) throws Exception;
-	
+
 	/**
 	 * <p>compileQueryDebugByteArray.</p>
 	 *
@@ -221,7 +224,7 @@ public abstract class QueryEvaluator<A> {
 	 */
 	public DebugContainerQuery<BasicOperatorByteArray, A> compileQueryDebugByteArray(
 			final String query, final Prefix prefixInstance) throws Exception{
-		compileQuery(query);
+		this.compileQuery(query);
 		return null;
 	}
 
@@ -234,7 +237,7 @@ public abstract class QueryEvaluator<A> {
 	 */
 	public DebugContainerQuery<BasicOperator, A> compileQueryDebug(
 			final String query) throws Exception {
-		compileQuery(query);
+		this.compileQuery(query);
 		return null;
 	}
 
@@ -249,7 +252,7 @@ public abstract class QueryEvaluator<A> {
 		final Collection<URILiteral> cu = new LinkedList<URILiteral>();
 		cu.add(LiteralFactory.createURILiteralWithoutLazyLiteral("<file:"
 				+ inputFile + ">"));
-		return prepareInputData(cu, new LinkedList<URILiteral>());
+		return this.prepareInputData(cu, new LinkedList<URILiteral>());
 	}
 
 	/**
@@ -258,7 +261,7 @@ public abstract class QueryEvaluator<A> {
 	 * @return a long.
 	 */
 	public abstract long logicalOptimization();
-	
+
 	/**
 	 * <p>logicalOptimizationDebugByteArray.</p>
 	 *
@@ -267,7 +270,7 @@ public abstract class QueryEvaluator<A> {
 	 */
 	public List<DebugContainer<BasicOperatorByteArray>> logicalOptimizationDebugByteArray(
 			final Prefix prefixInstance) {
-		logicalOptimization();
+		this.logicalOptimization();
 		return null;
 	}
 
@@ -285,7 +288,7 @@ public abstract class QueryEvaluator<A> {
 	 * @return a {@link java.util.List} object.
 	 */
 	public List<DebugContainer<BasicOperatorByteArray>> physicalOptimizationDebugByteArray(final Prefix prefixInstance) {
-		physicalOptimization();
+		this.physicalOptimization();
 		return null;
 	}
 
@@ -299,7 +302,7 @@ public abstract class QueryEvaluator<A> {
 	 */
 	public abstract long prepareInputData(Collection<URILiteral> defaultGraphs,
 			Collection<URILiteral> namedGraphs) throws Exception;
-	
+
 	/**
 	 * <p>prepareInputDataWithSourcesOfNamedGraphs.</p>
 	 *
@@ -327,8 +330,8 @@ public abstract class QueryEvaluator<A> {
 	 * @return a long.
 	 * @throws java.lang.Exception if any.
 	 */
-	public long evaluateQueryDebugSteps(final DebugStep debugstep, Application application) throws Exception {
-		return evaluateQuery();
+	public long evaluateQueryDebugSteps(final DebugStep debugstep, final Application application) throws Exception {
+		return this.evaluateQuery();
 	}
 
 	/**
@@ -338,7 +341,7 @@ public abstract class QueryEvaluator<A> {
 	 */
 	public void prepareForQueryDebugSteps(final DebugStep debugstep) {
 	}
-	
+
 	/**
 	 * <p>getResult.</p>
 	 *
@@ -355,10 +358,10 @@ public abstract class QueryEvaluator<A> {
 	 * @throws java.lang.Exception if any.
 	 */
 	public QueryResult getResult(final String query) throws Exception {
-		compileQuery(query);
-		logicalOptimization();
-		physicalOptimization();
-		return getResult();
+		this.compileQuery(query);
+		this.logicalOptimization();
+		this.physicalOptimization();
+		return this.getResult();
 	}
 
 	/**
@@ -371,11 +374,11 @@ public abstract class QueryEvaluator<A> {
 	 */
 	public QueryResult getResult(final String inputFile, final String query)
 			throws Exception {
-		prepareInputData(inputFile);
-		compileQuery(query);
-		logicalOptimization();
-		physicalOptimization();
-		return getResult();
+		this.prepareInputData(inputFile);
+		this.compileQuery(query);
+		this.logicalOptimization();
+		this.physicalOptimization();
+		return this.getResult();
 	}
 
 	/**
@@ -409,13 +412,13 @@ public abstract class QueryEvaluator<A> {
 	 */
 	public static QueryEvaluator getQueryEvaluator(final compareEvaluator ce,
 			final String[] arguments) throws Exception {
-		if (ce == compareEvaluator.MEMORYINDEX)
+		if (ce == compareEvaluator.MEMORYINDEX) {
 			return new MemoryIndexQueryEvaluator(arguments);
-		else if (ce == compareEvaluator.STREAM)
+		} else if (ce == compareEvaluator.STREAM) {
 			return new StreamQueryEvaluator(arguments);
-		else if (ce == compareEvaluator.RDF3X)
+		} else if (ce == compareEvaluator.RDF3X) {
 			return new RDF3XQueryEvaluator(arguments);
-		else {
+		} else {
 			System.out.println("Unknown QueryEvaluator-type " + ce);
 			return null;
 		}
@@ -443,8 +446,9 @@ public abstract class QueryEvaluator<A> {
 
 			if (rest.size() != 2) {
 				System.err.print("\nUnknown arguments:");
-				for (int i = 2; i < rest.size(); i++)
+				for (int i = 2; i < rest.size(); i++) {
 					System.err.print(rest.get(i) + " ");
+				}
 				System.err.println("\n\n" + evaluator.args.helptext());
 				return;
 			}
@@ -514,19 +518,21 @@ public abstract class QueryEvaluator<A> {
 							} else {
 								url = s[1];
 								if (s[0].compareTo("named") == 0
-										|| s[0].compareTo("named:") == 0)
+										|| s[0].compareTo("named:") == 0) {
 									defaultGraph = false;
-								else
+								} else {
 									defaultGraph = true;
+								}
 							}
 							final URILiteral rdfURL2 = LiteralFactory
 									.createURILiteralWithoutLazyLiteral("<file:"
 											+ url + ">");
 
-							if (defaultGraph)
+							if (defaultGraph) {
 								defaultGraphs.add(rdfURL2);
-							else
+							} else {
 								namedGraphs.add(rdfURL2);
+							}
 						}
 					}
 
@@ -634,26 +640,29 @@ public abstract class QueryEvaluator<A> {
 									.equals(result2))) {
 							System.out.println("The results match exactly!");
 
-						if (resultSize1 == 0)
+						if (resultSize1 == 0) {
 							System.out
 									.println("However, the results are empty. Please check more carefully!");
-						else {
-							if (result1.sameOrder(result2))
+						} else {
+							if (result1.sameOrder(result2)) {
 								System.out
 										.println("\nThe results are in the same order!");
+							}
 						}
 					} else {
 							System.out
 									.println("Results mismatch!\n\nPlease set the logger's level to DEBUG to see more detailed information");
 
-						if (result1 != null)
+						if (result1 != null) {
 							System.out
 									.println("Size of query result of engine 1:"
 											+ result1.size());
-						if (result2 != null)
+						}
+						if (result2 != null) {
 							System.out
 									.println("Size of query result of engine 2:"
 											+ result2.size());
+						}
 
 						if (result1 != null
 								&& result2 != null
@@ -667,9 +676,10 @@ public abstract class QueryEvaluator<A> {
 									.println("It must be more carefully checked!");
 
 							if (result1
-									.sameOrderExceptAnonymousLiterals(result2))
+									.sameOrderExceptAnonymousLiterals(result2)) {
 								System.out
 										.println("\nThe results are in the same order ignoring anonymous literals!");
+							}
 						}
 					}
 				}
@@ -705,13 +715,15 @@ public abstract class QueryEvaluator<A> {
 							System.out.println(resultQueryEvaluator);
 							System.out.println("Number of results: "
 									+ resultQueryEvaluator.size());
-							if ((evaluator.debug) == DEBUG.ONLYFINAL)
+							if ((evaluator.debug) == DEBUG.ONLYFINAL) {
 								evaluator
 										.displayOperatorGraph("Final Operatorgraph for query "
 												+ localqueryfile);
+							}
 							System.out.println("----------------Done.");
-							if (!(evaluator instanceof MemoryIndexQueryEvaluator))
+							if (!(evaluator instanceof MemoryIndexQueryEvaluator)) {
 								DiskCollection.removeCollectionsFromDisk();
+							}
 							try {
 								Thread.sleep(10000);
 							} catch (final InterruptedException e) {
@@ -771,7 +783,7 @@ public abstract class QueryEvaluator<A> {
 							physicalOptimizationTime += physicalOptimizationTimeArray[i];
 							if(evaluator instanceof CommonCoreQueryEvaluator){
 								// walk one time through whole result...
-								((CommonCoreQueryEvaluator<Node>)evaluator).getResultOperator().addApplication(new IterateOneTimeThrough());								
+								((CommonCoreQueryEvaluator<Node>)evaluator).getResultOperator().addApplication(new IterateOneTimeThrough());
 							}
 							evaluateQueryTimeArray[i] = evaluator.evaluateQuery();
 							evaluateQueryTime += evaluateQueryTimeArray[i];
@@ -780,8 +792,9 @@ public abstract class QueryEvaluator<A> {
 									+ physicalOptimizationTimeArray[i]
 									+ evaluateQueryTimeArray[i];
 							totalTime += totalTimeArray[i];
-							if (!(evaluator instanceof MemoryIndexQueryEvaluator))
+							if (!(evaluator instanceof MemoryIndexQueryEvaluator)) {
 								DiskCollection.removeCollectionsFromDisk();
+							}
 						}
 						if (!((totalTime * 0.95) / times <= totalTimeArray[0] && totalTimeArray[0] <= (totalTime * 1.05)
 								/ times)) {
@@ -811,7 +824,7 @@ public abstract class QueryEvaluator<A> {
 							physicalOptimizationTime += physicalOptimizationTimeArray[0];
 							if(evaluator instanceof CommonCoreQueryEvaluator){
 								// walk one time through whole result...
-								((CommonCoreQueryEvaluator<Node>)evaluator).getResultOperator().addApplication(new IterateOneTimeThrough());								
+								((CommonCoreQueryEvaluator<Node>)evaluator).getResultOperator().addApplication(new IterateOneTimeThrough());
 							}
 							evaluateQueryTimeArray[0] = evaluator.evaluateQuery();
 							evaluateQueryTime += evaluateQueryTimeArray[0];
@@ -820,8 +833,9 @@ public abstract class QueryEvaluator<A> {
 									+ physicalOptimizationTimeArray[0]
 									+ evaluateQueryTimeArray[0];
 							totalTime += totalTimeArray[0];
-							if (!(evaluator instanceof MemoryIndexQueryEvaluator))
+							if (!(evaluator instanceof MemoryIndexQueryEvaluator)) {
 								DiskCollection.removeCollectionsFromDisk();
+							}
 						}
 						System.out
 								.println("\n-------------------------------Times:\n");
@@ -927,15 +941,16 @@ public abstract class QueryEvaluator<A> {
 		}
 		if (LazyLiteral.getV() != null) {
 			if (LazyLiteral.getV() instanceof IntegerStringMapJava) {
-				if (((IntegerStringMapJava) LazyLiteral.getV())
-						.getOriginalMap() instanceof DBBPTree) {
-					((DBBPTree<Integer, String>) ((IntegerStringMapJava) LazyLiteral
-							.getV()).getOriginalMap()).writeAllModifiedPages();
+				final Map<Integer, String> dictMap = ((IntegerStringMapJava) LazyLiteral.getV()).getOriginalMap();
+				if(dictMap instanceof DBBPTree) {
+					((DBBPTree<Integer, String>) dictMap).writeAllModifiedPages();
+				} else if(dictMap instanceof StringArray) {
+					BufferManager.getBufferManager().writeAllModifiedPages();
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * write out all pages in buffer managers including dictionary and RDF data indices
 	 *
@@ -943,7 +958,7 @@ public abstract class QueryEvaluator<A> {
 	 * @param evaluator a {@link lupos.engine.evaluators.BasicIndexQueryEvaluator} object.
 	 * @param dir a {@link java.lang.String} object.
 	 */
-	public static void writeOutModifiedPages(BasicIndexQueryEvaluator evaluator, String dir) throws IOException{
+	public static void writeOutModifiedPages(final BasicIndexQueryEvaluator evaluator, final String dir) throws IOException{
 		QueryEvaluator.writeOutModifiedPagesOfDictionary();
 		evaluator.writeOutAllModifiedPagesInRDFDataIndices(dir);
 	}
@@ -958,10 +973,11 @@ public abstract class QueryEvaluator<A> {
 		String s = "(";
 		boolean first = true;
 		for (final long o : oa) {
-			if (first)
+			if (first) {
 				first = false;
-			else
+			} else {
 				s += ", ";
+			}
 			s += o;
 		}
 		return s + ")";
