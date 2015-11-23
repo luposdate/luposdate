@@ -32,6 +32,7 @@ import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
@@ -1753,6 +1754,9 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	    return !this.handleInAndNotIn(node, b, d);
 	}
 
+	protected final HashMap<Node, HashSet<Object>> mapToOptimizeIn = new HashMap<Node, HashSet<Object>>();
+	protected final HashSet<Node> mapToOptimizeInOnlyStrings = new HashSet<Node>();
+
 	/**
 	 * <p>handleInAndNotIn.</p>
 	 *
@@ -1764,15 +1768,65 @@ public class EvaluationVisitorImplementation implements EvaluationVisitor<Map<No
 	 * @throws lupos.engine.operators.singleinput.TypeErrorException if any.
 	 */
 	protected boolean handleInAndNotIn(final Node node, final Bindings b, final Map<Node, Object> d) throws NotBoundException, TypeErrorException {
-		final Object arg1 = Helper.unlazy(this.resultOfChildZero(node, b, d));
+		Object arg1 = Helper.unlazy(this.resultOfChildZero(node, b, d));
 		final Node child1 = node.jjtGetChild(1);
-		for(int i=0; i<child1.jjtGetNumChildren(); i++) {
-			final Object arg2 = Helper.unlazy(child1.jjtGetChild(i).accept(this, b, d));
-			if(Helper.equals(arg1, arg2)) {
+		HashSet<Object> set = this.mapToOptimizeIn.get(child1);
+		if(set==null){
+			if(this.isConstant(child1)){
+				set = new HashSet<Object>();
+				boolean flagOnlyStrings = true;
+				for(int i=0; i<child1.jjtGetNumChildren(); i++) {
+					Object arg2 = Helper.unlazy(child1.jjtGetChild(i).accept(this, b, d));
+					if(arg2 instanceof StringLiteral){
+						arg2 = ((StringLiteral)arg2).toString();
+					}
+					if(!(arg2 instanceof String)){
+						flagOnlyStrings = false;
+					}
+					set.add(arg2);
+
+				}
+				if(flagOnlyStrings){
+					this.mapToOptimizeInOnlyStrings.add(child1);
+				}
+				this.mapToOptimizeIn.put(child1, set);
+			} else {
+				for(int i=0; i<child1.jjtGetNumChildren(); i++) {
+					final Object arg2 = Helper.unlazy(child1.jjtGetChild(i).accept(this, b, d));
+					if(Helper.equals(arg1, arg2)) {
+						return true;
+					}
+				}
+				return false;
+			}
+		}
+		if(arg1 instanceof StringLiteral){
+			arg1 = ((StringLiteral)arg1).toString();
+		}
+		if(set.contains(arg1)){
+			return true;
+		}
+		if(arg1 instanceof String && this.mapToOptimizeInOnlyStrings.contains(child1)){
+			return false;
+		}
+		for(final Object o: set){
+			if(Helper.equals(arg1, o)) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	protected boolean isConstant(final Node node){
+		if(node instanceof ASTVar){
+			return false;
+		}
+		for(int i=0; i<node.jjtGetNumChildren(); i++) {
+			if(!this.isConstant(node.jjtGetChild(i))){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/** {@inheritDoc} */
