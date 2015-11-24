@@ -23,6 +23,18 @@
  */
 package lupos.engine.evaluators;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedList;
+
 import lupos.datastructures.dbmergesortedds.heap.Heap;
 import lupos.datastructures.dbmergesortedds.tosort.ToSort;
 import lupos.datastructures.items.literal.LazyLiteral;
@@ -35,13 +47,9 @@ import lupos.engine.operators.index.Indices;
 import lupos.engine.operators.index.adaptedRDF3X.RDF3XRoot;
 import lupos.engine.operators.index.adaptedRDF3X.SixIndices;
 import lupos.misc.Tuple;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedList;
 public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 
 	private static final Logger log = LoggerFactory.getLogger(RDF3XQueryEvaluator.class);
@@ -299,16 +307,6 @@ public class RDF3XQueryEvaluator extends BasicIndexQueryEvaluator {
 		out.close();
 	}
 
-	/**
-	 * <p>writeOutIndexFileAndModifiedPages.</p>
-	 *
-	 * @param dir a {@link java.lang.String} object.
-	 * @throws java.io.FileNotFoundException if any.
-	 * @throws java.io.IOException if any.
-	 */
-	public void writeOutIndexFileAndModifiedPages(final String dir) throws FileNotFoundException, IOException {
-		CommonCoreQueryEvaluator.writeOutModifiedPages(this, dir);
-	}
 
 	/** {@inheritDoc} */
 	@Override

@@ -139,7 +139,7 @@ public class DebugEndpoint {
 					os.close();
 					writer.close();
 					if(this.evaluator instanceof RDF3XQueryEvaluator){
-						((RDF3XQueryEvaluator)this.evaluator).writeOutIndexFileAndModifiedPages(this.dir);
+						this.evaluator.writeOutAllModifiedPages();
 					}
 					new Viewer(new GraphWrapperBasicOperator(this.evaluator.getRootNode()), logDirectory+DebugEndpoint.queryNumber+".jpg");
 				}

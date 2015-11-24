@@ -22,7 +22,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * 
+ *
  */
 package lupos.test;
 
@@ -54,7 +54,7 @@ public class TestRDF3XEngine {
 	private final static String updateQuery2 = "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> DELETE DATA { <a> rdf:type <b> }";
 	private final static String updateQuery3 = "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> INSERT { ?s rdf:type2 ?o } WHERE { ?s rdf:type ?o. }";
 	private final static String query4 = "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT * WHERE{ ?s rdf:type2 ?o. }";
-	
+
 	/** Constant <code>dir=""</code> */
 	protected static String dir;
 
@@ -76,77 +76,77 @@ public class TestRDF3XEngine {
 				System.err.println("Usage:\njava -Xmx768M lupos.test.TestRDF3XEngine <directory for indices>");
 				return;
 			}
-			
+
 			TestRDF3XEngine.dir = args[0];
-	
+
 			// set up parameters of evaluator and initialize the evaluator...
 			final RDF3XQueryEvaluator evaluator = new RDF3XQueryEvaluator();
 			evaluator.loadLargeScaleIndices(dir);
-			
+
 			TestRDF3XEngine.test(evaluator);
-			
+
 		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
 		}
 
 	}
-	
+
 	/**
 	 * <p>test.</p>
 	 *
 	 * @param evaluator a {@link lupos.engine.evaluators.BasicIndexQueryEvaluator} object.
 	 */
-	public final static void test(BasicIndexQueryEvaluator evaluator){
+	public final static void test(final BasicIndexQueryEvaluator evaluator){
 		try {
-			
+
 			System.out.println("Evaluate queries...");
-			
+
 			System.out.println("Query 1...");
 			// evaluate first query and print out the result!
 			evaluateQueryAndPrintOut(evaluator, query1);
-			
+
 			System.out.println("Query 2...");
 			// evaluate second query and print out the result!
 			evaluateQueryAndPrintOut(evaluator, query2);
-			
+
 			System.out.println("Update Query 1...");
 			// evaluate first update query and print out the result!
 			evaluateQueryAndPrintOut(evaluator, updateQuery1);
-			
+
 			System.out.println("Query 3...");
 			// evaluate third query and print out the result!
 			evaluateQueryAndPrintOut(evaluator, query3);
-			
+
 			System.out.println("Update Query 2...");
 			// evaluate second update query and print out the result!
 			evaluateQueryAndPrintOut(evaluator, updateQuery2);
-			
+
 			System.out.println("Query 3...");
 			// evaluate third query and print out the result!
 			evaluateQueryAndPrintOut(evaluator, query3);
-			
+
 			System.out.println("Update Query 3...");
 			// evaluate third update query and print out the result!
 			evaluateQueryAndPrintOut(evaluator, updateQuery3);
-			
+
 			System.out.println("Query 4...");
 			// evaluate first query and print out the result!
 			evaluateQueryAndPrintOut(evaluator, query4);
-						
+
 			// important!
 			// The following command writes out all modified pages,
 			// which are still in the buffer manager...
-			// Without this command (or when the system crashes 
+			// Without this command (or when the system crashes
 			// before or during this command),
 			// the indices may remain in an inconsistent state
 			// and must be build from scratch in these rare cases...
-			CommonCoreQueryEvaluator.writeOutModifiedPages(evaluator, TestRDF3XEngine.dir);
-			
+			CommonCoreQueryEvaluator.writeOutAllModifiedPages();
+
 			// the whole database is dumped into files...
 			// (10000 triples in one file...)
 			evaluator.dump("D://dump", 10000);
-			
+
 		} catch (final Exception e) {
 			System.err.println(e);
 			e.printStackTrace();
@@ -166,7 +166,7 @@ public class TestRDF3XEngine {
 			// get next solution of the query...
 			final Bindings bindings = it_query.next();
 			// print out the bound values of all bindings!
-			StringBuilder result=new StringBuilder("{");
+			final StringBuilder result=new StringBuilder("{");
 			boolean first=true;
 			for (final Variable v : bindings.getVariableSet()) {
 				if(first){

@@ -58,7 +58,7 @@ public class SaveRDF3XResult {
 			final OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(args[i+1]));
 			formatter.writeResult(outputStream, evaluator.getVariablesOfQuery(), queryResult);
 			outputStream.close();
-			evaluator.writeOutIndexFileAndModifiedPages(args[0]);
+			evaluator.writeOutAllModifiedPages();
 			queryResult.release();
 		}
 		System.out.println("\nDone!");

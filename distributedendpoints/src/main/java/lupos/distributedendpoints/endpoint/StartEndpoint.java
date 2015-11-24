@@ -176,7 +176,7 @@ public class StartEndpoint {
 					formatter.writeResult(os, queryResult.getSecond(), queryResult.getFirst());
 					os.close();
 					if(this.evaluator instanceof RDF3XQueryEvaluator){
-						((RDF3XQueryEvaluator)this.evaluator).writeOutIndexFileAndModifiedPages(this.dir);
+						this.evaluator.writeOutAllModifiedPages();
 					}
 				}
 				return;

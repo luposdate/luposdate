@@ -30,18 +30,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import lupos.datastructures.buffermanager.BufferManager;
 import lupos.datastructures.dbmergesortedds.DiskCollection;
-import lupos.datastructures.items.literal.LazyLiteral;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
-import lupos.datastructures.items.literal.codemap.IntegerStringMapJava;
-import lupos.datastructures.items.literal.codemap.StringIntegerMapJava;
-import lupos.datastructures.paged_dbbptree.DBBPTree;
 import lupos.datastructures.queryresult.QueryResult;
-import lupos.datastructures.stringarray.StringArray;
 import lupos.engine.operators.BasicOperator;
 import lupos.engine.operators.application.Application;
 import lupos.engine.operators.application.IterateOneTimeThrough;
@@ -911,11 +905,11 @@ public abstract class QueryEvaluator<A> {
 
 						System.out.println("\n**************************Done.");
 					}
-					writeOutModifiedPagesOfDictionary();
+					writeOutAllModifiedPages();
 					return;
 				}
 			}
-			writeOutModifiedPagesOfDictionary();
+			writeOutAllModifiedPages();
 		} catch (final Exception ex) {
 			System.err.println(ex);
 			ex.printStackTrace();
@@ -928,39 +922,9 @@ public abstract class QueryEvaluator<A> {
 	 *
 	 * @throws java.io.IOException if any.
 	 */
-	public static void writeOutModifiedPagesOfDictionary()
+	public static void writeOutAllModifiedPages()
 			throws IOException {
-		if (LazyLiteral.getHm() != null) {
-			if (LazyLiteral.getHm() instanceof StringIntegerMapJava) {
-				if (((StringIntegerMapJava) LazyLiteral.getHm())
-						.getOriginalMap() instanceof DBBPTree) {
-					((DBBPTree<String, Integer>) ((StringIntegerMapJava) LazyLiteral
-							.getHm()).getOriginalMap()).writeAllModifiedPages();
-				}
-			}
-		}
-		if (LazyLiteral.getV() != null) {
-			if (LazyLiteral.getV() instanceof IntegerStringMapJava) {
-				final Map<Integer, String> dictMap = ((IntegerStringMapJava) LazyLiteral.getV()).getOriginalMap();
-				if(dictMap instanceof DBBPTree) {
-					((DBBPTree<Integer, String>) dictMap).writeAllModifiedPages();
-				} else if(dictMap instanceof StringArray) {
-					BufferManager.getBufferManager().writeAllModifiedPages();
-				}
-			}
-		}
-	}
-
-	/**
-	 * write out all pages in buffer managers including dictionary and RDF data indices
-	 *
-	 * @throws java.io.IOException if any.
-	 * @param evaluator a {@link lupos.engine.evaluators.BasicIndexQueryEvaluator} object.
-	 * @param dir a {@link java.lang.String} object.
-	 */
-	public static void writeOutModifiedPages(final BasicIndexQueryEvaluator evaluator, final String dir) throws IOException{
-		QueryEvaluator.writeOutModifiedPagesOfDictionary();
-		evaluator.writeOutAllModifiedPagesInRDFDataIndices(dir);
+		BufferManager.getBufferManager().writeAllModifiedPages();
 	}
 
 	/**

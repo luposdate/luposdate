@@ -551,7 +551,7 @@ public class Endpoint {
 					formatter.writeResult(os, this.evaluator.getVariablesOfQuery(), queryResult);
 					os.close();
 					if(this.evaluator instanceof RDF3XQueryEvaluator){
-						((RDF3XQueryEvaluator)this.evaluator).writeOutIndexFileAndModifiedPages(this.dir);
+						this.evaluator.writeOutAllModifiedPages();
 					}
 				}
 				return;

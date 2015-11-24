@@ -707,7 +707,6 @@ public class Filter extends SingleInputOperator {
 		return msg;
 	}
 
-
 	/**
 	 * <p>materializationOfLazyLiteralsNeeded.</p>
 	 *
@@ -722,8 +721,6 @@ public class Filter extends SingleInputOperator {
 		}
 		return false;
 	}
-
-
 
 	/** {@inheritDoc} */
 	@Override

@@ -474,13 +474,13 @@ public class MaterializationNeededVisitor implements SPARQL1_1ParserVisitor {
 	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTInNode node, final Object data) {
-		return this.checkChildren(node, data);
+		return this.checkChildren(node, true);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Object visit(final ASTNotInNode node, final Object data) {
-		return this.checkChildren(node, data);
+		return this.checkChildren(node, true);
 	}
 
 	/** {@inheritDoc} */
