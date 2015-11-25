@@ -57,7 +57,9 @@ public class FederatedQueryJoinAtEndpoint extends FederatedQueryWithoutSucceedin
 				qr.add(it.next());
 				i++;
 			}
-			pimqr.addQueryResult(FederatedQueryWithSucceedingJoin.process(qr, this.endpoint, this.toStringQuery(qr), this.bindingsFactory));
+			final QueryResult resultOfEndpoint = FederatedQueryWithSucceedingJoin.process(qr, this.endpoint, this.toStringQuery(qr), this.bindingsFactory);
+			resultOfEndpoint.materialize(); // otherwise it may be blocking!
+			pimqr.addQueryResult(resultOfEndpoint);
 		}
 		return QueryResult.createInstance(pimqr);
 	}
