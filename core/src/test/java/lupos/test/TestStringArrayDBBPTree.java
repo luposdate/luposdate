@@ -33,7 +33,7 @@ import lupos.engine.indexconstruction.RDF3XStringArrayContainer;
 
 public class TestStringArrayDBBPTree {
 
-	// path as used in FastRDF3XIntArrayIndexConstruction
+	// path as used in RDF3XStringArrayIndexConstruction
 	private final static String path = "c:/luposdateindex";
 
 	public static void main(final String[] args) throws ClassNotFoundException, IOException, URISyntaxException {

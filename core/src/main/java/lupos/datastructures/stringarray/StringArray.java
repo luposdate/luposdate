@@ -145,7 +145,7 @@ public class StringArray implements Iterable<Entry<Integer, String>>, IntegerStr
 			return null;
 		}
 		// the first four bytes store the maximum position in this file!
-		final long posInFile = 4 + (index-1)*8;
+		final long posInFile = 4 + ((long)index-1)*8;
 		try {
 			final long posOfString = StringArray.getLongFromPage(this.pointersFilename, posInFile);
 
