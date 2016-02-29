@@ -203,6 +203,5 @@ public abstract class DocumentInputAndOrderByFrequencyStrategy extends Strategy 
 	@Override
 	public List<Entry<Item, Integer>> generateWeight(final List<Item> list) {
 		return null;
-
 	}
 }

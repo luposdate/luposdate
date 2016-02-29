@@ -42,7 +42,7 @@ public class GraphSerialization {
 		GRAPH, NESTED
 	}
 
-	public static JSONObject astToJson(GraphWrapperAST ast, AstFormat astFormat) {
+	public static JSONObject astToJson(final GraphWrapperAST ast, final AstFormat astFormat) {
 		switch (astFormat) {
 		case GRAPH:
 			return graphWrapperToJsonGraph(ast);
@@ -53,8 +53,8 @@ public class GraphSerialization {
 		}
 	}
 
-	public static JSONObject rifAstToJson(GraphWrapperASTRIF ast,
-			AstFormat astFormat) {
+	public static JSONObject rifAstToJson(final GraphWrapperASTRIF ast,
+			final AstFormat astFormat) {
 		switch (astFormat) {
 		case GRAPH:
 			return graphWrapperToJsonGraph(ast);
@@ -65,8 +65,8 @@ public class GraphSerialization {
 		}
 	}
 
-	public static JSONObject rulesAstToJson(GraphWrapperRules astRules,
-			AstFormat astFormat) {
+	public static JSONObject rulesAstToJson(final GraphWrapperRules astRules,
+			final AstFormat astFormat) {
 		switch (astFormat) {
 		case GRAPH:
 			return graphWrapperToJsonGraph(astRules);
@@ -79,18 +79,18 @@ public class GraphSerialization {
 
 	/**
 	 * Produces a nested JSON serialization for a generic graph. The graph must be acyclic.
-	 * 
+	 *
 	 * @param graph
 	 *            generic (acyclic) graph wrapper
 	 * @return JSON serialization
 	 */
-	private static JSONObject graphWrapperToJsonNested(GraphWrapper graph) {
-		JSONObject json = new JSONObject();
+	private static JSONObject graphWrapperToJsonNested(final GraphWrapper graph) {
+		final JSONObject json = new JSONObject();
 
 		appendBasicNodeInformationToJson(graph, json);
 
-		for (GraphWrapperIDTuple node : graph.getSucceedingElements()) {
-			JSONObject jsonChild = graphWrapperToJsonNested(node.getOperator());
+		for (final GraphWrapperIDTuple node : graph.getSucceedingElements()) {
+			final JSONObject jsonChild = graphWrapperToJsonNested(node.getOperator());
 			jsonChild.put("operandPosition", node.getId());
 			json.append("children", jsonChild);
 		}
@@ -101,49 +101,49 @@ public class GraphSerialization {
 	/**
 	 * Produces a JSON serialization for a generic graph. It's basically a tuple
 	 * (nodes, adjacency list). It discovers the graph by breadth-first search.
-	 * 
+	 *
 	 * @param ast
 	 *            generic graph wrapper
 	 * @return JSON serialization
 	 */
-	public static JSONObject graphWrapperToJsonGraph(GraphWrapper ast) {
-		JSONObject json = new JSONObject();
+	public static JSONObject graphWrapperToJsonGraph(final GraphWrapper ast) {
+		final JSONObject json = new JSONObject();
 
-		Queue<GraphWrapper> nodeQueue = new LinkedList<>();
-		Set<GraphWrapper> visited = new HashSet<>();
-		GraphWrapper startNode = ast;
+		final Queue<GraphWrapper> nodeQueue = new LinkedList<>();
+		final Set<GraphWrapper> visited = new HashSet<>();
+		final GraphWrapper startNode = ast;
 		nodeQueue.add(startNode);
 		visited.add(startNode);
 		int depth = 0;
 
-		JSONObject startNodeJson = new JSONObject();
+		final JSONObject startNodeJson = new JSONObject();
 		appendBasicNodeInformationToJson(startNode, startNodeJson);
 		startNodeJson.put("depth", depth);
 		json.append("nodes", startNodeJson);
 
-		JSONObject edgesJson = new JSONObject();
+		final JSONObject edgesJson = new JSONObject();
 
 		// Breadth-first search
 		while (!nodeQueue.isEmpty()) {
-			GraphWrapper node = nodeQueue.remove();
-			List<GraphWrapperIDTuple> successors = node.getSucceedingElements();
+			final GraphWrapper node = nodeQueue.remove();
+			final List<GraphWrapperIDTuple> successors = node.getSucceedingElements();
 
 			if (!successors.isEmpty()) {
 				depth++;
 			}
 
-			for (GraphWrapperIDTuple successorTuple : successors) {
-				GraphWrapper successor = successorTuple.getOperator();
+			for (final GraphWrapperIDTuple successorTuple : successors) {
+				final GraphWrapper successor = successorTuple.getOperator();
 				if (!visited.contains(successor)) {
 					// Not yet visited
 					visited.add(successor);
 					nodeQueue.add(successor);
-					JSONObject nodeJson = new JSONObject();
+					final JSONObject nodeJson = new JSONObject();
 					appendBasicNodeInformationToJson(successor, nodeJson);
 					nodeJson.put("depth", depth);
 					json.append("nodes", nodeJson);
 				}
-				JSONObject edgeJson = new JSONObject();
+				final JSONObject edgeJson = new JSONObject();
 				edgeJson.put("operandPosition", successorTuple.getId());
 				edgeJson.put("nodeId", "" + successor.hashCode());
 				edgesJson.append("" + node.hashCode(), edgeJson);
@@ -155,7 +155,7 @@ public class GraphSerialization {
 	}
 
 	private static JSONObject appendBasicNodeInformationToJson(
-			GraphWrapper node, JSONObject json) {
+			final GraphWrapper node, final JSONObject json) {
 		json.put("type", node.getElement().getClass().getSimpleName());
 		json.put("description", node.toString());
 		json.put("id", node.hashCode());
@@ -170,13 +170,13 @@ public class GraphSerialization {
 	 * Returns the classification of a node as a String. Recognized
 	 * classifications are QueryHead, OperatorNode, FunctionNode,
 	 * HighLevelOperator, TerminalNode and NonTerminalNode.
-	 * 
+	 *
 	 * @param node
 	 *            the node
 	 * @return classification of a node as a String
 	 */
-	private static String getNodeClassification(GraphWrapperAST node) {
-		Class<?> nodeClass = node.getElement().getClass();
+	private static String getNodeClassification(final GraphWrapperAST node) {
+		final Class<?> nodeClass = node.getElement().getClass();
 		if (GraphWrapperAST.isQueryHead(nodeClass)) {
 			return "QueryHead";
 		} else if (GraphWrapperAST.isOperatorNode(nodeClass)) {

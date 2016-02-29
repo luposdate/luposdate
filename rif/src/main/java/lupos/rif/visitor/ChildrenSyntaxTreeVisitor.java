@@ -66,190 +66,225 @@ import lupos.rif.generated.syntaxtree.RIFVarOrURI;
 import lupos.rif.generated.visitor.IRetArguVisitor;
 public class ChildrenSyntaxTreeVisitor implements IRetArguVisitor<List<INode>, Object> {
 
-	private List<INode> list(INode... nodes) {
-		List<INode> ret = new ArrayList<INode>();
+	private List<INode> list(final INode... nodes) {
+		final List<INode> ret = new ArrayList<INode>();
 		for (int i = 0; i < nodes.length; i++) {
-			INode node = nodes[i];
-			if (node instanceof INodeList)
-				ret.addAll(list(node.accept(this, null).toArray(new INode[] {})));
-			else if (node instanceof NodeOptional)
-				ret.addAll(list(node.accept(this, null).toArray(new INode[] {})));
-			else if (node instanceof NodeChoice)
-				ret.addAll(list(((NodeChoice) node).choice));
-			else if (node != null)
+			final INode node = nodes[i];
+			if (node instanceof INodeList) {
+				ret.addAll(this.list(node.accept(this, null).toArray(new INode[] {})));
+			} else if (node instanceof NodeOptional) {
+				ret.addAll(this.list(node.accept(this, null).toArray(new INode[] {})));
+			} else if (node instanceof NodeChoice) {
+				ret.addAll(this.list(((NodeChoice) node).choice));
+			} else if (node != null) {
 				ret.add(node);
+			}
 		}
 		return ret;
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(NodeList n, Object argu) {
+	@Override
+	public List<INode> visit(final NodeList n, final Object argu) {
 		return n.nodes;
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(NodeListOptional n, Object argu) {
+	@Override
+	public List<INode> visit(final NodeListOptional n, final Object argu) {
 		return n.nodes != null ? n.nodes : new ArrayList<INode>();
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(NodeOptional n, Object argu) {
-		return n.node != null ? list(n.node) : new ArrayList<INode>();
+	@Override
+	public List<INode> visit(final NodeOptional n, final Object argu) {
+		return n.node != null ? this.list(n.node) : new ArrayList<INode>();
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(NodeSequence n, Object argu) {
+	@Override
+	public List<INode> visit(final NodeSequence n, final Object argu) {
 		return n.nodes;
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(NodeToken n, Object argu) {
-		return list();
+	@Override
+	public List<INode> visit(final NodeToken n, final Object argu) {
+		return this.list();
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(CompilationUnit n, Object argu) {
-		return list((INode) n.f0);
+	@Override
+	public List<INode> visit(final CompilationUnit n, final Object argu) {
+		return this.list((INode) n.f0);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFDocument n, Object argu) {
-		return list(n.f0, n.f1, n.f2.node, n.f3, n.f4, n.f5.node, n.f6.node,
+	@Override
+	public List<INode> visit(final RIFDocument n, final Object argu) {
+		return this.list(n.f0, n.f1, n.f2.node, n.f3, n.f4, n.f5.node, n.f6.node,
 				n.f7);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFBase n, Object argu) {
-		return list(n.f0, n.f1, n.f2, n.f3);
+	@Override
+	public List<INode> visit(final RIFBase n, final Object argu) {
+		return this.list(n.f0, n.f1, n.f2, n.f3);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFPrefix n, Object argu) {
-		return list(n.f0, n.f1, n.f2, n.f3, n.f4);
+	@Override
+	public List<INode> visit(final RIFPrefix n, final Object argu) {
+		return this.list(n.f0, n.f1, n.f2, n.f3, n.f4);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFImport n, Object argu) {
-		return list(n.f0, n.f1, n.f2, n.f3.node, n.f4);
+	@Override
+	public List<INode> visit(final RIFImport n, final Object argu) {
+		return this.list(n.f0, n.f1, n.f2, n.f3.node, n.f4);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFGroup n, Object argu) {
-		return list(n.f0, n.f1, n.f2, n.f3);
+	@Override
+	public List<INode> visit(final RIFGroup n, final Object argu) {
+		return this.list(n.f0, n.f1, n.f2, n.f3);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFRule n, Object argu) {
-		return list(n.f0.choice);
+	@Override
+	public List<INode> visit(final RIFRule n, final Object argu) {
+		return this.list(n.f0.choice);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFClause n, Object argu) {
-		return list(n.f0.choice, n.f1.node);
+	@Override
+	public List<INode> visit(final RIFClause n, final Object argu) {
+		return this.list(n.f0.choice, n.f1.node);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFFormula n, Object argu) {
-		return list(n.f0.choice);
+	@Override
+	public List<INode> visit(final RIFFormula n, final Object argu) {
+		return this.list(n.f0.choice);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFAtomic n, Object argu) {
-		return list(n.f0, n.f1.node);
+	@Override
+	public List<INode> visit(final RIFAtomic n, final Object argu) {
+		return this.list(n.f0, n.f1.node);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFUniterm n, Object argu) {
-		return list(n.f0, n.f1, n.f2, n.f3);
+	@Override
+	public List<INode> visit(final RIFUniterm n, final Object argu) {
+		return this.list(n.f0, n.f1, n.f2, n.f3);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFFrame n, Object argu) {
-		return list(((RIFAtomic)n.getParent().getParent().getParent()).f0, n.f0, n.f1, n.f2);
+	@Override
+	public List<INode> visit(final RIFFrame n, final Object argu) {
+		return this.list(n.f0, n.f1, n.f2);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFTerm n, Object argu) {
-		return list(n.f0.choice);
+	@Override
+	public List<INode> visit(final RIFTerm n, final Object argu) {
+		return this.list(n.f0.choice);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFExternal n, Object argu) {
-		return list(n.f0, n.f1, n.f2, n.f3);
+	@Override
+	public List<INode> visit(final RIFExternal n, final Object argu) {
+		return this.list(n.f0, n.f1, n.f2, n.f3);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFList n, Object argu) {
-		return list(n.f0, n.f1, n.f2.choice);
+	@Override
+	public List<INode> visit(final RIFList n, final Object argu) {
+		return this.list(n.f0, n.f1, n.f2.choice);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFVar n, Object argu) {
-		return list(n.f0, n.f1);
+	@Override
+	public List<INode> visit(final RIFVar n, final Object argu) {
+		return this.list(n.f0, n.f1);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFRDFLiteral n, Object argu) {
-		return list(n.f0.choice);
+	@Override
+	public List<INode> visit(final RIFRDFLiteral n, final Object argu) {
+		return this.list(n.f0.choice);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFTypedLiteral n, Object argu) {
-		return list(n.f0, n.f2);
+	@Override
+	public List<INode> visit(final RIFTypedLiteral n, final Object argu) {
+		return this.list(n.f0, n.f2);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFLiteralWithLangTag n, Object argu) {
-		return list(n.f0, n.f1);
+	@Override
+	public List<INode> visit(final RIFLiteralWithLangTag n, final Object argu) {
+		return this.list(n.f0, n.f1);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFNumericLiteral n, Object argu) {
-		return list(n.f0.choice);
+	@Override
+	public List<INode> visit(final RIFNumericLiteral n, final Object argu) {
+		return this.list(n.f0.choice);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFString n, Object argu) {
-		return list(n.f0.choice);
+	@Override
+	public List<INode> visit(final RIFString n, final Object argu) {
+		return this.list(n.f0.choice);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFVarOrURI n, Object argu) {
-		return list(n.f0.choice);
+	@Override
+	public List<INode> visit(final RIFVarOrURI n, final Object argu) {
+		return this.list(n.f0.choice);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFURI n, Object argu) {
-		return list(n.f0.choice);
+	@Override
+	public List<INode> visit(final RIFURI n, final Object argu) {
+		return this.list(n.f0.choice);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFQName n, Object argu) {
-		return list(n.f0);
+	@Override
+	public List<INode> visit(final RIFQName n, final Object argu) {
+		return this.list(n.f0);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFInteger n, Object argu) {
-		return list(n.f0);
+	@Override
+	public List<INode> visit(final RIFInteger n, final Object argu) {
+		return this.list(n.f0);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFFloatingPoint n, Object argu) {
-		return list(n.f0);
+	@Override
+	public List<INode> visit(final RIFFloatingPoint n, final Object argu) {
+		return this.list(n.f0);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFNCName n, Object argu) {
-		return list(n.f0);
+	@Override
+	public List<INode> visit(final RIFNCName n, final Object argu) {
+		return this.list(n.f0);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFQuotedURIref n, Object argu) {
-		return list((INode) n.f0);
+	@Override
+	public List<INode> visit(final RIFQuotedURIref n, final Object argu) {
+		return this.list((INode) n.f0);
 	}
 
 	/** {@inheritDoc} */
-	public List<INode> visit(RIFConclusion n, Object argu) {
-		return list(n.f0, n.f1, n.f2, n.f3);
+	@Override
+	public List<INode> visit(final RIFConclusion n, final Object argu) {
+		return this.list(n.f0, n.f1, n.f2, n.f3);
 	}
 }

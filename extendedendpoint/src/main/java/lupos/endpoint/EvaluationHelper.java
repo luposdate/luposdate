@@ -408,11 +408,12 @@ public class EvaluationHelper {
 		}
 		final Prefix prefixInstance = new Prefix(true);
 		final DebugContainerQuery<BasicOperatorByteArray, Node> dcq = evaluator.compileQueryDebugByteArray(query, prefixInstance);
+		final List<DebugContainer<BasicOperatorByteArray>>  ruleApplications;
 		if(dcq==null){
-			// this operator does not support returning the operator graphs
-			return null;
+			ruleApplications = new LinkedList<DebugContainer<BasicOperatorByteArray>>();
+		} else {
+			ruleApplications = dcq.getCorrectOperatorGraphRules();
 		}
-		final List<DebugContainer<BasicOperatorByteArray>>  ruleApplications = dcq.getCorrectOperatorGraphRules();
 
 		// do inference for materialization strategy
 		if(!(evaluator instanceof JenaQueryEvaluator || evaluator instanceof SesameQueryEvaluator)){
