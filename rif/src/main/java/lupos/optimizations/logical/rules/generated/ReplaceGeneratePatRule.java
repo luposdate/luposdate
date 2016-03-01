@@ -158,7 +158,7 @@ public class ReplaceGeneratePatRule extends Rule {
         			p.setUnionVariables(p.getUnionVariables());
         			order.add(p);
         		}
-        		if (addBindingsVar.size() > 0) {
+        		if (!addBindingsVar.isEmpty()) {
         			final java.util.Iterator<lupos.datastructures.items.literal.Literal> lit_it = addBindingsLit.iterator();
         			final java.util.HashSet<lupos.datastructures.items.Variable> hsv = new java.util.HashSet<lupos.datastructures.items.Variable>();
         			hsv.addAll(replaceVar.getUnionVariables());
@@ -173,7 +173,7 @@ public class ReplaceGeneratePatRule extends Rule {
         
         		// In case that Generate or TriplePattern has minimum one variable, than
         		// minimum one operator has to be inserted
-        		if (order.size() > 0) {
+        		if (!order.isEmpty()) {
         			final java.util.List<BasicOperator> pres = (java.util.List<BasicOperator>) this.g.getPrecedingOperators();
         			BasicOperator pre;
         			for (int i = 0; i < pres.size(); i++) {

@@ -677,7 +677,7 @@ public final class OutHelper {
 		if (t.size() > 200) {
 			os.write(255);
 			final DiskCollection dc;
-			if (t.size() > 0) {
+			if (!t.isEmpty()) {
 				dc = new DiskCollection(t.iterator().next().getClass());
 			} else {
 				dc = new DiskCollection(Object.class);
@@ -686,7 +686,7 @@ public final class OutHelper {
 			dc.writeLuposObject(os);
 		} else {
 			os.write(t.size());
-			if (t.size() > 0) {
+			if (!t.isEmpty()) {
 				Registration.serializeId(t.iterator().next(), os);
 				for (final Object o : t) {
 					Registration.serializeWithoutId(o, os);
@@ -705,7 +705,7 @@ public final class OutHelper {
 	@SuppressWarnings("rawtypes")
 	public final static void writeLuposSet(final SetImplementation t, final OutputStream os) throws IOException{
 		OutHelper.writeLuposInt(t.size(), os);
-		if (t.size() > 0){
+		if (!t.isEmpty()){
 			Registration.serializeId(t.iterator().next(), os);
 		}
 		for (final Object o : t) {

@@ -87,7 +87,7 @@ public class MensaProducer extends ProducerBaseNoDuplicates {
 			Document doc = Jsoup.connect(MENSA_URL_BASE).get();
 			Elements e = doc.getElementsByTag("div");
 			Elements divInhaltElements = e.select("#inhalt");
-			if (divInhaltElements == null || divInhaltElements.size() == 0) {
+			if (divInhaltElements == null || divInhaltElements.isEmpty()) {
 				System.out.println("no div with id=\"inhalt\"!");
 			} else {
 				Element divInhalt = divInhaltElements.first();
@@ -239,7 +239,7 @@ public class MensaProducer extends ProducerBaseNoDuplicates {
 			}
 		}
 
-		return (triplelist.size() == 0) ? null : triplelist;
+		return (triplelist.isEmpty()) ? null : triplelist;
 	}
 
 	/**

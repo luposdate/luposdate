@@ -143,7 +143,7 @@ public class CondensedViewViewer extends VisualEditor<Operator> {
 	protected void manageMenuItems() {
 		super.manageMenuItems();
 
-		if (this.selectedOperatorsList.size() > 0) {
+		if (!this.selectedOperatorsList.isEmpty()) {
 			this.copyButton.setEnabled(true);
 		} else {
 			this.copyButton.setEnabled(false);

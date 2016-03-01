@@ -132,7 +132,7 @@ public class CollectionImplementation<E> implements
 	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
-		return (this.memoryCollection.size() == 0);
+		return (this.memoryCollection.isEmpty());
 	}
 
 	/** {@inheritDoc} */

@@ -791,7 +791,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 	@Override
 	public long prepareInputData(final Collection<URILiteral> defaultGraphs,
 			final Collection<URILiteral> namedGraphs) throws Exception {
-		if (defaultGraphs.size() > 0 && namedGraphs.size() == 0) {
+		if (!defaultGraphs.isEmpty() && namedGraphs.isEmpty()) {
 			this.defaultGraphs = defaultGraphs;
 		} else {
 			throw new Exception(
@@ -818,7 +818,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 			final Collection<URILiteral> defaultGraphs,
 			final Collection<Tuple<URILiteral, URILiteral>> namedGraphs)
 			throws Exception {
-		if (defaultGraphs.size() > 0 && namedGraphs.size() == 0) {
+		if (!defaultGraphs.isEmpty() && namedGraphs.isEmpty()) {
 			this.defaultGraphs = defaultGraphs;
 		} else {
 			throw new Exception(
@@ -937,7 +937,7 @@ public class StreamQueryEvaluator extends CommonCoreQueryEvaluator<Node> {
 									lastOperator, 0));
 						}
 
-						if (trigger.getSucceedingOperators().size() > 0) {
+						if (!trigger.getSucceedingOperators().isEmpty()) {
 							trigger.setPrecedingOperators(tp
 									.getPrecedingOperators());
 							for (final BasicOperator po : tp

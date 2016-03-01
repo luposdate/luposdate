@@ -433,7 +433,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 						final E e = (E) in.readLuposObject();
 						if (e == null) {
 							in.close();
-							if (hs.size() == 0) {
+							if (hs.isEmpty()) {
 								return true;
 							} else {
 								break;
@@ -443,7 +443,7 @@ public class DiskCollection<E extends Serializable> implements Collection<E>,
 					}
 				} catch (final EOFException e) {
 					in.close();
-					if (hs.size() == 0) {
+					if (hs.isEmpty()) {
 						return true;
 					}
 				}

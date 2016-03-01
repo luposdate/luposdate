@@ -526,7 +526,7 @@ public class IteratorQueryResult extends QueryResult {
 	 */
 	@Override
 	public Iterator<Bindings> oneTimeIterator() {
-		if (this.bindings == null || this.bindings.size() == 0) {
+		if (this.bindings == null || this.bindings.isEmpty()) {
 			if (this.itb == null) {
 				return new ImmutableIterator<Bindings>() {
 					@Override

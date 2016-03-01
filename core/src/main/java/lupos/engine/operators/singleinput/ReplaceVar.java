@@ -140,7 +140,7 @@ public class ReplaceVar extends SingleInputOperator {
 	private boolean contains(final Item left, final Item right) {
 		final LinkedList<Integer> indices = this.getPositions(
 				this.substitutionsVariableLeft, left);
-		if (indices.size() != 0) {
+		if (!indices.isEmpty()) {
 			for (int i = 0; i < indices.size(); i++) {
 				if (this.substitutionsVariableRight.get(indices.get(i))
 						.equals(right)) {

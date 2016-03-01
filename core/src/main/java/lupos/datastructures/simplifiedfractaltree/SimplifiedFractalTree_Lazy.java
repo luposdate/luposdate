@@ -366,7 +366,7 @@ public class SimplifiedFractalTree_Lazy<K extends Comparable<K> & Serializable, 
 	@Override
 	protected void merge(final FractalTreeEntry<K, V> element) {
 		element.pointer = -2;
-		if (this.bufferedList.size() == 0) {
+		if (this.bufferedList.isEmpty()) {
 			this.bufferedList.add(0, element);
 		} else if (this.bufferedList.get(0).key == null) {
 			this.bufferedList.set(0, element);
@@ -428,7 +428,7 @@ public class SimplifiedFractalTree_Lazy<K extends Comparable<K> & Serializable, 
 		if (index >= this.bufferedList.size()) {
 			return -1;
 		}
-		if (this.bufferedList.size() > 0) {
+		if (!this.bufferedList.isEmpty()) {
 			if (index < 0) {
 				System.out.println(key);
 			}

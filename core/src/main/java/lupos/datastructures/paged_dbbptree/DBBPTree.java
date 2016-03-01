@@ -598,8 +598,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 														// leaf node!
 														if (e.filenameOfNextLeafNode >= 0) {
 															this.in.close();
-															if (this.innerNodes
-																	.size() == 0) {
+															if (this.innerNodes.isEmpty()) {
 																return this.getFirst(
 																		DBBPTree.this.rootPage,
 																		k);
@@ -1670,9 +1669,9 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 						return oldValue;
 					} else {
 						Node<K, V> currentNode = leafNode;
-						while (navCol.size() > 0) {
+						while (!navCol.isEmpty()) {
 							navCol.remove(navCol.size() - 1);
-							if(navCol.size()>0){
+							if(!navCol.isEmpty()){
 								final InnerNode<K, V> innerNode = (InnerNode<K, V>) navCol
 								.get(navCol.size() - 1);
 								// int posKeys=innerNode.readKeys.size();
@@ -1859,7 +1858,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 											return oldValue;
 										}
 										if (innerNode.filename == this.rootPage) {
-											if (innerNode.getKeys().size() == 0
+											if (innerNode.getKeys().isEmpty()
 													&& rightNeighbor instanceof InnerNode) {
 												try {
 													this.pageManager
@@ -1954,7 +1953,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 										return oldValue;
 									}
 									if (innerNode.filename == this.rootPage) {
-										if (innerNode.getKeys().size() == 0
+										if (innerNode.getKeys().isEmpty()
 												&& leftNeighbor instanceof InnerNode) {
 											try {
 												this.pageManager
@@ -3082,7 +3081,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	}
 
 	private V getLeft(final List<Node<K, V>> navCol, final int pos, final K arg0) {
-		if (navCol == null || navCol.size() == 0) {
+		if (navCol == null || navCol.isEmpty()) {
 			return null;
 		}
 		final Node<K, V> navigateToClass = navCol.get(navCol.size() - 1);
@@ -3121,7 +3120,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 	private V getRight(final List<Node<K, V>> navCol, final int pos,
 			final K arg0) {
-		if (navCol == null || navCol.size() == 0) {
+		if (navCol == null || navCol.isEmpty()) {
 			this.closeInputStreams(navCol);
 			return null;
 		}

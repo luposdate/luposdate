@@ -139,7 +139,7 @@ public class ReplaceLit extends SingleInputOperator {
 	public boolean contains(final Item left, final Item right) {
 		final LinkedList<Integer> indices = getPositions(
 				substitutionsLiteralLeft, left);
-		if (indices.size() != 0) {
+		if (!indices.isEmpty()) {
 			for (int i = 0; i < indices.size(); i++) {
 				if (substitutionsLiteralRight.get(indices.get(i)).equals(right)) {
 					return true;

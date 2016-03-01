@@ -142,7 +142,7 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 		if (t.size() > 200) {
 			this.os.write(255);
 			final DiskCollection dc;
-			if (t.size() > 0) {
+			if (!t.isEmpty()) {
 				dc = new DiskCollection(t.iterator().next().getClass());
 			} else {
 				dc = new DiskCollection(Object.class);
@@ -151,7 +151,7 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 			dc.writeLuposObject(this);
 		} else {
 			this.os.write(t.size());
-			if (t.size() > 0) {
+			if (!t.isEmpty()) {
 				Registration.serializeId(t.iterator().next(), this);
 				for (final Object o : t) {
 					Registration.serializeWithoutId(o, this);
@@ -170,7 +170,7 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 	public void writeLuposTreeSet(final TreeSet t) throws IOException {
 		this.writeObject(t.comparator());
 		OutHelper.writeLuposInt(t.size(), this.os);
-		if (t.size() > 0) {
+		if (!t.isEmpty()) {
 			Registration.serializeId(t.iterator().next(), this);
 		}
 		for (final Object o : t) {
@@ -188,7 +188,7 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 	public void writeLuposSortedSet(final SortedSet t) throws IOException {
 		this.writeObject(t.comparator());
 		OutHelper.writeLuposInt(t.size(), this.os);
-		if (t.size() > 0) {
+		if (!t.isEmpty()) {
 			Registration.serializeId(t.iterator().next(), this);
 		}
 		for (final Object o : t) {
@@ -206,7 +206,7 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 	@SuppressWarnings("rawtypes")
 	public void writeLuposSetImplementation(final SetImplementation t) throws IOException {
 		OutHelper.writeLuposInt(t.size(), this.os);
-		if (t.size() > 0){
+		if (!t.isEmpty()){
 			Registration.serializeId(t.iterator().next(), this);
 		}
 		for (final Object o : t) {
@@ -225,7 +225,7 @@ public class LuposObjectOutputStream extends ObjectOutputStream {
 		OutHelper.writeLuposByte((byte) 1, this.os);
 		this.writeObject(t.comparator());
 		OutHelper.writeLuposInt(t.size(), this.os);
-		if (t.size() == 0) {
+		if (t.isEmpty()) {
 			return;
 		}
 		boolean flag = true;

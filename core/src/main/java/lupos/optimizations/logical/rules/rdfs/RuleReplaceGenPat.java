@@ -172,7 +172,7 @@ public class RuleReplaceGenPat extends Rule {
 			order.add(p);
 			added.add(p);
 		}
-		if (addBindingsVar.size() > 0) {
+		if (!addBindingsVar.isEmpty()) {
 			final Iterator<Literal> lit_it = addBindingsLit.iterator();
 			final HashSet<Variable> hsv = new HashSet<Variable>();
 			hsv.addAll(replaceVar.getUnionVariables());
@@ -188,7 +188,7 @@ public class RuleReplaceGenPat extends Rule {
 
 		// In case that Generate or TriplePattern has minimum one variable, than
 		// minimum one operator has to be inserted
-		if (order.size() > 0) {
+		if (!order.isEmpty()) {
 			final List<BasicOperator> pres = (List<BasicOperator>) generate
 					.getPrecedingOperators();
 			BasicOperator pre;
@@ -246,7 +246,7 @@ public class RuleReplaceGenPat extends Rule {
 
 		// TriplePattern can have more predecessors then Generate..
 		pat.removePrecedingOperator(generate);
-		if (pat.getPrecedingOperators().size() == 0)
+		if (pat.getPrecedingOperators().isEmpty())
 			deleted.add(pat);
 		// System.out.println(pat.getPrecedingOperators());
 		deleted.add(generate);
@@ -256,7 +256,7 @@ public class RuleReplaceGenPat extends Rule {
 		rootOperator.detectCycles();
 		// has been done manually: rootOperator.sendMessage(new
 		// BoundVariablesMessage());
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else

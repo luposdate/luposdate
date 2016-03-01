@@ -82,8 +82,7 @@ public class MergeJoinWithoutSorting extends Join {
 		if (this.left != null && this.right != null) {
 
 			this.comp.setVariables(this.intersectionVariables);
-			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables
-					.size() == 0) ? MergeJoin.cartesianProductIterator(this.left, this.right) :
+			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables.isEmpty()) ? MergeJoin.cartesianProductIterator(this.left, this.right) :
 						MergeJoin.mergeJoinIterator(this.left.oneTimeIterator(), this.right.oneTimeIterator(), this.comp, this.intersectionVariables, this.bindingsFactory);
 			if (currentResult != null && currentResult.hasNext()) {
 				final QueryResult result = QueryResult

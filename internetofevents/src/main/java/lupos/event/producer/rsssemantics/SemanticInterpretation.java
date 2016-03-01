@@ -158,7 +158,7 @@ public class SemanticInterpretation {
 			/** split title & label... */
 			if (toCheck != null) {
 				for (final String s : toCheck.split("[ ]+")) {
-					if (singleTokens.size() > 0) {
+					if (!singleTokens.isEmpty()) {
 						singleTokens.add(singleTokens.size() - 1 + "_" + s);
 					}
 					singleTokens.add(s);
@@ -169,7 +169,7 @@ public class SemanticInterpretation {
 			if (!(messageTitle.equals(""))) {
 				for (final String s : messageTitle.split("[ ]+")) {
 					splitTitle.add(s);
-					if (splitTitle.size() > 0) {
+					if (!splitTitle.isEmpty()) {
 						splitTitle.add(splitTitle.get(splitTitle.size() - 1)
 								+ "_" + s);
 					}

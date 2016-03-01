@@ -224,7 +224,7 @@ public class FrameOperator extends AbstractTermOperator {
 		sb.append("]");
 
 		
-		if (!this.isChild && (this.getSucceedingOperators().size() != 0)) {
+		if (!this.isChild && (!this.getSucceedingOperators().isEmpty())) {
 			
 			for (OperatorIDTuple<Operator> opIDT : this
 					.getSucceedingOperators()) {

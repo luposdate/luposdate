@@ -133,7 +133,7 @@ public class RuleOptimizeReplaceByPat extends Rule {
 					final LinkedList<Integer> indices = getPositions(
 							replaceVarRight, var);
 					// Variable can be substituted by a ReplaceVar-variable
-					if (indices.size() > 0) {
+					if (!indices.isEmpty()) {
 						newTripleVar = replaceVarLeft.get(indices.getFirst());
 						// Replacement in TriplePattern
 						pat.replace(var, newTripleVar);
@@ -149,7 +149,7 @@ public class RuleOptimizeReplaceByPat extends Rule {
 		}
 
 		// Delete empty ReplaceVar
-		if (replaceVar.getSubstitutionsVariableLeft().size() == 0) {
+		if (replaceVar.getSubstitutionsVariableLeft().isEmpty()) {
 			final OperatorIDTuple succ = replaceVar.getSucceedingOperators()
 					.get(0);
 			pat.addSucceedingOperator(succ);
@@ -163,7 +163,7 @@ public class RuleOptimizeReplaceByPat extends Rule {
 			rootOperator.sendMessage(new BoundVariablesMessage());
 			deleted.add(replaceVar);
 		}
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else

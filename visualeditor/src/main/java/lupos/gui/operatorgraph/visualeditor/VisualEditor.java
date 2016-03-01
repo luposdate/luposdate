@@ -422,22 +422,22 @@ public abstract class VisualEditor<T> extends JPanel implements ClipboardOwner {
 	 * <p>manageMenuItems.</p>
 	 */
 	protected void manageMenuItems() {
-		if (this.selectedOperatorsList.size() > 0
-				|| this.selectedAnnotationList.size() > 0) {
+		if (!this.selectedOperatorsList.isEmpty()
+				|| !this.selectedAnnotationList.isEmpty()) {
 			this.deleteElementsMI.setEnabled(true);
 		}
 
-		if (this.selectedOperatorsList.size() > 0) {
+		if (!this.selectedOperatorsList.isEmpty()) {
 			this.copyMI.setEnabled(true);
 			this.deleteOpsAndTreesMI.setEnabled(true);
 		}
 
-		if (this.selectedOperatorsList.size() == 0
-				&& this.selectedAnnotationList.size() == 0) {
+		if (this.selectedOperatorsList.isEmpty()
+				&& this.selectedAnnotationList.isEmpty()) {
 			this.deleteElementsMI.setEnabled(false);
 		}
 
-		if (this.selectedOperatorsList.size() == 0) {
+		if (this.selectedOperatorsList.isEmpty()) {
 			this.copyMI.setEnabled(false);
 			this.deleteOpsAndTreesMI.setEnabled(false);
 		}

@@ -52,7 +52,7 @@ public class RuleDeleteEmptyReplaceLit extends Rule {
 	protected boolean checkPrecondition(final Map<String, BasicOperator> mso) {
 		final ReplaceLit replaceLit = (ReplaceLit) mso.get("replaceLit");
 		// No substitution is left
-		return (replaceLit.getSubstitutionsLiteralLeft().size() == 0);
+		return (replaceLit.getSubstitutionsLiteralLeft().isEmpty());
 	}
 
 	/** {@inheritDoc} */
@@ -97,7 +97,7 @@ public class RuleDeleteEmptyReplaceLit extends Rule {
 		rootOperator.detectCycles();
 		rootOperator.sendMessage(new BoundVariablesMessage());
 		deleted.add(replaceLit);
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else

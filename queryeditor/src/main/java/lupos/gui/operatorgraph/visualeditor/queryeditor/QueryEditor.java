@@ -1177,7 +1177,7 @@ public class QueryEditor extends VisualEditor<Operator> implements Suggester<Ope
 						.get(new GraphWrapperOperator(tc))
 						.setX((int) this.visualGraphs.get(0).PADDING);
 					}
-				} else if (rdfHash.size() > 0) {
+				} else if (!rdfHash.isEmpty()) {
 					// only single RDF terms are pasted...
 					// => collect them in a TripleContainer!
 					final LinkedHashSet<Operator> lhso = new LinkedHashSet<Operator>();

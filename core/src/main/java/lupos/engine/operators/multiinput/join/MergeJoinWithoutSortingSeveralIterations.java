@@ -111,8 +111,7 @@ public class MergeJoinWithoutSortingSeveralIterations extends Join {
 					: this.right;
 
 
-			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables
-					.size() == 0) ? MergeJoin.cartesianProductIterator(
+			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables.isEmpty()) ? MergeJoin.cartesianProductIterator(
 					leftIterator, rightLocal) : MergeJoin.mergeJoinIterator(
 					leftIterator, rightLocal.iterator(), this.comp,
 					this.intersectionVariables, this.bindingsFactory);

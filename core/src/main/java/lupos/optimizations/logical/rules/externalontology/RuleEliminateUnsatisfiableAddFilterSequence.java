@@ -147,7 +147,7 @@ public class RuleEliminateUnsatisfiableAddFilterSequence extends Rule {
 		for (final OperatorIDTuple opIDTuple : opIDTuples) {
 			this.deleteAllBelow(filter, opIDTuple.getOperator(), deleted);
 		}
-		if (deleted.size() > 0 || added.size() > 0) {
+		if (!deleted.isEmpty() || !added.isEmpty()) {
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		} else {
@@ -171,7 +171,7 @@ public class RuleEliminateUnsatisfiableAddFilterSequence extends Rule {
 			deleted.add(parent);
 
 			// in addition, log all operators (other than child) below parent, that became unrechable
-			if (parent.getSucceedingOperators().size() > 0) {
+			if (!parent.getSucceedingOperators().isEmpty()) {
 				final OperatorIDTuple[] opIDTuples =
 					parent.getSucceedingOperators().toArray(new OperatorIDTuple[0]);
 				for (final OperatorIDTuple opIDTuple : opIDTuples) {

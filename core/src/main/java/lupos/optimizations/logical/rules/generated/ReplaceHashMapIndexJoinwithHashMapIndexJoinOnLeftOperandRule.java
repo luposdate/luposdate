@@ -38,7 +38,7 @@ public class ReplaceHashMapIndexJoinwithHashMapIndexJoinOnLeftOperandRule extend
      * @return a boolean.
      */
     public static boolean isInCycleOrSeveralOperandsWitSameID(BasicOperator bo){
-      if(bo.getCycleOperands()!=null && bo.getCycleOperands().size()>0){
+      if(bo.getCycleOperands()!=null && !bo.getCycleOperands().isEmpty()){
         return true;
       }
      HashSet<Integer> operandsIDOccurs = new HashSet<Integer>();

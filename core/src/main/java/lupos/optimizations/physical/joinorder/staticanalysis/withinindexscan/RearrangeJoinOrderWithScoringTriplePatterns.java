@@ -52,7 +52,7 @@ public abstract class RearrangeJoinOrderWithScoringTriplePatterns extends Rearra
 	protected TriplePattern getBestNextTriplePatternToJoin(
 			BasicIndexScan indexScan, Collection<TriplePattern> remainingTP,
 			HashSet<Variable> additionalInformation) {
-		if(this.scorings.size()==0){
+		if(this.scorings.isEmpty()){
 			throw new RuntimeException("No scorings initialized!");
 		}		
 		Collection<TriplePattern> bestScored = remainingTP;		

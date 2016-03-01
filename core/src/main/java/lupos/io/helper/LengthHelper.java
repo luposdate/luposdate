@@ -529,7 +529,7 @@ public final class LengthHelper {
 			// locking is in these cases needed
 			result += DiskCollection.lengthLuposObjectOfNextDiskCollection();
 		} else {
-			if (t.size() > 0) {
+			if (!t.isEmpty()) {
 				result += Registration.lengthSerializeId();
 				for (final Object o : t) {
 					result += Registration.lengthSerializeWithoutId(o);
@@ -548,7 +548,7 @@ public final class LengthHelper {
 	@SuppressWarnings("rawtypes")
 	public final static int lengthLuposSet(final SetImplementation t){
 		int result = LengthHelper.lengthLuposInt();
-		if (t.size() > 0){
+		if (!t.isEmpty()){
 			result += Registration.lengthSerializeId();
 		}
 		for (final Object o : t) {

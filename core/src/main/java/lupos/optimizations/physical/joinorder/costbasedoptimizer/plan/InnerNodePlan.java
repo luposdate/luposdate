@@ -109,7 +109,7 @@ public class InnerNodePlan extends Plan {
 			this.cost = 0.0;
 			this.setCardinality(0.0);
 		} else {
-			if (this.selectivity.size() == 0) {
+			if (this.selectivity.isEmpty()) {
 				this.cost = 0.0;
 				this.setCardinality(0.0);
 			} else {
@@ -128,11 +128,11 @@ public class InnerNodePlan extends Plan {
 		if (this.selectivity == null) {
 			return 0.0;
 		} else {
-			if (this.selectivity.size() == 0) {
+			if (this.selectivity.isEmpty()) {
 				return 0.0;
 			} else {
 				double costV = cardinalityOtherOperand + this.left.cost + this.right.cost;
-				if (this.joinPartner.size() == 0) {
+				if (this.joinPartner.isEmpty()) {
 					// cartesian product! Set the cost high to avoid
 					// cartesian products!
 					costV *= 10.0;
@@ -182,7 +182,7 @@ public class InnerNodePlan extends Plan {
 	protected int numberOfCartesianProducts() {
 		final int numberOfCartesianProductsSubTrees = this.left.numberOfCartesianProducts() + this.right.numberOfCartesianProducts();
 		// is this join a cartesian product?
-		if (this.joinPartner.size() == 0) {
+		if (this.joinPartner.isEmpty()) {
 			return numberOfCartesianProductsSubTrees + 1;
 		} else {
 			return numberOfCartesianProductsSubTrees;
@@ -192,7 +192,7 @@ public class InnerNodePlan extends Plan {
 	/** {@inheritDoc} */
 	@Override
 	public int findMaxMergeJoins() {
-		if (this.joinPartner.size() > 0){
+		if (!this.joinPartner.isEmpty()){
 			this.numberMergeJoins = this.permutationOfOrderings(new LinkedList<Variable>(), this.joinPartner);
 		} else {
 			this.numberMergeJoins = -1;

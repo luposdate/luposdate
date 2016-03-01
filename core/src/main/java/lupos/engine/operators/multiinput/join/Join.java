@@ -312,7 +312,7 @@ public class Join extends MultiInputOperator {
 			}
 			result.add(bindings1);
 		}
-		if (result.size() > 0)
+		if (!result.isEmpty())
 			return result;
 		else
 			return null;

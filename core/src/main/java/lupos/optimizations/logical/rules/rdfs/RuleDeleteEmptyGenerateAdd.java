@@ -52,7 +52,7 @@ public class RuleDeleteEmptyGenerateAdd extends Rule {
 	protected boolean checkPrecondition(final Map<String, BasicOperator> mso) {
 		final GenerateAddEnv generateAdd = (GenerateAddEnv) mso
 				.get("generateAdd");
-		return (generateAdd.getConstants().size() == 0);
+		return (generateAdd.getConstants().isEmpty());
 	}
 
 	/** {@inheritDoc} */
@@ -95,7 +95,7 @@ public class RuleDeleteEmptyGenerateAdd extends Rule {
 		rootOperator.detectCycles();
 		rootOperator.sendMessage(new BoundVariablesMessage());
 		deleted.add(generateAdd);
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else

@@ -53,7 +53,7 @@ public abstract class BuildJoinTreeByScoring extends BuildJoinTree<HashSet<Varia
 	protected Tuple<Integer, Integer> getBestNextSubgraphsToJoin(
 			BasicIndexScan indexScan,
 			List<Tuple<BasicOperator, HashSet<Variable>>> jointree) {
-		if(this.scorings.size()==0){
+		if(this.scorings.isEmpty()){
 			throw new RuntimeException("No scorings initialized!");
 		}
 		

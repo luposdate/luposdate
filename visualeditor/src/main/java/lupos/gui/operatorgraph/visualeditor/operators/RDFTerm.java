@@ -115,7 +115,7 @@ public abstract class RDFTerm extends JTFOperator {
 
 		this.predicates.get(child).remove(index);
 
-		if(this.predicates.get(child).size() == 0) {
+		if(this.predicates.get(child).isEmpty()) {
 			this.deleteAnnotation(child);
 			child.getGUIComponent().getParentQG().addToRootList(new GraphWrapperOperator(child));
 		}
@@ -252,7 +252,7 @@ public abstract class RDFTerm extends JTFOperator {
 			return false;
 		}
 
-		if(this.precedingOperators.size() == 0 && this.succeedingOperators.size() == 0) {
+		if(this.precedingOperators.isEmpty() && this.succeedingOperators.isEmpty()) {
 			JOptionPane.showOptionDialog(this.panel.getVisualEditor(), "A RDFTerm must have at least one child!", "Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, null , null);
 
 			return false;
@@ -334,7 +334,7 @@ public abstract class RDFTerm extends JTFOperator {
 
 		final LinkedHashSet<Operator> notVisitedOperators = nodeNotVisited(nodeList, result);
 
-		while(notVisitedOperators.size() > 0) {
+		while(!notVisitedOperators.isEmpty()) {
 			final int[] numberReachable = new int[notVisitedOperators.size()];
 			final Operator[] operators = notVisitedOperators.toArray(new Operator[0]);
 

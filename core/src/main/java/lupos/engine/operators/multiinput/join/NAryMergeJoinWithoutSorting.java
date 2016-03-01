@@ -117,8 +117,7 @@ public class NAryMergeJoinWithoutSorting extends Join {
 				itb[i] = this.operandResults[i].oneTimeIterator();
 			}
 
-			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables
-					.size() == 0) ? MergeJoin
+			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables.isEmpty()) ? MergeJoin
 					.cartesianProductIterator(this.operandResults) : MergeJoin
 					.mergeJoinIterator(itb, this.comp, this.intersectionVariables,
 							this.minimum, this.maximum, this.bindingsFactory);

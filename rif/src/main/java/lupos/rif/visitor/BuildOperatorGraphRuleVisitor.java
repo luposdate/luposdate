@@ -372,7 +372,7 @@ public class BuildOperatorGraphRuleVisitor extends BaseGraphBuilder {
 				}
 			}
 
-			if(consumers.size()>0){
+			if(!consumers.isEmpty()){
 				consumerExists = true;
 				// Kreuzverbindungen zwischen Produzenten und Konsumenten
 				// herstellen

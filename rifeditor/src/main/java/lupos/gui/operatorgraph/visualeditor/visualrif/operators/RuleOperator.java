@@ -128,7 +128,7 @@ public class RuleOperator extends Operator  {
 		final Point position = ((RuleOperatorPanel) this.panel).getPositionAndDimension().getFirst();
 		saveObject.put("OP TYPE", this.getClass().getSimpleName());
 		saveObject.put("POSITION", new double[]{position.getX(), position.getY()});
-		if(!(this.getPrecedingOperators() == null) && this.getPrecedingOperators().size() > 0) {
+		if(!(this.getPrecedingOperators() == null) && !this.getPrecedingOperators().isEmpty()) {
 			saveObject.put("ANNOTATION", ((AnnotationOperator) this.getPrecedingOperators().get(0)).toJSON());
 		}
 		// --- handle connections - begin ---

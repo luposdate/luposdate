@@ -268,7 +268,7 @@ public abstract class BasicIndexScan extends RootChild {
 			// get a collection of indices using the determined graph constraint
 			final Collection<Indices> indicesC = dataset.indexingRDFGraphs(
 					graphConstraintItem, false, false, this.root);
-			if ((indicesC != null) && !(indicesC.size() == 0)) {
+			if ((indicesC != null) && !(indicesC.isEmpty())) {
 
 				// if the graph constraint is not null (which means that a named
 				// graph is used)
@@ -280,7 +280,7 @@ public abstract class BasicIndexScan extends RootChild {
 
 						// check if named graphs were provided at query time
 						if (this.root.namedGraphs != null
-								&& this.root.namedGraphs.size() > 0) {
+								&& !this.root.namedGraphs.isEmpty()) {
 
 							// Convert the named graphs' names into URILiterals
 							// to be applicable
@@ -457,7 +457,7 @@ public abstract class BasicIndexScan extends RootChild {
 	public String toString() {
 		String s = "Index Scan on";
 
-		if (this.triplePatterns != null && this.triplePatterns.size()>0) {
+		if (this.triplePatterns != null && !this.triplePatterns.isEmpty()) {
 			for (final TriplePattern tp : this.triplePatterns) {
 				s += "\n" + tp.toString();
 			}
@@ -477,7 +477,7 @@ public abstract class BasicIndexScan extends RootChild {
 	public String toString(final lupos.rdf.Prefix prefixInstance) {
 		final StringBuffer s = new StringBuffer("Index Scan on");
 
-		if (this.triplePatterns != null && this.triplePatterns.size()>0) {
+		if (this.triplePatterns != null && !this.triplePatterns.isEmpty()) {
 			for (final TriplePattern tp : this.triplePatterns) {
 				s.append("\n" + tp.toString(prefixInstance));
 			}

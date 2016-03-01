@@ -90,7 +90,7 @@ public class EdgeBased {
 		LinkedList<GraphWrapperIDTuple> successors = node.getSucceedingElements();		
 		int type = 0; 
 		
-		if (successors.size() == 0) return edges;
+		if (successors.isEmpty()) return edges;
 			
 		for (GraphWrapperIDTuple suc : successors) {
 			Edge edge = new Edge(node, suc.getOperator(), type);

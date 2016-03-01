@@ -136,7 +136,7 @@ public class NodeListOptional implements INodeList {
    * @return true if there is at least one node, false otherwise
    */
   public boolean present() {
-    return (nodes.size() != 0); }
+    return (!nodes.isEmpty()); }
 
   /**
    * Accepts a {@link lupos.rif.generated.visitor.IRetArguVisitor} visitor with user Return and Argument data.

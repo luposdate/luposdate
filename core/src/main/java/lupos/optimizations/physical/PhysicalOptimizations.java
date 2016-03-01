@@ -219,7 +219,7 @@ public class PhysicalOptimizations {
 
 							// check if MergeJoinWithoutSorting can be used
 							boolean flag = true;
-							if (basicOperator.getIntersectionVariables().size() > 0) {
+							if (!basicOperator.getIntersectionVariables().isEmpty()) {
 								for (final BasicOperator bo : basicOperator
 										.getPrecedingOperators()) {
 									flag = flag
@@ -245,7 +245,7 @@ public class PhysicalOptimizations {
 								return newOperator;
 							} else {
 								// do not insert SIP operator in cycles!
-								if(!(basicOperator.getCycleOperands()!=null && basicOperator.getCycleOperands().size()>0)){
+								if(!(basicOperator.getCycleOperands()!=null && !basicOperator.getCycleOperands().isEmpty())){
 									// insert SIP operator for joins other than
 									// MergeJoinWithoutSorting!
 									int min = -1;
@@ -257,7 +257,7 @@ public class PhysicalOptimizations {
 												basicOperator,
 												new LinkedList<TriplePattern>(),
 												new HashSet<BasicOperator>());
-										if (listTps.size() > 0) {
+										if (!listTps.isEmpty()) {
 											final TriplePattern tp = listTps.get(0);
 											int current = 0;
 											for (final OperatorIDTuple oid : root
@@ -334,7 +334,7 @@ public class PhysicalOptimizations {
 
 							// check if MergeWithoutSortingOptional can be used
 							boolean flag = true;
-							if (basicOperator.getIntersectionVariables().size() > 0) {
+							if (!basicOperator.getIntersectionVariables().isEmpty()) {
 								for (final BasicOperator bo : basicOperator
 										.getPrecedingOperators()) {
 									flag = flag
@@ -657,7 +657,7 @@ public class PhysicalOptimizations {
 	 */
 	public static boolean operatorCanReceiveSortedData(
 			BasicOperator basicOperator, Collection<Variable> sortCriterium) {
-		if (sortCriterium == null || sortCriterium.size() == 0) {
+		if (sortCriterium == null || sortCriterium.isEmpty()) {
 			// this case occurs e.g. int the case of computing cartesian
 			// products...
 			return true;
@@ -772,7 +772,7 @@ public class PhysicalOptimizations {
 	public static boolean operatorMustReceiveSortedData(
 			final BasicOperator root, BasicOperator basicOperator,
 			Collection<Variable> sortCriterium) {
-		if (sortCriterium == null || sortCriterium.size() == 0) {
+		if (sortCriterium == null || sortCriterium.isEmpty()) {
 			// this case occurs e.g. int the case of computing cartesian
 			// products...
 			return true;
@@ -883,7 +883,7 @@ public class PhysicalOptimizations {
 	protected static List<TriplePattern> determineTriplePatterns(
 			final BasicOperator basicOperator, final List<TriplePattern> list,
 			final Set<BasicOperator> alreadyVisited) throws CyclesDuringDeterminationofTriplePatternsException {
-		if(basicOperator.getCycleOperands()!=null && basicOperator.getCycleOperands().size()>0) {
+		if(basicOperator.getCycleOperands()!=null && !basicOperator.getCycleOperands().isEmpty()) {
 			throw new CyclesDuringDeterminationofTriplePatternsException();
 		}
 		if (alreadyVisited.contains(basicOperator)) {

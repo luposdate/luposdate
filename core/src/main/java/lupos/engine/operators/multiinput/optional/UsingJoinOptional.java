@@ -66,7 +66,7 @@ public class UsingJoinOptional extends Optional {
 			return bindings;
 		} else {
 			bindings.materialize();
-			if (bindings.size() == 0) {
+			if (bindings.isEmpty()) {
 				return null;
 			}
 			this.join.setUnionVariables(this.unionVariables);
@@ -94,7 +94,7 @@ public class UsingJoinOptional extends Optional {
 				}
 			}
 			if (or == null || or.getJoinResult() == null
-					|| or.getJoinResult().size() == 0) {
+					|| or.getJoinResult().isEmpty()) {
 				return null;
 			} else {
 				return or.getJoinResult();
@@ -124,7 +124,7 @@ public class UsingJoinOptional extends Optional {
 
 			if (or != null) {
 				if (or.getJoinPartnerFromLeftOperand() != null
-						&& or.getJoinPartnerFromLeftOperand().size() > 0) {
+						&& !or.getJoinPartnerFromLeftOperand().isEmpty()) {
 					this.notJoinedFromLeftOperand.removeAll(or
 							.getJoinPartnerFromLeftOperand());
 					if (!delete) {
@@ -136,7 +136,7 @@ public class UsingJoinOptional extends Optional {
 								.getJoinPartnerFromLeftOperand());
 					}
 				}
-				if (or.getJoinResult() != null && or.getJoinResult().size() > 0) {
+				if (or.getJoinResult() != null && !or.getJoinResult().isEmpty()) {
 					if (this.succeedingOperators.size() > 1) {
 						or.getJoinResult().materialize();
 					}
@@ -188,7 +188,7 @@ public class UsingJoinOptional extends Optional {
 			return queryResult;
 		} else {
 			queryResult.materialize();
-			if (queryResult.size() == 0) {
+			if (queryResult.isEmpty()) {
 				return null;
 			}
 			this.join.setUnionVariables(this.unionVariables);
@@ -265,7 +265,7 @@ public class UsingJoinOptional extends Optional {
 
 			if (or != null) {
 				if (or.getJoinPartnerFromLeftOperand() != null
-						&& or.getJoinPartnerFromLeftOperand().size() > 0) {
+						&& !or.getJoinPartnerFromLeftOperand().isEmpty()) {
 					this.notJoinedFromLeftOperand.removeAll(or
 							.getJoinPartnerFromLeftOperand());
 					if (!delete) {
@@ -277,7 +277,7 @@ public class UsingJoinOptional extends Optional {
 								.getJoinPartnerFromLeftOperand());
 					}
 				}
-				if (or.getJoinResult() != null && or.getJoinResult().size() > 0) {
+				if (or.getJoinResult() != null && !or.getJoinResult().isEmpty()) {
 					if (this.succeedingOperators.size() > 1) {
 						or.getJoinResult().materialize();
 					}

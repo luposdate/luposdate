@@ -133,7 +133,7 @@ public class HashJoin extends Join {
 		this.probe(rootSmaller, rootLarger, result);
 		// System.out.println("HashJoin: Result sizes: Left:"+left.size()+
 		// " Right:"+right.size()+" Result:"+result.size());
-		if (result.size() > 0) {
+		if (!result.isEmpty()) {
 			return result;
 		} else {
 			return null;

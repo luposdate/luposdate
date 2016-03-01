@@ -265,7 +265,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 			}
 
 			// ggf. mergen
-			if (this.removeList.size() > 0) {
+			if (!this.removeList.isEmpty()) {
 				this.removeMerge(0);
 				if (this.bufferedList.size() == imax) {
 					for (; this.mergeList.size() < this.bufferedList.size();) {
@@ -518,7 +518,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 
 	private ArrayList<K> getClosestElements(final int index, final K key, ArrayList<K> closestKeys) {
 		K closest = null;
-		if (closestKeys.size() > 0) {
+		if (!closestKeys.isEmpty()) {
 			closest = closestKeys.get(0);
 		}
 		if (this.isCloserThanClosestKey(closest, key, this.bufferedList.get(index).key)) {
@@ -550,7 +550,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 
 	private ArrayList<K> getClosestElementRight(final int index, final K key, ArrayList<K> closestKeys, int pointer) {
 		K closest = null;
-		if (closestKeys.size() > 0) {
+		if (!closestKeys.isEmpty()) {
 			closest = closestKeys.get(0);
 		}
 		if (this.isCloserThanClosestKey(closest, key, this.bufferedList.get(index).key)) {
@@ -588,7 +588,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 
 	private ArrayList<K> getClosestElementLeft(final int index, final K key, ArrayList<K> closestKeys, int pointer) {
 		K closest = null;
-		if (closestKeys.size() > 0) {
+		if (!closestKeys.isEmpty()) {
 			closest = closestKeys.get(0);
 		}
 		if (this.isCloserThanClosestKey(closest, key, this.bufferedList.get(index).key)) {
@@ -1229,7 +1229,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 		if (index >= this.bufferedList.size()) {
 			return -1;
 		}
-		if (this.bufferedList.size() > 0) {
+		if (!this.bufferedList.isEmpty()) {
 			entry = this.bufferedList.get(index);
 			if (entry.key != null && entry.key.compareTo(key) == 0) {
 				return index;
@@ -1501,7 +1501,7 @@ public class SimplifiedFractalTree<K extends Comparable<K> & Serializable, V ext
 	 * @param element a {@link lupos.datastructures.simplifiedfractaltree.FractalTreeEntry} object.
 	 */
 	protected void merge(final FractalTreeEntry<K, V> element) {
-		if (this.bufferedList.size() == 0) {
+		if (this.bufferedList.isEmpty()) {
 			this.bufferedList.add(0, element);
 		} else if (this.bufferedList.get(0).key == null) {
 			final FractalTreeEntry<K, V> tmp = element;

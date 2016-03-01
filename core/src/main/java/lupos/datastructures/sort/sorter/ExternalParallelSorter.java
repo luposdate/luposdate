@@ -145,7 +145,7 @@ public class ExternalParallelSorter implements Sorter {
 			runstoBeFinallyMerged.addAll(level);
 		}
 		Run result; 
-		if(runstoBeFinallyMerged.size()==0){
+		if(runstoBeFinallyMerged.isEmpty()){
 			System.err.println("No runs there to be merged!");
 			return null;
 		} else if(runstoBeFinallyMerged.size()==1){
@@ -281,7 +281,7 @@ public class ExternalParallelSorter implements Sorter {
 				int levelnr=this.levels.size();
 				do {
 					levelnr--;
-				} while(levelnr>0 && this.levels.get(levelnr).size()==0);
+				} while(levelnr>0 && this.levels.get(levelnr).isEmpty());
 				final Run runOnDisk;
 				if(levelnr==0 || addLevel>=levelnr){
 					System.err.println("ExternalParallelMergeSort: Heap space to low or FREE_MEMORY_LIMIT to high...");

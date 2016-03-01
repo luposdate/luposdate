@@ -238,7 +238,7 @@ public class MapImplementation<K extends Comparable<K> & Serializable, V extends
 	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
-		if(this.memoryMap.size()>0) {
+		if(!this.memoryMap.isEmpty()) {
 			return false;
 		}
 		if(this.diskMap!=null && !this.diskMap.isEmpty()) {

@@ -510,7 +510,7 @@ public class SPARQL2CoreSPARQLParserVisitorImplementationDumper extends
 		final ArrayList<ASTVar> vars_in_filter = new ArrayList<ASTVar>();
 		this.checkChildren(vars_in_scope, vars_in_filter, node, false);
 		boolean indicator = true;
-		if (vars_in_filter.size() > 0) {
+		if (!vars_in_filter.isEmpty()) {
 			indicator = false;
 			for (final Iterator<ASTVar> iter = vars_in_filter.iterator(); iter.hasNext();) {
 				indicator = indicator || vars_in_scope.contains(iter.next());

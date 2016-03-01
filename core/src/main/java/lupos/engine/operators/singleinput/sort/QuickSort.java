@@ -148,7 +148,7 @@ public class QuickSort extends CollectionSort {
 			System.out.println(_HighEnd);
 		}
 
-		if (_LowEnd.size() != 0) {
+		if (!_LowEnd.isEmpty()) {
 			if (_LowEnd.size() == size) {
 				if (checkIfSorted(_LowEnd)) {
 					return _LowEnd;
@@ -156,7 +156,7 @@ public class QuickSort extends CollectionSort {
 			}
 			_LowEnd = out_postProcess(_LowEnd, size);
 		}
-		if (_HighEnd.size() != 0) {
+		if (!_HighEnd.isEmpty()) {
 			if (_HighEnd.size() == size) {
 				if (checkIfSorted(_HighEnd)) {
 					return _HighEnd;

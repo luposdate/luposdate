@@ -39,9 +39,9 @@ public class Statistics {
 	public static Map<Variable, VarBucket> estimateJoinSelectivity(
 			final Map<Variable, VarBucket> partner1,
 			final Map<Variable, VarBucket> partner2) {
-		if (partner2 == null || partner2.size() == 0)
+		if (partner2 == null || partner2.isEmpty())
 			return partner1;
-		if (partner1 == null || partner1.size() == 0)
+		if (partner1 == null || partner1.isEmpty())
 			return partner2;
 		final Map<Variable, VarBucket> result = new HashMap<Variable, VarBucket>();
 		for (final Variable v : partner1.keySet()) {

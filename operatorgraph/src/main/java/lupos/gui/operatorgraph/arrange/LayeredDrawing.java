@@ -236,12 +236,12 @@ public final class LayeredDrawing {
 						public int compare(final GraphWrapper arg0,
 								final GraphWrapper arg1) {
 							if (arg0.getPrecedingElements() == null
-									|| arg0.getPrecedingElements().size() == 0) {
+									|| arg0.getPrecedingElements().isEmpty()) {
 								return -1;
 							}
 
 							if (arg1.getPrecedingElements() == null
-									|| arg1.getPrecedingElements().size() == 0) {
+									|| arg1.getPrecedingElements().isEmpty()) {
 								return 1;
 							}
 
@@ -341,7 +341,7 @@ public final class LayeredDrawing {
 						}
 					}
 
-					if (precOps.size() == 0) {
+					if (precOps.isEmpty()) {
 						continue;
 					}
 
@@ -431,7 +431,7 @@ public final class LayeredDrawing {
 			}
 		}
 
-		if (rows.size() > 0) {
+		if (!rows.isEmpty()) {
 			final int maxWidth = rows.get(maxRowId).getWidth();
 
 			// walk through all rows previous to maxRowId...

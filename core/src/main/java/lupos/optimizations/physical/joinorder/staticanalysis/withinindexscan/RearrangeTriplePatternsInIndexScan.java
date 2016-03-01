@@ -49,7 +49,7 @@ public abstract class RearrangeTriplePatternsInIndexScan<T> implements Rearrange
 		
 		final T additionalInformation = initAdditionalInformation();
 		
-		while (remainingTP.size() > 0) {
+		while (!remainingTP.isEmpty()) {
 			
 			TriplePattern best = getBestNextTriplePatternToJoin(indexScan, remainingTP, additionalInformation);
 			

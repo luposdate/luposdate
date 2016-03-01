@@ -82,7 +82,7 @@ public abstract class MultipleURIOperator extends SingleInputOperator {
 	 */
 	public String toString(){
 		String result = super.toString();
-		if(cu!=null && cu.size()>0){
+		if(cu!=null && !cu.isEmpty()){
 			result+=" "+cu;
 		}
 		return result;

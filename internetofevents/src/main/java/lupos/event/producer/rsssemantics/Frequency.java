@@ -108,7 +108,7 @@ public class Frequency {
 	 * @return true if substring is empty, false if not
 	 */
 	public boolean isEmpty() {
-		if (this.substring.size() == 0) {
+		if (this.substring.isEmpty()) {
 			return true;
 		} else {
 			return false;

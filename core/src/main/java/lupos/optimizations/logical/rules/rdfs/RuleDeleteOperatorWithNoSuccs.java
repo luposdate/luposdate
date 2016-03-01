@@ -52,7 +52,7 @@ public class RuleDeleteOperatorWithNoSuccs extends Rule {
 	protected boolean checkPrecondition(final Map<String, BasicOperator> mso) {
 		final BasicOperator op = mso.get("op");
 		// Remark: Query-Operator is allowed to have no successor
-		return ((op.getSucceedingOperators().size() == 0) && (!(op instanceof Result)));
+		return ((op.getSucceedingOperators().isEmpty()) && (!(op instanceof Result)));
 	}
 
 	/** {@inheritDoc} */
@@ -77,7 +77,7 @@ public class RuleDeleteOperatorWithNoSuccs extends Rule {
 		rootOperator.detectCycles();
 		rootOperator.sendMessage(new BoundVariablesMessage());
 		deleted.add(op);
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else

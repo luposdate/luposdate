@@ -99,7 +99,7 @@ public class OperatorGraphWithPrefix extends OperatorGraph {
 
 		if (this.prefix == null
 				|| !this.prefix.isActive()
-				|| (this.rootList.size() > 0 && !this.rootList.get(0).usePrefixesActive())) {
+				|| (!this.rootList.isEmpty() && !this.rootList.get(0).usePrefixesActive())) {
 			return;
 		}
 

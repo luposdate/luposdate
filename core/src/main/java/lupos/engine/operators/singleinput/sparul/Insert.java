@@ -56,7 +56,7 @@ public class Insert extends MultipleURIOperator {
 		if (bindings instanceof GraphResult) {
 			final GraphResult gr = (GraphResult) bindings;
 			for (final Triple t : gr.getGraphResultTriples()) {
-				if (cu == null || cu.size() == 0) {
+				if (cu == null || cu.isEmpty()) {
 					final Collection<Indices> ci = this.dataset.getDefaultGraphIndices();
 					for (final Indices indices : ci) {
 						indices.add(t);

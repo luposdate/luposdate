@@ -333,7 +333,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 	public LinkedList<Tuple<Construct, Item>> getGraphConstructs(final Node node) {
 		final LinkedList<Tuple<Construct, Item>> graphConstructs = new LinkedList<Tuple<Construct, Item>>();
 		final Collection<TriplePattern> operators = this.collectTriplePatternOfChildren(node);
-		if(operators.size()>0){
+		if(!operators.isEmpty()){
 			final Construct c = new Construct();
 			c.setTemplates(operators);
 			graphConstructs.add(new Tuple<Construct, Item>(c, null));
@@ -342,7 +342,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 			final Node child = node.jjtGetChild(i);
 			if(child instanceof ASTGraphConstraint){
 				final Collection<TriplePattern> otp = this.collectTriplePatternOfChildren(child);
-				if(otp.size()>0){
+				if(!otp.isEmpty()){
 					final Construct c2 = new Construct();
 					c2.setTemplates(otp);
 					final Node childchild=child.jjtGetChild(0);
@@ -1833,7 +1833,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 				}
 			}
 			int numberJoinPartner = numberUnionOrGraphConstraints;
-			if (triplePatternToJoin.size() > 0) {
+			if (!triplePatternToJoin.isEmpty()) {
 				numberJoinPartner++;
 			}
 			numberJoinPartner+=multipleOccurencesToJoin.size();
@@ -1849,7 +1849,7 @@ public abstract class SPARQLCoreParserVisitorImplementation implements
 						j++;
 					}
 				}
-				if (triplePatternToJoin.size() > 0) {
+				if (!triplePatternToJoin.isEmpty()) {
 					connection.setOperatorConnection(joinOperator, j);
 					this.indexScanCreator.createIndexScanAndConnectWithRoot(connection.getOperatorIDTuple(), triplePatternToJoin, graphConstraint);
 					j++;

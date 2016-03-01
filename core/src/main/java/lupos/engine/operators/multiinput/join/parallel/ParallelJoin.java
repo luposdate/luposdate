@@ -242,8 +242,8 @@ public class ParallelJoin extends Join {
 		for (int i = 0; i < rightResults.length; i++) {
 			final MultiInputOperator nextOperator = iterator.next();
 			if (this.optional) {
-				if (rightResults[i].size() == 0) {
-					if (leftResults[i].size() > 0)
+				if (rightResults[i].isEmpty()) {
+					if (!leftResults[i].isEmpty())
 						this.col.process(leftResults[i], LEFT);
 					continue;
 				}

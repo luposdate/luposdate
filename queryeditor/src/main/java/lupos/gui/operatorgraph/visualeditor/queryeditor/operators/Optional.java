@@ -148,7 +148,7 @@ public class Optional extends MultiInputOperator {
 	/** {@inheritDoc} */
 	@Override
 	public int getFreeOpID() {
-		if(this.succeedingOperators.size() == 0)
+		if(this.succeedingOperators.isEmpty())
 			return 0;
 
 		if(this.succeedingOperators.get(0).getId() == 0)

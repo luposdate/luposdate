@@ -134,7 +134,7 @@ public abstract class IndexJoin extends Join {
 				}
 			}
 		}
-		if (result.size() == 0)
+		if (result.isEmpty())
 			return null;
 		else {
 			if (this.realCardinality < 0)
@@ -337,7 +337,7 @@ public abstract class IndexJoin extends Join {
 				}
 			}
 		}
-		if (result.size() == 0)
+		if (result.isEmpty())
 			return null;
 		else {
 			if (this.realCardinality < 0)

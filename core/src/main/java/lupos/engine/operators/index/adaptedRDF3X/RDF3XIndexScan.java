@@ -350,7 +350,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 			// get a collection of indices using the determined graph constraint
 			final Collection<Indices> indicesC = dataset.indexingRDFGraphs(
 					graphConstraintItem, false, false, this.root);
-			if ((indicesC != null) && !(indicesC.size() == 0)) {
+			if ((indicesC != null) && !(indicesC.isEmpty())) {
 				if (graphConstraintItem == null) {
 					if (indicesC != null && indicesC.size() > 1) {
 						// deal with special case: several default graphs!
@@ -1021,7 +1021,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 				result.put(v, new Tuple<Literal, Literal>(min, this.getMax(triplePattern, pos)));
 			}
 		}
-		if(result.size()>0){
+		if(!result.isEmpty()){
 			return result;
 		}
 		return null;
@@ -1081,7 +1081,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 			// get a collection of indices using the determined graph constraint
 			final Collection<Indices> indicesC = this.root.dataset.indexingRDFGraphs(
 					graphConstraintItem, false, false, this.root);
-			if ((indicesC != null) && !(indicesC.size() == 0)) {
+			if ((indicesC != null) && !(indicesC.isEmpty())) {
 				final Triple key = getKey(tp, null);
 				final Collection<URILiteral> namedGraphs = new ArrayList<URILiteral>();
 
@@ -1095,7 +1095,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 
 						// check if named graphs were provided at query time
 						if (this.root.namedGraphs != null
-								&& this.root.namedGraphs.size() > 0) {
+								&& !this.root.namedGraphs.isEmpty()) {
 
 							// Convert the named graphs' names into URILiterals
 							// to be applicable
@@ -1338,7 +1338,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 				// constraint
 				final Collection<Indices> indicesC = this.root.dataset.indexingRDFGraphs(
 						graphConstraintItem, false, false, this.root);
-				if ((indicesC != null) && !(indicesC.size() == 0)) {
+				if ((indicesC != null) && !(indicesC.isEmpty())) {
 					final Triple key = getKey(tp, null);
 					final Collection<URILiteral> namedGraphs = new ArrayList<URILiteral>();
 
@@ -1353,7 +1353,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 
 							// check if named graphs were provided at query time
 							if (this.root.namedGraphs != null
-									&& this.root.namedGraphs.size() > 0) {
+									&& !this.root.namedGraphs.isEmpty()) {
 
 								// Convert the named graphs' names into
 								// URILiterals
@@ -1552,7 +1552,7 @@ public class RDF3XIndexScan extends BasicIndexScan {
 		// return result;
 		// }
 		// }
-		if (result.size() > 0) {
+		if (!result.isEmpty()) {
 			this.storeVarBuckets(tp, result, keyHistogram);
 			return result;
 		} else {

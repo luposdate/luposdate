@@ -134,7 +134,7 @@ public class RuleEliminateUnsatisfiableFilterAfterAdd extends Rule {
 		// perform depth first search to remove filter and following operators 
 		deleteSubGraph(add, deleted);
 		
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else
@@ -147,12 +147,12 @@ public class RuleEliminateUnsatisfiableFilterAfterAdd extends Rule {
 		deleted.add(currentOp);
 		
 		// as long as there are successors, detach the first successor of current operator
-		while (currentOp.getSucceedingOperators().size() > 0) {
+		while (!currentOp.getSucceedingOperators().isEmpty()) {
 			final BasicOperator nextOp = currentOp.getSucceedingOperators().get(0).getOperator();
 			currentOp.removeSucceedingOperator(nextOp);
 			nextOp.removePrecedingOperator(currentOp);
 			
-			if (nextOp.getPrecedingOperators().size() == 0) {
+			if (nextOp.getPrecedingOperators().isEmpty()) {
 				
 				// walk the graph recursively if no predecessors are left
 				deleteSubGraph(nextOp, deleted);

@@ -73,7 +73,7 @@ public abstract class Root extends Operator {
 	 * <p>startProcessing.</p>
 	 */
 	public void startProcessing() {
-		if (this.succeedingOperators.size() == 0) {
+		if (this.succeedingOperators.isEmpty()) {
 			return;
 		}
 		for (final OperatorIDTuple oit : this.succeedingOperators) {
@@ -187,7 +187,7 @@ public abstract class Root extends Operator {
 	 * @param debugstep a {@link lupos.misc.debug.DebugStep} object.
 	 */
 	public void startProcessingDebug(final DebugStep debugstep) {
-		if (this.succeedingOperators.size() == 0) {
+		if (this.succeedingOperators.isEmpty()) {
 			return;
 		}
 		for (final OperatorIDTuple oit : this.succeedingOperators) {

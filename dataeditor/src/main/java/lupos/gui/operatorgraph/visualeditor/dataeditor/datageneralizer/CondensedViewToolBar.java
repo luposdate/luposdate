@@ -268,7 +268,7 @@ public class CondensedViewToolBar extends JPanel {
 						}
 					}
 				}
-				if (hypernode.size() > 0) {
+				if (!hypernode.isEmpty()) {
 					System.out.println("Level 0: Combine " + hypernode.size());
 					this.result[0].add(new HyperTriple(hypernode));
 				}

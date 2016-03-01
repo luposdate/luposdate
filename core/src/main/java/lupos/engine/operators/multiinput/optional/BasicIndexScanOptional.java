@@ -132,7 +132,7 @@ public class BasicIndexScanOptional extends Optional {
 				}
 				final QueryResult queryResult = BasicIndexScanOptional.this.indexScanOperator.join(BasicIndexScanOptional.this.indexScanOperator.getRoot().dataset);
 				BasicIndexScanOptional.this.indexScanOperator.setTriplePatterns(tps);
-				if(queryResult==null || queryResult.size()==0){
+				if(queryResult==null || queryResult.isEmpty()){
 					return new ParallelIterator<Bindings>(){
 						boolean sent=false;
 						@Override
@@ -262,7 +262,7 @@ public class BasicIndexScanOptional extends Optional {
 	public String toString(final Prefix prefixInstance){
 		String result = "";
 		for(final TriplePattern tp: this.indexScanOperator.getTriplePattern()){
-			if(result.length()>0){
+			if(!result.isEmpty()){
 				result+=", ";
 			}
 			result += tp.toString(prefixInstance);

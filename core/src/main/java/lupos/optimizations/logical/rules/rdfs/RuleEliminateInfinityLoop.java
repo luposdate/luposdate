@@ -176,7 +176,7 @@ public class RuleEliminateInfinityLoop extends Rule {
 		// such the infinity loop cannot be broken in the simple way implemented
 		// here...
 		final LinkedList<LinkedList<BasicOperator>> resultList = checkInfinityLoop(generate);
-		if (resultList == null || resultList.size() == 0)
+		if (resultList == null || resultList.isEmpty())
 			return false;
 		disconnect = new LinkedList<BasicOperator>();
 		instead = new LinkedList<BasicOperator>();
@@ -249,7 +249,7 @@ public class RuleEliminateInfinityLoop extends Rule {
 		recursiveDelete(generate, deleted);
 		// (new OperatorGraphNew(rootOperator.deepClone(), -1, false))
 		// .displayOperatorGraph("After...", null);
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else
@@ -265,7 +265,7 @@ public class RuleEliminateInfinityLoop extends Rule {
 	protected void recursiveDelete(final BasicOperator bo,
 			final Collection<BasicOperator> deleted) {
 		if (bo.getSucceedingOperators() == null
-				|| bo.getSucceedingOperators().size() == 0) {
+				|| bo.getSucceedingOperators().isEmpty()) {
 			for (final BasicOperator po : bo.getPrecedingOperators()) {
 				deleted.add(bo);
 				po.removeSucceedingOperator(bo);

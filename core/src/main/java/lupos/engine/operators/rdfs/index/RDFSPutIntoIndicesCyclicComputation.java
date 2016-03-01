@@ -62,7 +62,7 @@ public class RDFSPutIntoIndicesCyclicComputation extends RDFSPutIntoIndices
 	 * @return a boolean.
 	 */
 	public boolean getNewTriples() {
-		return newTriplesSet.size() > 0;
+		return !newTriplesSet.isEmpty();
 	}
 
 	/** {@inheritDoc} */

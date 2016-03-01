@@ -141,7 +141,7 @@ public class RuleMergeTwoReplaceVar extends Rule {
 		deleted.add(rep1);
 		deleted.add(rep2);
 		added.add(rep_new);
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else

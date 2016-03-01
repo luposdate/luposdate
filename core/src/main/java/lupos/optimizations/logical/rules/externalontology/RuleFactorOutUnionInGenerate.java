@@ -80,7 +80,7 @@ public class RuleFactorOutUnionInGenerate extends Rule {
 		generate.removePrecedingOperator(union);
 		deleted.add(union);
 		boolean firstTime = true;
-		if (generate.getPrecedingOperators().size() > 0) {
+		if (!generate.getPrecedingOperators().isEmpty()) {
 			firstTime = false;
 		}
 		for (final BasicOperator toMove : unionOperands) {
@@ -99,7 +99,7 @@ public class RuleFactorOutUnionInGenerate extends Rule {
 
 			toMove.setSucceedingOperator(new OperatorIDTuple(generateNew, 0));
 		}
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else

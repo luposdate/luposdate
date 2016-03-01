@@ -149,7 +149,7 @@ public class Dataset {
 			final ONTOLOGY materialize, final int opt,
 			final IndicesFactory indicesFactory, final boolean debug,
 			final boolean inMemoryExternalOntologyComputation, final Collection<String> toAddToRdftermsRepresentations) throws Exception {
-		if(defaultGraphs.size()==0){
+		if(defaultGraphs.isEmpty()){
 			defaultGraphs.add(new StringURILiteral("<inlinedata:>"));
 		}
 		this.indicesFactory = indicesFactory;
@@ -541,7 +541,7 @@ public class Dataset {
 			if (graphConstraint == null) {
 				// default RDF graph is given by SPARQL query
 				final List<String> graphs = root.defaultGraphs;
-				if (graphs != null && graphs.size() != 0) {
+				if (graphs != null && !graphs.isEmpty()) {
 					for (final String graph : graphs) {
 						indices = this.indexingRDFGraph(LiteralFactory
 								.createURILiteralWithoutLazyLiteral("<"+graph+">"),
@@ -552,7 +552,7 @@ public class Dataset {
 				}
 
 				// default RDF graph is given from command line
-				if (this.defaultGraphData.size() == 0) {
+				if (this.defaultGraphData.isEmpty()) {
 					return null;
 				}
 				return this.defaultGraphData.values();
@@ -574,7 +574,7 @@ public class Dataset {
 
 				// named RDF graphs are given in SPARQL query
 				final List<String> graphs = root.namedGraphs;
-				if (graphs != null && graphs.size() != 0) {
+				if (graphs != null && !graphs.isEmpty()) {
 					for (final String graph : graphs) {
 						final Tuple<Boolean, Indices> tuple = this.indexingRDFGraph(LiteralFactory.createURILiteralWithoutLazyLiteral("<"+graph+">"), indicesC, debug, inMemoryExternalOntologyComputation);
 						if(tuple.getFirst()) {

@@ -124,7 +124,7 @@ public class RuleConstantPropagationOverJoin extends Rule {
 		} else
 			deleted.add(add);
 		alreadyAppliedTo = new HashSet<BasicOperator>();
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else

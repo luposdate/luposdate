@@ -95,7 +95,7 @@ public class RuleMakeBinaryJoin extends Rule {
 		rootOperator.detectCycles();
 		rootOperator.sendMessage(new BoundVariablesMessage());
 		deleted.add(join);
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else

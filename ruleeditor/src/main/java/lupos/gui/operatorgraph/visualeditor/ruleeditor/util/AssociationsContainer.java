@@ -75,7 +75,7 @@ public class AssociationsContainer {
 
 		this.associations.get(rulePackageName).remove(ruleName);
 
-		if(this.associations.get(rulePackageName).size() == 0) {
+		if(this.associations.get(rulePackageName).isEmpty()) {
 			this.associations.remove(rulePackageName);
 		}
 

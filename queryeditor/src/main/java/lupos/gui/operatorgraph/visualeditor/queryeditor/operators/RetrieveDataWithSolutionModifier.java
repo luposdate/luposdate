@@ -175,7 +175,7 @@ public abstract class RetrieveDataWithSolutionModifier extends RetrieveData {
 		StringBuffer ret = new StringBuffer();
 
 		// ORDER BY
-		if(this.sortContainerList.size() > 0) {
+		if(!this.sortContainerList.isEmpty()) {
 			StringBuffer innerBuffer = new StringBuffer();
 
 			boolean orderByPresent = false;

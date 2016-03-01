@@ -99,7 +99,7 @@ public class EbayProducer extends ProducerBaseNoDuplicates {
 			t.add(auctionToTriple(a));
 		}
 		
-		return (t.size()==0)? null : t;
+		return (t.isEmpty())? null : t;
 	}
 
 	/**

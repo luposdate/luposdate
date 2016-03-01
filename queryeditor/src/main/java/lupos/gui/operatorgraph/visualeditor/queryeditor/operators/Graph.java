@@ -102,7 +102,7 @@ public class Graph extends JTFOperator {
 		StringBuffer ret = new StringBuffer();
 		ret.append("GRAPH " + this.graphItem.toString() + "{\n");
 
-		if(this.succeedingOperators.size() > 0)
+		if(!this.succeedingOperators.isEmpty())
 			ret.append(this.succeedingOperators.get(0).getOperator().serializeOperator());
 
 		ret.append("}");
@@ -115,7 +115,7 @@ public class Graph extends JTFOperator {
 		StringBuffer ret = new StringBuffer();
 		ret.append("GRAPH " + this.graphItem.toString() + "{\n");
 
-		if(this.succeedingOperators.size() > 0)
+		if(!this.succeedingOperators.isEmpty())
 			ret.append(this.succeedingOperators.get(0).getOperator().serializeOperatorAndTree(visited));
 
 		ret.append("}");
