@@ -637,8 +637,7 @@ public class FastRDF3XIndexConstruction {
 			};
 
 			// write out initial run:
-			try {
-				final OutputStream out = new BufferedOutputStream(new FileOutputStream(this.fileName));
+			try (final OutputStream out = new BufferedOutputStream(new FileOutputStream(this.fileName))) {
 				// write run in a compressed way:
 				int start = 0;
 				int previousPrimaryCode = 0;
@@ -647,7 +646,6 @@ public class FastRDF3XIndexConstruction {
 					previousPrimaryCode = FastRDF3XIndexConstruction.writeBlock(blockOfFinallySortedIdTriples, start, end, this.primary_pos, this.secondary_pos, this.tertiary_pos, previousPrimaryCode, out);
 					start = end;
 				}
-				out.close();
 			} catch (final FileNotFoundException e) {
 				log.error(e.getMessage(), e);
 			} catch (final IOException e) {
@@ -789,9 +787,8 @@ public class FastRDF3XIndexConstruction {
 
 		@Override
 		public void run() {
-			try {
-				final InputStream in = new BufferedInputStream(new FileInputStream(this.filename));
-				final OutputStream out = new BufferedOutputStream(new FileOutputStream(this.filename + "_mapped"));
+			try (final InputStream in = new BufferedInputStream(new FileInputStream(this.filename));
+				 final OutputStream out = new BufferedOutputStream(new FileOutputStream(this.filename + "_mapped"))) {
 
 				int previousPrimaryCode = 0;
 				int previousMappedPrimaryCode = 0;
@@ -832,8 +829,6 @@ public class FastRDF3XIndexConstruction {
 					previousMappedPrimaryCode = primaryMappedCode;
 				}
 
-				out.close();
-				in.close();
 				FileHelper.deleteFile(this.filename);
 			} catch (final FileNotFoundException e) {
 				log.error(e.getMessage(), e);

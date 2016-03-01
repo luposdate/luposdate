@@ -52,11 +52,9 @@ public class File extends java.io.File {
 	 * @param targetFileName a {@link java.lang.String} object.
 	 */
 	public void copyFileTo(String targetFileName) {
-		try {
-			File f2 = new File(targetFileName);
-
-			InputStream in = new FileInputStream(this);
-			OutputStream out = new FileOutputStream(f2);
+		File f2 = new File(targetFileName);
+		try (InputStream in = new FileInputStream(this);
+			 OutputStream out = new FileOutputStream(f2)) {
 
 			byte[] buf = new byte[1024];
 			int len;

@@ -49,8 +49,8 @@ public class StoplistReader {
 	public ArrayList<String>[] readStoplist(String path) {
 		ArrayList<String> germanstoplist = new ArrayList<String>();
 		ArrayList<String> englishstoplist = new ArrayList<String>();
+		BufferedReader in = null;
 		try {
-			BufferedReader in;
 			try {
 				in = new BufferedReader(new InputStreamReader(StoplistReader.class.getResource(path).openStream()));
 			} catch(Exception e){
@@ -70,6 +70,13 @@ public class StoplistReader {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			if(in != null)
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 		}
 
 		@SuppressWarnings("rawtypes")
