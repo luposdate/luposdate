@@ -161,11 +161,7 @@ public class DocumentationFrame extends JFrame {
 		});
 
 		JButton jB_cancel = new JButton("cancel");
-		jB_cancel.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				that.setVisible(false);
-			}
-		});
+		jB_cancel.addActionListener(ae -> that.setVisible(false));
 
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		buttonPanel.add(jB_generate);

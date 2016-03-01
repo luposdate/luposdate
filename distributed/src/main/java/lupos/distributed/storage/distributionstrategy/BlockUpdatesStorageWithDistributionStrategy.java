@@ -158,12 +158,7 @@ public abstract class BlockUpdatesStorageWithDistributionStrategy<K> implements 
 			for(int i=0; i<keys.length; i++) {
 				final int index = i;
 				results[i] = executor.submit(
-						new Callable<Boolean>(){
-							@Override
-							public Boolean call() throws Exception {
-								return BlockUpdatesStorageWithDistributionStrategy.this.containsTripleAfterAdding(keys[index], triple);
-							}
-				});
+						() -> BlockUpdatesStorageWithDistributionStrategy.this.containsTripleAfterAdding(keys[index], triple));
 			}
 
 			final ParallelBooleanOr parallelBooleanOr = new ParallelBooleanOr(results);

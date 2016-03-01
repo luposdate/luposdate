@@ -129,11 +129,7 @@ public class CondensedViewViewer extends VisualEditor<Operator> {
 	private JButton createCopyButton() {
 		this.copyButton = new JButton("copy");
 		this.copyButton.setEnabled(false);
-		this.copyButton.addActionListener(new ActionListener() {
-			public void actionPerformed(final ActionEvent ae) {
-				copyElements();
-			}
-		});
+		this.copyButton.addActionListener(ae -> copyElements());
 		return this.copyButton;
 	}
 
