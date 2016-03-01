@@ -77,6 +77,8 @@ public class MapEntry<K, V> implements Entry<K, V>, Serializable,
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object other) {
+		if (this.getClass() != other.getClass())
+			return false;
 		return this.k.equals(((MapEntry<K, V>) other).k);
 	}
 

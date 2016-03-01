@@ -120,6 +120,8 @@ public class FractalTreeEntry<K extends Comparable<K>, V> implements Comparable<
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(final Object arg0) {
+		if (this.getClass() != arg0.getClass())
+			return false;
 		return this.compareTo((FractalTreeEntry<K, V>) arg0) == 0;
 	}
 
