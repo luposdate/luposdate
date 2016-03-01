@@ -75,6 +75,16 @@ public class Entry<E> implements Comparable<Entry<E>>, Serializable {
 		return comp.compare(e, ((Entry<E>) other).e) == 0;
 	}
 
+	@Override
+	public int hashCode() {
+		int result = this.e != null ? this.e.hashCode() : 0;
+		result = 31 * result + this.run;
+		result = 31 * result + this.n;
+		result = 31 * result + (this.comp != null ? this.comp.hashCode() : 0);
+		result = 31 * result + (this.runMatters ? 1 : 0);
+		return result;
+	}
+
 	public boolean runMatters = true;
 
 	/**

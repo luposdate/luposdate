@@ -123,6 +123,15 @@ public class FractalTreeEntry<K extends Comparable<K>, V> implements Comparable<
 		return this.compareTo((FractalTreeEntry<K, V>) arg0) == 0;
 	}
 
+	@Override
+	public int hashCode() {
+		int result = this.key != null ? this.key.hashCode() : 0;
+		result = 31 * result + (this.value != null ? this.value.hashCode() : 0);
+		result = 31 * result + this.pointer;
+		result = 31 * result + (this.flag ? 1 : 0);
+		return result;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public int compare(final FractalTreeEntry<K, V> o1, final FractalTreeEntry<K, V> o2) {

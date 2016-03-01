@@ -23,6 +23,8 @@
  */
 package lupos.datastructures.patriciatrie.node;
 
+import java.util.Arrays;
+
 /**
  * This class implements some of the base algorithms that can be executed on Patricia Tries.
  *
@@ -377,6 +379,15 @@ public abstract class Node {
 
 		// No differences found
 		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Arrays.hashCode(this.content);
+		result = 31 * result + this.numberOfEntries;
+		result = 31 * result + (this.changed ? 1 : 0);
+		result = 31 * result + (this.onRecursionStack ? 1 : 0);
+		return result;
 	}
 
 	/**

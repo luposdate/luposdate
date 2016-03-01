@@ -85,6 +85,14 @@ public class LanguageTaggedLiteral extends Literal implements Externalizable {
 		}
 	}
 
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + (this.content != null ? this.content.hashCode() : 0);
+		result = 31 * result + (this.lang != null ? this.lang.hashCode() : 0);
+		return result;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

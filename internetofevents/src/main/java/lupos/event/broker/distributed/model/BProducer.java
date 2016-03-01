@@ -86,4 +86,11 @@ public class BProducer implements Serializable{
 		}
 		return false;
 	}
+
+	@Override
+	public int hashCode() {
+		int result = this.producedEvent != null ? this.producedEvent.hashCode() : 0;
+		result = 31 * result + (this.tcpInfo != null ? this.tcpInfo.hashCode() : 0);
+		return result;
+	}
 }

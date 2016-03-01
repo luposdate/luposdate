@@ -457,6 +457,14 @@ public class MenuSelector<T> {
 		}
 
 		@Override
+		public int hashCode() {
+			int result = this.value != null ? this.value.hashCode() : 0;
+			result = 31 * result + (this.key != null ? this.key.hashCode() : 0);
+			result = 31 * result + (this.niceName != null ? this.niceName.hashCode() : 0);
+			return result;
+		}
+
+		@Override
 		public int compareTo(final MenuItem<T> o) {
 			if (o != null) {
 				if (this.key == null || ((MenuItem<?>)o).key == null) {
