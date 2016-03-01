@@ -35,6 +35,9 @@ import lupos.event.consumer.Consumer;
  */
 public class Main {
 
+	private Main() {
+	}
+
 	@SuppressWarnings("unused")
 	 /**
 	  * Initializing main class

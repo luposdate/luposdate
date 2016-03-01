@@ -31,6 +31,9 @@ import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 import lupos.misc.Tuple;
 public class GraphHelper {
 
+	private GraphHelper() {
+	}
+
 	/**
 	 * If graph is out of display after a computed layout, this method fits it
 	 * back into the display

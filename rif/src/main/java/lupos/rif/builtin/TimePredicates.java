@@ -28,6 +28,9 @@ import lupos.datastructures.items.literal.Literal;
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-predicate#")
 public class TimePredicates {
 
+	private TimePredicates() {
+	}
+
 	/**
 	 * <p>is_date.</p>
 	 *

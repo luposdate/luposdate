@@ -30,6 +30,9 @@ import lupos.datastructures.items.literal.TypedLiteral;
 import lupos.misc.util.ImmutableIterator;
 public class IteratorPredicates {
 
+	private IteratorPredicates() {
+	}
+
 	/**
 	 * <p>numeric_less_than.</p>
 	 *

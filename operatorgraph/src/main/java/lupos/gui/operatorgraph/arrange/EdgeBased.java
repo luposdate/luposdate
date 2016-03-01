@@ -46,7 +46,10 @@ public class EdgeBased {
 	
 	private static HashMap<Integer, Double> directions = new HashMap<Integer, Double>();
 	private static HashMap<GraphWrapper, Integer> idHierarchy = new HashMap <GraphWrapper, Integer>();
-	
+
+	private EdgeBased() {
+	}
+
 	/**
 	 * Method gets the amount of different edge-types in 
 	 * the graph.

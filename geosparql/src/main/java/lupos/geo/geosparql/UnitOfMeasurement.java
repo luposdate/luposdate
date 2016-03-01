@@ -42,6 +42,9 @@ public class UnitOfMeasurement {
         conversionRate.put("<http://www.opengis.net/def/uom/OGC/1.0/metre>", 1.0);
     }
 
+    private UnitOfMeasurement() {
+    }
+
     /**
      * <p>convert.</p>
      *

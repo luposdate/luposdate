@@ -109,6 +109,9 @@ public class P2P_SubgraphExecuter<T> implements
 	public static class P2PInputStreamMessage {
 		public static final int HEADING_BYTES = 37;
 
+		private P2PInputStreamMessage() {
+		}
+
 		/**
 		 * Creates a header for the input stream that is added first
 		 *

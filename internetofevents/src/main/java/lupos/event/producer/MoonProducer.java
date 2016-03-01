@@ -82,6 +82,9 @@ public class MoonProducer extends ProducerBaseNoDuplicates {
 		public static final URILiteral SUNSET_HOUR = Literals.createURI(NAMESPACE, "sunset_hour");
 		/** minute of the sunset */
 		public static final URILiteral SUNSET_MINUTE = Literals.createURI(NAMESPACE, "sunset_minute");
+
+		private Predicates() {
+		}
 	}
 	
 	

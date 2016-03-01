@@ -41,7 +41,10 @@ import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
  * @version $Id: $Id
  */
 public final class Sugiyama {
-	
+
+	private Sugiyama() {
+	}
+
 	/**
 	 * Method gets a HashMap with the levels of the layout as keys
 	 * and lists of GraphWrapper which belong to the level

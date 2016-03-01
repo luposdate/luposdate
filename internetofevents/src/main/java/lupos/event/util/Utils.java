@@ -44,6 +44,9 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 public final class Utils {
 
+	private Utils() {
+	}
+
 	/**
 	 * Checks, if obj is a list and only contains elements of the same type
 	 *

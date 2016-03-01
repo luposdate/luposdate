@@ -43,6 +43,9 @@ public class ExtendedEndpoint {
 	private final static String INDEX_DIR = "luposdate-index";
 	private final static String INDEX_FILE = "src/main/resources/sp2b.n3";
 
+	private ExtendedEndpoint() {
+	}
+
 	public static void main(final String[] args) throws Exception {
 
 		// init the SPARQL evaluators, the luposdate endpoint could be extended

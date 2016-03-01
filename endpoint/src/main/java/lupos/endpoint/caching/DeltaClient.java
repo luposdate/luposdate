@@ -96,6 +96,9 @@ public class DeltaClient {
 		}
 	}
 
+	private DeltaClient() {
+	}
+
 	/**
 	 * This main method calls the main method of CommandLineEvaluator (after the DeltaClient has been initialized).
 	 * The delta approach for caching and reusing query triples is used for any communication with an endpoint

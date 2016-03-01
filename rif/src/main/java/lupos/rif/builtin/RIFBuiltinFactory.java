@@ -51,6 +51,9 @@ public class RIFBuiltinFactory {
 					NonStandardFunctions.class);
 	private static final Map<String, Tuple<Builtin, Method>> builtins = new HashMap<String, Tuple<Builtin, Method>>();
 
+	private RIFBuiltinFactory() {
+	}
+
 	/**
 	 * <p>canBind.</p>
 	 *

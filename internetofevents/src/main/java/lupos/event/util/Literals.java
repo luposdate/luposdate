@@ -42,6 +42,9 @@ public abstract class Literals {
 	 */
 	public static class RDF {
 		public static final Literal TYPE = createURI(Prefixes.RDF, "type");
+
+		private RDF() {
+		}
 	}
 
 	/**
@@ -58,6 +61,9 @@ public abstract class Literals {
 		public static final URILiteral TIME = createURI(Prefixes.XSD, "time");
 		public static final URILiteral DATETIME = createURI(Prefixes.XSD, "dateTime");
 		public static final URILiteral ANYURI = createURI(Prefixes.XSD, "anyURI");
+
+		private XSD() {
+		}
 	}
 
 	/**
@@ -65,6 +71,9 @@ public abstract class Literals {
 	 */
 	public static class AnonymousLiteral{
 		public static final Literal ANONYMOUS = LiteralFactory.createAnonymousLiteral("_:a");
+
+		private AnonymousLiteral() {
+		}
 	}
 
 	/**

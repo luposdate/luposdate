@@ -49,6 +49,9 @@ public class FeedMessage {
 	  public static final URILiteral LINK = Literals.createURI(FeedMessage.NAMESPACE, "Link");
 	  public static final URILiteral AUTHOR = Literals.createURI(FeedMessage.NAMESPACE, "Author");
 	  public static final URILiteral GUID = Literals.createURI(FeedMessage.NAMESPACE, "guid");
+
+	  private Predicates() {
+	  }
   }
   
   /**

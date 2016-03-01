@@ -54,6 +54,9 @@ public class RSSSemanticInterpretationProducer extends ProducerBaseNoDuplicates 
 				"FeedToInterpret");
 		public static final Literal INTERPRETATION = Literals.createURI(
 				NAMESPACE, "DBPediaResult");
+
+		private Predicates() {
+		}
 	}
 
 	/**

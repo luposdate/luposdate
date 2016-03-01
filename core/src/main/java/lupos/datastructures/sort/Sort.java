@@ -42,6 +42,9 @@ import lupos.misc.IOCostsInputStream;
 import lupos.misc.IOCostsOutputStream;
 import lupos.misc.TimeInterval;
 public class Sort {
+	private Sort() {
+	}
+
 	public enum SORTER {
 		PARALLEL {
 

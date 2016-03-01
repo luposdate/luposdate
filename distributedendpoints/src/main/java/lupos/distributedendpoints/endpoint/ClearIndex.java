@@ -36,6 +36,9 @@ import lupos.engine.indexconstruction.RDF3XEmptyIndexConstruction;
  */
 public class ClearIndex {
 
+	private ClearIndex() {
+	}
+
 	/**
 	 * main entry point of the program
 	 *

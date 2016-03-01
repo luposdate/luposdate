@@ -38,6 +38,9 @@ import lupos.gui.operatorgraph.graphwrapper.GraphWrapperRules;
 import org.json.JSONObject;
 
 public class GraphSerialization {
+	private GraphSerialization() {
+	}
+
 	public enum AstFormat {
 		GRAPH, NESTED
 	}

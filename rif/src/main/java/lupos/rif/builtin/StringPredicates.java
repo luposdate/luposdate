@@ -36,6 +36,9 @@ import lupos.datastructures.items.literal.string.StringLiteral;
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-predicate#")
 public class StringPredicates {
 
+	private StringPredicates() {
+	}
+
 	/**
 	 * <p>is_string.</p>
 	 *

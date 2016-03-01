@@ -33,6 +33,9 @@ import lupos.endpoint.server.format.XMLFormatter;
 import lupos.misc.FileHelper;
 import lupos.sparql1_1.operatorgraph.ServiceApproaches;
 public class SaveRDF3XResult {
+	private SaveRDF3XResult() {
+	}
+
 	/**
 	 * <p>main.</p>
 	 *

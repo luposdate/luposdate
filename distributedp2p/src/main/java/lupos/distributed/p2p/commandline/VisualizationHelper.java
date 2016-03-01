@@ -42,6 +42,9 @@ import lupos.gui.operatorgraph.viewer.Viewer;
 import xpref.XPref;
 public class VisualizationHelper {
 
+	private VisualizationHelper() {
+	}
+
 	/**
 	 * Displays the operatorgraph in an UI window
 	 *

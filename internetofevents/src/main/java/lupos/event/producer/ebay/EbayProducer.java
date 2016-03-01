@@ -52,6 +52,9 @@ public class EbayProducer extends ProducerBaseNoDuplicates {
 		public static final Literal CURRENTPRICE = Literals.createURI(NAMESPACE, "currentPrice");
 		public static final Literal BUYITNOWPRICE = Literals.createURI(NAMESPACE, "buyItNowPrice");
 		public static final Literal SHIPPINGCOSTS = Literals.createURI(NAMESPACE, "shippingCosts");
+
+		private Predicates() {
+		}
 	}
 	
 	private int subjectCounter = 0;

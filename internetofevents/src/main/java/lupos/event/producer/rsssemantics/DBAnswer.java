@@ -75,6 +75,9 @@ public class DBAnswer {
 				DBAnswer.NAMESPACE, "Comment");
 		public static final URILiteral BIRTHPLACE = Literals.createURI(
 				DBAnswer.NAMESPACE, "BirthPlace");
+
+		private Predicates() {
+		}
 	}
 
 	/**

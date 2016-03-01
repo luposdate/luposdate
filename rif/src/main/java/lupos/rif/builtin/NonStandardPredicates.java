@@ -31,6 +31,9 @@ import lupos.datastructures.items.literal.URILiteral;
 
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-predicate#")
 public class NonStandardPredicates {
+	private NonStandardPredicates() {
+	}
+
 	/**
 	 * <p>is_literal.</p>
 	 *

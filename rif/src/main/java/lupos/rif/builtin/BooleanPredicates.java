@@ -29,6 +29,9 @@ import lupos.datastructures.items.literal.TypedLiteral;
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-predicate#")
 public class BooleanPredicates {
 
+	private BooleanPredicates() {
+	}
+
 	/**
 	 * <p>is_boolean.</p>
 	 *

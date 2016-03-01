@@ -60,6 +60,9 @@ import com.sun.net.httpserver.HttpExchange;
  */
 public class StartEndpoint {
 
+	private StartEndpoint() {
+	}
+
 	/**
 	 * Main entry point to start the endpoints...
 	 *

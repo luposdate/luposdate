@@ -31,6 +31,9 @@ import lupos.owl2rl.owlToRif.InferenceRulesGenerator;
 import lupos.owl2rl.owlToRif.TemplateRule;
 public class RuleEmitter {
 
+	private RuleEmitter() {
+	}
+
 	/**
 	 * <p>emitPropertyRules.</p>
 	 *

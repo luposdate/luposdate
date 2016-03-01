@@ -32,6 +32,9 @@ public class GenerateBlankNodes {
 
 	private static int idBlankNodes = 0;
 
+	private GenerateBlankNodes() {
+	}
+
 	/**
 	 * <p>getBlankNode.</p>
 	 *

@@ -60,6 +60,9 @@ import lupos.misc.Tuple;
 @SuppressWarnings("rawtypes")
 public class Registration {
 
+	private Registration() {
+	}
+
 	public interface DeSerializer<T> {
 
 		public int length(T t);

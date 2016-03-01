@@ -65,6 +65,9 @@ public class SysMonProducer extends ProducerBaseNoDuplicates {
 		public static final URILiteral FREE_PHYSICAL_BYTES = Literals.createURI(NAMESPACE, "freePhysicalBytes");
 		public static final URILiteral TOTAL_SWAP_BYTES = Literals.createURI(NAMESPACE, "totalSwapBytes");
 		public static final URILiteral FREE_SWAP_BYTES = Literals.createURI(NAMESPACE, "freeSwapBytes");
+
+		private Predicates() {
+		}
 	}
 
 

@@ -33,6 +33,9 @@ import lupos.datastructures.queryresult.QueryResult;
  */
 public class ChartFactory {
 
+	private ChartFactory() {
+	}
+
 	/**
 	 * Finds and returns the ChartHandler GUI for the given type of chart
 	 *

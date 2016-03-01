@@ -39,6 +39,9 @@ import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 public final class LayeredDrawing {
 
+	private LayeredDrawing() {
+	}
+
 	/**
 	 * <p>updateX.</p>
 	 *

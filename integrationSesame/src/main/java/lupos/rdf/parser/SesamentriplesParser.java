@@ -29,6 +29,9 @@ import java.io.UnsupportedEncodingException;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 import lupos.rdf.parser.SesameturtleParser.SesameParserType;
 public class SesamentriplesParser {
+	private SesamentriplesParser() {
+	}
+
 	/**
 	 * <p>parseRDFData.</p>
 	 *

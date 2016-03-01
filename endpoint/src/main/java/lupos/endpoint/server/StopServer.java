@@ -34,7 +34,10 @@ import java.net.UnknownHostException;
  */
 public class StopServer {
 
-	public static void main(final String[] args) throws UnknownHostException, IOException {
+    private StopServer() {
+    }
+
+    public static void main(final String[] args) throws UnknownHostException, IOException {
 		System.out.println("Stopping the LUPOSDATE Endpoint...");
 		// Start Socket listener for receiving signal for stopping the server...
 		final Socket socket = new Socket("localhost", Endpoint.portForStopping);

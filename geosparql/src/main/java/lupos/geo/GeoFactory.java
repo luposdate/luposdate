@@ -34,6 +34,9 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  */
 public class GeoFactory
 {
+    private GeoFactory() {
+    }
+
     /**
      * The default JTS factory for creating geometries.
      *

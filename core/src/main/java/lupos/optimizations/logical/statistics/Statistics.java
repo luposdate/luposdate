@@ -29,6 +29,9 @@ import java.util.Map;
 import lupos.datastructures.items.Variable;
 public class Statistics {
 
+	private Statistics() {
+	}
+
 	/**
 	 * <p>estimateJoinSelectivity.</p>
 	 *

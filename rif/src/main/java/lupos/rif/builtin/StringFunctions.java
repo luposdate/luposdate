@@ -29,6 +29,9 @@ import lupos.datastructures.items.literal.TypedLiteral;
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-function#")
 public class StringFunctions {
 
+	private StringFunctions() {
+	}
+
 	/**
 	 * <p>compare.</p>
 	 *

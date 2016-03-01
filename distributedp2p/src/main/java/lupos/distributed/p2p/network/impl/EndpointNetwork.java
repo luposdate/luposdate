@@ -184,6 +184,9 @@ public class EndpointNetwork extends P2PTripleNetwork {
 	 */
 	public static class DataFileDistribution {
 
+		private DataFileDistribution() {
+		}
+
 		private static String getKey(final KeyContainer<?> keyContainer) {
 			return String.format("%s%s", keyContainer.type, keyContainer.key);
 		}

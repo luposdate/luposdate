@@ -60,6 +60,9 @@ import lupos.sparql1_1.ASTSelectQuery;
 import lupos.sparql1_1.ASTVar;
 import lupos.sparql1_1.Node;
 public final class ResultPanelHelper {
+	private ResultPanelHelper() {
+	}
+
 	/**
 	 * This is just for external use an easy way to display the result of a RIF rules application...
 	 *

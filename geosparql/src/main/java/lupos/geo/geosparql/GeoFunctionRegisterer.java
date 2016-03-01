@@ -61,6 +61,9 @@ import lupos.geo.geosparql.functions.sf_eh.GeofSfTouchesEhMeet;
  */
 public class GeoFunctionRegisterer {
 
+    private GeoFunctionRegisterer() {
+    }
+
     /**
      * <p>registerGeoFunctions.</p>
      */
