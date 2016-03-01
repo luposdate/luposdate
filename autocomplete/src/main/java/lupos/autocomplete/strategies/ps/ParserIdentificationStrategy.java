@@ -245,7 +245,10 @@ public abstract class ParserIdentificationStrategy extends Strategy {
 			endIndexOfError = exception.indexOf('\"', startIndexOfError);
 			error = exception.substring(startIndexOfError, endIndexOfError);
 		}
-		error = error.replace(" ", "");
+		
+		if (error != null) {
+			error = error.replace(" ", "");
+		}
 		 return error;
 	}
 

@@ -160,6 +160,8 @@ public abstract class RDFTerm extends JTFOperator {
 
 	/** {@inheritDoc} */
 	public boolean equals(Object o) {
+		if (o == null)
+			return false;
 		try {
 			return this.item == ((RDFTerm) o).item;
 		}

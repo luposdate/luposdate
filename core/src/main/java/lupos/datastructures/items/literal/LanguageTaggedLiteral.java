@@ -77,6 +77,9 @@ public class LanguageTaggedLiteral extends Literal implements Externalizable {
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object obj) {
+		if (obj == null) {
+			return false;
+		}
 		if (obj instanceof LanguageTaggedLiteral) {
 			final LanguageTaggedLiteral lit = (LanguageTaggedLiteral) obj;
 			return this.content.equals(lit.content) && this.lang.equals(lit.lang);

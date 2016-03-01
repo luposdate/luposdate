@@ -81,6 +81,9 @@ public class Item {
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj){
+			if (obj == null) {
+				return false;
+			}
 			
 			if (caseSensitiv ==((Item)obj).caseSensitiv == true) {
 				if((obj instanceof Item)&&(((Item)obj).value.equals(this.value))){
