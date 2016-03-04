@@ -729,12 +729,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	protected JPanel generateQueryTab() {
 
 		final JButton bt_visualEdit = new JButton("Visual Edit");
-		bt_visualEdit.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent arg0) {
-				new AdvancedQueryEditor(Demo_Applet.this.tp_queryInput.getText(), Demo_Applet.this.tp_dataInput.getText(), Demo_Applet.this.myself, getIcon(Demo_Applet.this.webdemo));
-			}
-		});
+		bt_visualEdit.addActionListener(arg0 -> new AdvancedQueryEditor(Demo_Applet.this.tp_queryInput.getText(), Demo_Applet.this.tp_dataInput.getText(), Demo_Applet.this.myself, getIcon(Demo_Applet.this.webdemo)));
 
 		final LuposDocument document = new LuposDocument();
 		this.tp_queryInput = new LuposJTextPane(document);
@@ -756,12 +751,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	protected JPanel generateRifTab() {
 
 		final JButton bt_visualEdit = new JButton("Visual Edit");
-		bt_visualEdit.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent arg0) {
-				new VisualRifEditor(Demo_Applet.this.tp_rifInput.getText(), Demo_Applet.getIcon(Demo_Applet.this.webdemo));
-			}
-		});
+		bt_visualEdit.addActionListener(arg0 -> new VisualRifEditor(Demo_Applet.this.tp_rifInput.getText(), Demo_Applet.getIcon(Demo_Applet.this.webdemo)));
 
 		final LuposDocument document = new LuposDocument();
 		this.tp_rifInput = new LuposJTextPane(document);
@@ -858,12 +848,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 	protected JPanel generateDataTab() {
 
 		final JButton bt_visualEdit = new JButton("Visual Edit");
-		bt_visualEdit.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent arg0) {
-				new DataEditor(Demo_Applet.this.tp_dataInput.getText(), Demo_Applet.this.myself, getIcon(Demo_Applet.this.webdemo));
-			}
-		});
+		bt_visualEdit.addActionListener(arg0 -> new DataEditor(Demo_Applet.this.tp_dataInput.getText(), Demo_Applet.this.myself, getIcon(Demo_Applet.this.webdemo)));
 
 		final JButton bt_CondensedView = new JButton("Condense Data");
 		bt_CondensedView.addActionListener(new ActionListener() {
@@ -1709,12 +1694,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 		public DebugViewerCreator compileQueryDebugByteArray(final String queryParameter)
 		throws Exception {
 			final DebugViewerCreator result = new SPARQLDebugViewerCreator(Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE, Demo_Applet.this.prefixInstance, Demo_Applet.this.usePrefixes,
-					new RulesGetter(){
-						@Override
-						public List<DebugContainer<BasicOperatorByteArray>> getRuleApplications() {
-							return Demo_Applet.this.ruleApplications;
-						}
-					}, Demo_Applet.getIcon(Demo_Applet.this.webdemo), this.evaluator.compileQueryDebugByteArray(queryParameter, Demo_Applet.this.prefixInstance));
+					() -> Demo_Applet.this.ruleApplications, Demo_Applet.getIcon(Demo_Applet.this.webdemo), this.evaluator.compileQueryDebugByteArray(queryParameter, Demo_Applet.this.prefixInstance));
 			this.integrateInferenceOperatorgraph();
 			return result;
 		}
@@ -1799,12 +1779,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				final BasicIndexRuleEvaluator birqe = new BasicIndexRuleEvaluator((CommonCoreQueryEvaluator<Node>)this.evaluator);
 				birqe.compileQuery(Demo_Applet.this.inferenceRules, conclusion);
 				Demo_Applet.this.materializationInfo = new RIFDebugViewerCreator(Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE, Demo_Applet.this.prefixInstance, Demo_Applet.this.usePrefixes,
-						new RulesGetter(){
-							@Override
-							public List<DebugContainer<BasicOperatorByteArray>> getRuleApplications() {
-								return Demo_Applet.this.ruleApplications;
-							}
-						}, Demo_Applet.getIcon(Demo_Applet.this.webdemo), birqe.getCompilationUnit(), birqe.getDocument());
+						() -> Demo_Applet.this.ruleApplications, Demo_Applet.getIcon(Demo_Applet.this.webdemo), birqe.getCompilationUnit(), birqe.getDocument());
 
 				// TODO improve RIF logical optimization such that it is fast enough for large operator graphs!
 				// as workaround here only use the logical optimization of the underlying evaluator!
@@ -1883,12 +1858,7 @@ public class Demo_Applet extends JApplet implements IXPref, IDataEditor, IQueryE
 				throws Exception {
 			this.ruleEvaluator.compileQuery(rule);
 			return new RIFDebugViewerCreator(Demo_Applet.this.webdemo != DEMO_ENUM.ECLIPSE, Demo_Applet.this.prefixInstance, Demo_Applet.this.usePrefixes,
-					new RulesGetter(){
-						@Override
-						public List<DebugContainer<BasicOperatorByteArray>> getRuleApplications() {
-							return Demo_Applet.this.ruleApplications;
-						}
-					}, Demo_Applet.getIcon(Demo_Applet.this.webdemo),
+					() -> Demo_Applet.this.ruleApplications, Demo_Applet.getIcon(Demo_Applet.this.webdemo),
 					this.ruleEvaluator.getCompilationUnit(),
 					this.ruleEvaluator.getDocument());
 		}

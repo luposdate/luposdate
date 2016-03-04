@@ -101,12 +101,7 @@ public class ButtonClickedProducer extends ProducerBase {
 		        this.setTitle("ButtonClickProducer");		        
 		        getContentPane().setLayout(new BorderLayout());
 		        JButton btn = new JButton("Generate Event");
-		        btn.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent a) {
-						producer.setButtonClicked();
-					} });
+		        btn.addActionListener(a -> producer.setButtonClicked());
 		        getContentPane().add(btn, BorderLayout.CENTER);
 			}
 		};

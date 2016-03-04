@@ -152,13 +152,7 @@ public abstract class DocumentInputAndAlphabeticOrderStrategy extends Strategy {
 			}
 		}
 
-		Collections.sort(returnList, new Comparator<Item>() {
-
-			@Override
-			public int compare(final Item arg0, final Item arg1) {
-				return arg0.getValue().compareTo(arg1.getValue());
-			}
-		});
+		Collections.sort(returnList, (arg0, arg1) -> arg0.getValue().compareTo(arg1.getValue()));
 		return this.generateWeight(returnList);
 	}
 
