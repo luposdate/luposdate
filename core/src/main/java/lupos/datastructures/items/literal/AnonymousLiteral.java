@@ -86,6 +86,13 @@ public class AnonymousLiteral extends Literal implements Externalizable {
 		}
 	}
 
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + (this.content != null ? this.content.hashCode() : 0);
+		return result;
+	}
+
 	/**
 	 * <p>Getter for the field <code>content</code>.</p>
 	 *

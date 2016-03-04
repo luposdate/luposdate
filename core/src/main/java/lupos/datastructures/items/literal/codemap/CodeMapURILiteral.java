@@ -176,6 +176,14 @@ public class CodeMapURILiteral extends URILiteral implements Externalizable {
 		}
 	}
 
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + (this.content != null ? this.content.hashCode() : 0);
+		result = 31 * result + this.prefix;
+		return result;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public String getString() {
