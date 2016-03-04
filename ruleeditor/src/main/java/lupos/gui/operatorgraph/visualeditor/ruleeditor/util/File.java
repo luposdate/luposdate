@@ -38,10 +38,10 @@ public class File extends java.io.File {
 	 *
 	 * @param pathname a {@link java.lang.String} object.
 	 */
-	public File(String pathname) {
+	public File(final String pathname) {
 		super(pathname);
 
-		String[] tmp = pathname.split("\\.");
+		final String[] tmp = pathname.split("\\.");
 
 		this.fileExtension = tmp[tmp.length-1];
 	}
@@ -51,22 +51,19 @@ public class File extends java.io.File {
 	 *
 	 * @param targetFileName a {@link java.lang.String} object.
 	 */
-	public void copyFileTo(String targetFileName) {
-		File f2 = new File(targetFileName);
+	public void copyFileTo(final String targetFileName) {
+		final File f2 = new File(targetFileName);
 		try (InputStream in = new FileInputStream(this);
 			 OutputStream out = new FileOutputStream(f2)) {
 
-			byte[] buf = new byte[1024];
+			final byte[] buf = new byte[1024];
 			int len;
 
 			while((len = in.read(buf)) > 0) {
 				out.write(buf, 0, len);
 			}
-
-			in.close();
-			out.close();
 		}
-		catch(Exception ex) {
+		catch(final Exception ex) {
 			ex.printStackTrace();
 		}
 	}
@@ -86,12 +83,12 @@ public class File extends java.io.File {
 	 * @param filename a {@link java.lang.String} object.
 	 * @return a {@link java.lang.String} object.
 	 */
-	public static String readFile(String filename) {
-		StringBuilder content = new StringBuilder();
+	public static String readFile(final String filename) {
+		final StringBuilder content = new StringBuilder();
 
 		try {
-			String NL = System.getProperty("line.separator");
-			Scanner scanner = new Scanner(new FileInputStream(filename));
+			final String NL = System.getProperty("line.separator");
+			final Scanner scanner = new Scanner(new FileInputStream(filename));
 
 			try {
 				while(scanner.hasNextLine()) {
@@ -102,7 +99,7 @@ public class File extends java.io.File {
 				scanner.close();
 			}
 		}
-		catch(FileNotFoundException e) {
+		catch(final FileNotFoundException e) {
 			e.printStackTrace();
 		}
 
@@ -115,13 +112,13 @@ public class File extends java.io.File {
 	 * @param filename a {@link java.lang.String} object.
 	 * @param content a {@link java.lang.String} object.
 	 */
-	public static void writeFile(String filename, String content) {
+	public static void writeFile(final String filename, final String content) {
 		try {
-			FileOutputStream fos = new FileOutputStream(filename);
+			final FileOutputStream fos = new FileOutputStream(filename);
 			fos.write(content.getBytes());
 			fos.close();
 		}
-		catch(Exception e) {
+		catch(final Exception e) {
 			System.err.println(e);
 
 			e.printStackTrace();
