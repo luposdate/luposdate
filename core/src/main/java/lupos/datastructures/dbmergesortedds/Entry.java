@@ -72,8 +72,9 @@ public class Entry<E> implements Comparable<Entry<E>>, Serializable {
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object other) {
-		if (this.getClass() != other.getClass())
+		if (other == null || this.getClass() != other.getClass()) {
 			return false;
+		}
 		return comp.compare(e, ((Entry<E>) other).e) == 0;
 	}
 

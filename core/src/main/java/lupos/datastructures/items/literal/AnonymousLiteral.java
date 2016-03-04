@@ -78,6 +78,9 @@ public class AnonymousLiteral extends Literal implements Externalizable {
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object obj) {
+		if (obj == null) {
+			return false;
+		}
 		if (obj instanceof AnonymousLiteral) {
 			final AnonymousLiteral lit = (AnonymousLiteral) obj;
 			return this.content.equals(lit.content);
