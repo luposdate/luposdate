@@ -1083,7 +1083,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			final Collection<URILiteral> namedGraphs) throws Exception {
 		final Date a=new Date();
 		// there should be at least one default graphs (especially for update operations...)
-		if(defaultGraphs.size()==0) {
+		if(defaultGraphs.isEmpty()) {
 			defaultGraphs.add(new StringURILiteral("<inlinedata:>"));
 		}
 		return (new Date().getTime())-a.getTime();
@@ -1097,7 +1097,7 @@ public abstract class BasicIndexQueryEvaluator extends CommonCoreQueryEvaluator<
 			throws Exception {
 		final Date a=new Date();
 		// there should be at least one default graphs (especially for update operations...)
-		if(defaultGraphs.size()==0){
+		if(defaultGraphs.isEmpty()){
 			defaultGraphs.add(new StringURILiteral("<inlinedata:>"));
 		}
 		return (new Date().getTime())-a.getTime();

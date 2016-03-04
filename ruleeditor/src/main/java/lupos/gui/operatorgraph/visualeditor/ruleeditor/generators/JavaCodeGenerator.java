@@ -721,7 +721,7 @@ public class JavaCodeGenerator {
 			// --- add connections that only occur on the right side - begin ---
 
 			// --- delete operators from left side which are not needed anymore - begin ---
-			if(leftOperators.size() > 0) {
+			if(!leftOperators.isEmpty()) {
 				this.replaceMethodCode.append(
 						"\n" +
 						spaces + "// delete unreachable operators...\n"
@@ -853,7 +853,7 @@ public class JavaCodeGenerator {
 
 		LinkedList<Operator> precedingOperators = node.getPrecedingOperators();
 
-		if(precedingOperators.size() > 0) {
+		if(!precedingOperators.isEmpty()) {
 			boolean added = false;
 			int precedingIndex = 0;
 
@@ -1017,7 +1017,7 @@ public class JavaCodeGenerator {
 
 		LinkedList<OperatorIDTuple<Operator>> succedingOperators = node.getSucceedingOperators();
 
-		if(succedingOperators.size() > 0) {
+		if(!succedingOperators.isEmpty()) {
 			boolean added = false;
 			int succedingIndex = 0;
 

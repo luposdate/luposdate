@@ -277,7 +277,7 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 			final long keyRight, final int currentLeft, final int currentRight,
 			final int max, final List<? extends Plan> initialPlans,
 			final HashMap<Long, Plan>[] bestPlans) {
-		if (initialPlans.size() == 0 || currentLeft + currentRight >= max) {
+		if (initialPlans.isEmpty() || currentLeft + currentRight >= max) {
 			// Recursion end reached!
 			// Correct number of already joined initial plans?
 			// Does the left and right operand have any initial plans?
@@ -399,7 +399,7 @@ public class CostBasedOptimizer implements RearrangeJoinOrder {
 		for (final TriplePattern tp : triplePatterns) { // compare the minimum and maximum values of each triple patterns!
 			final HashSet<Variable> vars = tp.getVariables();
 			vars.retainAll(joinPartners);
-			if(vars.size()>0) {
+			if(!vars.isEmpty()) {
 				final Map<Variable, Tuple<Literal, Literal>> localExtrema = indexScan.getMinMax(tp, vars);
 				if(localExtrema!=null){
 					for(final Entry<Variable, Tuple<Literal, Literal>> entry: localExtrema.entrySet()){

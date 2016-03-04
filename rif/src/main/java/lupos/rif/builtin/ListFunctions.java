@@ -216,7 +216,7 @@ public class ListFunctions {
 	 */
 	@Builtin(Name = "concatenate")
 	public static ListLiteral concatenate(final Argument arg) {
-		if (arg.arguments.size() > 0
+		if (!arg.arguments.isEmpty()
 				&& (arg.arguments.get(0) instanceof RuleList || arg.arguments.get(0) instanceof ListLiteral)) {
 			final Item arg0 = arg.arguments.get(0);
 			final ListLiteral list = (arg0 instanceof RuleList)?((RuleList) arg0).createListLiteral(): ((ListLiteral) arg0).clone();
@@ -380,7 +380,7 @@ public class ListFunctions {
 	 */
 	@Builtin(Name = "union")
 	public static RuleList union(final Argument arg) {
-		if (arg.arguments.size() > 0
+		if (!arg.arguments.isEmpty()
 				&& arg.arguments.get(0) instanceof RuleList) {
 			final RuleList list = (RuleList) arg.arguments.get(0);
 			final List<IExpression> newList = Lists.newArrayList();
@@ -440,7 +440,7 @@ public class ListFunctions {
 	 */
 	@Builtin(Name = "intersect")
 	public static Object intersect(final Argument arg) {
-		if (arg.arguments.size() > 0
+		if (!arg.arguments.isEmpty()
 				&& arg.arguments.get(0) instanceof RuleList) {
 			final RuleList list = (RuleList) arg.arguments.get(0);
 			final List<IExpression> newList = Lists.newArrayList();
@@ -462,7 +462,7 @@ public class ListFunctions {
 			list.getItems().addAll(newList);
 			return list;
 		}
-		if (arg.arguments.size() > 0
+		if (!arg.arguments.isEmpty()
 				&& arg.arguments.get(0) instanceof ListLiteral) {
 			final List<Literal> newList = Lists.newArrayList();
 			for (final Item item : arg.arguments) {

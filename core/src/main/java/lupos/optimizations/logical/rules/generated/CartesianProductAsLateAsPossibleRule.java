@@ -124,7 +124,7 @@ public class CartesianProductAsLateAsPossibleRule extends Rule {
 
         if(_result) {
             // additional check method code...
-            if(this.Join1.getIntersectionVariables().size()>0 ||
+            if(!this.Join1.getIntersectionVariables().isEmpty() ||
             		this.Join1.getPrecedingOperators().size()!=2 ||
                		this.Join2.getPrecedingOperators().size()!=2 ||
             		this.Op2.equals(this.Op3) ||
@@ -134,7 +134,7 @@ public class CartesianProductAsLateAsPossibleRule extends Rule {
             }
             final HashSet<lupos.datastructures.items.Variable> vars = new HashSet<lupos.datastructures.items.Variable>(this.Op1.getUnionVariables());
             vars.retainAll(this.Op2.getUnionVariables());
-            if(vars.size()==0){
+            if(vars.isEmpty()){
             	return false;
             }
             this.id1 = this.Op1.getSucceedingOperators().get(0).getId();

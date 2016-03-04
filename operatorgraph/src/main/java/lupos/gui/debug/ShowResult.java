@@ -221,7 +221,7 @@ public class ShowResult extends CollectRIFResult {
 					|| (!(qr instanceof RuleResult)
 							&& (qr instanceof GraphResult) && (((GraphResult) qr)
 							.getGraphResultTriples() == null || ((GraphResult) qr)
-							.getGraphResultTriples().size() == 0))) {
+					.getGraphResultTriples().isEmpty()))) {
 				booleanResults++;
 			} else {
 				tables++;
@@ -246,12 +246,12 @@ public class ShowResult extends CollectRIFResult {
 
 			} else if (((qr == null || qr.isEmpty()) && !(qr instanceof GraphResult))
 					|| (qr instanceof RuleResult && ((RuleResult) qr)
-							.getPredicateResults().size() == 0)
+					.getPredicateResults().isEmpty())
 					|| (!(qr instanceof RuleResult)
 							&& !(qr instanceof EqualityResult)
 							&& (qr instanceof GraphResult) && (((GraphResult) qr)
 							.getGraphResultTriples() == null || ((GraphResult) qr)
-							.getGraphResultTriples().size() == 0))
+					.getGraphResultTriples().isEmpty()))
 					|| (qr instanceof EqualityResult && qr.isEmpty())) {
 				System.out.println("no result");
 
@@ -386,7 +386,7 @@ public class ShowResult extends CollectRIFResult {
 				int i = 0;
 
 				// result order is defined...
-				if (resultOrder != null && resultOrder.size() > 0) {
+				if (resultOrder != null && !resultOrder.isEmpty()) {
 					for (final String s : resultOrder) {
 						if (variables.contains(new Variable(s))) {
 							tableHead[i++] = "?" + s;
@@ -411,7 +411,7 @@ public class ShowResult extends CollectRIFResult {
 					int j = 0;
 
 					// result order is defined...
-					if (resultOrder != null && resultOrder.size() > 0) {
+					if (resultOrder != null && !resultOrder.isEmpty()) {
 						for (final String s : resultOrder) {
 							if (variables.contains(new Variable(s))) {
 								final Literal literal = ba.get(new Variable(s));

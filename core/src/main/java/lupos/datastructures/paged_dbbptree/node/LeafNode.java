@@ -176,8 +176,8 @@ public class LeafNode<K extends Serializable, V extends Serializable> extends No
 				return new DBBPTreeEntry<K, V>(null, null, this.nextLeafNode);
 			} else {
 				final DBBPTreeEntry<K, V> e = this.getNextLeafEntry(this.in,
-						this.readKeys.size() == 0 ? null : this.readKeys.get(this.readKeys
-								.size() - 1), this.readValues.size() == 0 ? null
+						this.readKeys.isEmpty() ? null : this.readKeys.get(this.readKeys
+								.size() - 1), this.readValues.isEmpty() ? null
 								: this.readValues.get(this.readValues.size() - 1));
 				if (e != null) {
 					if (e.key != null) {

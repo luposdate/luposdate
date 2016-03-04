@@ -324,7 +324,7 @@ public class GroupEditorPane extends VisualEditor<Operator> {
 		super.manageMenuItems();
 		boolean empty = true;
 		for(final VisualGraph<Operator> visualGraph : this.visualGraphs) {
-			if(visualGraph.getBoxes().size() != 0) {
+			if(!visualGraph.getBoxes().isEmpty()) {
 				empty = false;
 				break;
 			}

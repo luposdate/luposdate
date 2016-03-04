@@ -102,7 +102,7 @@ public class MemorySortSortedRun extends Run {
 				}
 				lastString = nextString;
 			}
-			if(contents.size()==0){
+			if(contents.isEmpty()){
 				throw new RuntimeException("Empty runs are not allowed to become a MemorySortSortedRun!");
 			}
 			this.runContent = new StringWithoutCommonPrefix[contents.size()];

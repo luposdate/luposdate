@@ -91,7 +91,7 @@ public class AsynchronSubgraphContainerRule extends
 		 * if the old subgraph container has no parent, maybe the root is its
 		 * parent?
 		 */
-		if (sg.getPrecedingOperators().size() == 0) {
+		if (sg.getPrecedingOperators().isEmpty()) {
 			for (OperatorIDTuple op : globalRoot.getSucceedingOperators()) {
 				if (op.getOperator().equals(sg)) {
 					/*

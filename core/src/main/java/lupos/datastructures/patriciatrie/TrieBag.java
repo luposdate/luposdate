@@ -119,7 +119,7 @@ public abstract class TrieBag extends TrieWithValue<Integer> {
 		}
 
 		// Only do something, if anything mergeable is available
-		if (nodesToMerge.size() > 0) {
+		if (!nodesToMerge.isEmpty()) {
 
 			// Add our own root node
 			if (this.getRootNode() != null){

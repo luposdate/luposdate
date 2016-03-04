@@ -83,7 +83,7 @@ public class NestedLoopJoin extends Join {
 			qr.addAll(combineAndProcess(operandID, binding, 0, QueryResult
 					.createInstance()));
 		}
-		if (qr.size() > 0)
+		if (!qr.isEmpty())
 			return qr;
 		else
 			return null;
@@ -115,7 +115,7 @@ public class NestedLoopJoin extends Join {
 				final QueryResult qr2 = combineAndProcess(operandID, binding,
 						1, bl);
 				qr.addAll(qr2);
-				if (qr2 != null && qr2.size() > 0)
+				if (qr2 != null && !qr2.isEmpty())
 					joinPartnerFromLeftOperand.add(binding);
 			} else {
 				final Iterator<Bindings> it = this.lba[0].iterator();
@@ -125,7 +125,7 @@ public class NestedLoopJoin extends Join {
 					bl.add(b);
 					final QueryResult joinResult = combineAndProcess(operandID,
 							binding, 1, bl);
-					if (joinResult.size() > 0) {
+					if (!joinResult.isEmpty()) {
 						qr.addAll(joinResult);
 						joinPartnerFromLeftOperand.add(b);
 					}
@@ -158,7 +158,7 @@ public class NestedLoopJoin extends Join {
 		if (currentPos == this.getNumberOfOperands()) {
 			qr.addAll(joinBindings(bindings));
 		}
-		if (qr.size() == 0)
+		if (qr.isEmpty())
 			return null;
 		else
 			return qr;

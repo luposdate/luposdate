@@ -129,7 +129,7 @@ public class RuleReplaceLitOverJoin extends Rule {
 
 		// If everything could be pushed downwards, the old ReplaceLit can be
 		// deleted
-		if (replaceLit.getSubstitutionsLiteralLeft().size() == 0) {
+		if (replaceLit.getSubstitutionsLiteralLeft().isEmpty()) {
 			BasicOperator pre;
 			for (int i = 0; i < pres.size(); i++) {
 				pre = pres.get(i);
@@ -165,7 +165,7 @@ public class RuleReplaceLitOverJoin extends Rule {
 		rootOperator.detectCycles();
 		// should have already been done manually: rootOperator.sendMessage(new
 		// BoundVariablesMessage());
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else

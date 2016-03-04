@@ -116,7 +116,7 @@ public class RetrieveDataPanel extends AbstractGuiComponent<Operator> {
 		}
 
 		// determine initial state of projection CheckBox...
-		boolean projection = operator.getProjectionElements().size() > 0;
+		boolean projection = !operator.getProjectionElements().isEmpty();
 
 		// create projection CheckBox...
 		final JCheckBoxOwnIcon projCB = new JCheckBoxOwnIcon("Projection", projection, this.parent.getFONT());
@@ -147,7 +147,7 @@ public class RetrieveDataPanel extends AbstractGuiComponent<Operator> {
 
 		final LinkedList<JComponent> needsEnableList = new LinkedList<JComponent>();
 
-		if(operator.getProjectionElements().size() == 0) {
+		if(operator.getProjectionElements().isEmpty()) {
 			// create new projection element panel...
 			JPanel projectionElement = createProjectionElement(operator, true, operator.getProjectionElements().size(), "");
 			projectionElement.setVisible(projection);
@@ -301,7 +301,7 @@ public class RetrieveDataPanel extends AbstractGuiComponent<Operator> {
 		JPanel fromPanel = this.getRowPanel(); // get panel for row
 
 		// determine initial state of from CheckBox...
-		boolean from = this.operator.getFromList().size() > 0;
+		boolean from = !this.operator.getFromList().isEmpty();
 
 		// create from CheckBox...
 		JCheckBoxOwnIcon fromCB = new JCheckBoxOwnIcon("From", from, this.parent.getFONT());
@@ -331,7 +331,7 @@ public class RetrieveDataPanel extends AbstractGuiComponent<Operator> {
 
 		final LinkedList<JComponent> needsEnableList = new LinkedList<JComponent>();
 
-		if(this.operator.getFromList().size() == 0) {
+		if(this.operator.getFromList().isEmpty()) {
 			// create new from element panel...
 			JPanel fromElement = createFromElement(true, this.operator.getFromList().size(), "");
 			fromElement.setVisible(from);
@@ -425,7 +425,7 @@ public class RetrieveDataPanel extends AbstractGuiComponent<Operator> {
 		JPanel fromNamedPanel = this.getRowPanel(); // get panel for row
 
 		// determine initial state of fromNamed CheckBox...
-		boolean fromNamed = this.operator.getFromNamedList().size() > 0;
+		boolean fromNamed = !this.operator.getFromNamedList().isEmpty();
 
 		// create fromNamed CheckBox...
 		JCheckBoxOwnIcon fromNamedCB = new JCheckBoxOwnIcon("From Named", fromNamed, this.parent.getFONT());
@@ -457,7 +457,7 @@ public class RetrieveDataPanel extends AbstractGuiComponent<Operator> {
 
 		final LinkedList<JComponent> needsEnableList = new LinkedList<JComponent>();
 
-		if(this.operator.getFromNamedList().size() == 0) {
+		if(this.operator.getFromNamedList().isEmpty()) {
 			// create new JTextField...
 			JPanel fromNamedElement = createFromNamedElement(true, operator.getFromNamedList().size(), "");
 			fromNamedElement.setVisible(fromNamed);
@@ -556,7 +556,7 @@ public class RetrieveDataPanel extends AbstractGuiComponent<Operator> {
 		JPanel orderByPanel = this.getRowPanel(); // get panel for row
 
 		// determine initial state of orderBy CheckBox...
-		boolean orderBy = operator.getOrderByList().size() > 0;
+		boolean orderBy = !operator.getOrderByList().isEmpty();
 
 		// create orderBy CheckBox...
 		JCheckBoxOwnIcon orderByCB = new JCheckBoxOwnIcon("Order By", orderBy, this.parent.getFONT());
@@ -575,7 +575,7 @@ public class RetrieveDataPanel extends AbstractGuiComponent<Operator> {
 			SortContainer sortContainer = operator.getOrderByList().get(i);
 
 			// add spacer if this is not the first element...
-			if(this.orderByElementsList.size() > 0) {
+			if(!this.orderByElementsList.isEmpty()) {
 				orderByElementsPanel.add(Box.createRigidArea(new Dimension(10, 3)));
 			}
 
@@ -594,7 +594,7 @@ public class RetrieveDataPanel extends AbstractGuiComponent<Operator> {
 
 		final LinkedList<JComponent> needsEnableList = new LinkedList<JComponent>();
 
-		if(operator.getOrderByList().size() == 0) {
+		if(operator.getOrderByList().isEmpty()) {
 			SortContainer sortContainer = null;
 
 			try {
@@ -621,7 +621,7 @@ public class RetrieveDataPanel extends AbstractGuiComponent<Operator> {
 		addLabel.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
 				// add spacer if this is not the first element...
-				if(orderByElementsList.size() > 0) {
+				if(!orderByElementsList.isEmpty()) {
 					orderByElementsPanel.add(Box.createRigidArea(new Dimension(10, 3)));
 				}
 

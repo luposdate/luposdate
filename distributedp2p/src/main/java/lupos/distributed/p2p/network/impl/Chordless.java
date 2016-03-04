@@ -190,7 +190,7 @@ public class Chordless extends P2PTripleNetwork {
 	@Override
 	public boolean contains(final String locationKey) {
 		final List<Triple> res = this.get(locationKey);
-		return (res != null && res.size() > 0);
+		return (res != null && !res.isEmpty());
 	}
 
 	/** {@inheritDoc} */

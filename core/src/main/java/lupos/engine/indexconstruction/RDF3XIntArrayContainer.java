@@ -96,7 +96,7 @@ public class RDF3XIntArrayContainer {
 
 	@SuppressWarnings("unchecked")
 	public SIPParallelIterator<int[], int[]> prefixSearchInDefaultGraphs(final int collationOrder, final int[] key){
-		if(this.defaultGraphs.size()==0){
+		if(this.defaultGraphs.isEmpty()){
 			return null;
 		}
 		if(this.defaultGraphs.size()>1){

@@ -282,7 +282,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		final Date start = new Date();
 		this.parseAndPrepareRIFDocument(query);
 
-		if(applySubsumptiveDemandTransformationPar && (this.rifDocument.getConclusion()!=null || conclusion!=null) && this.rifDocument.getRules().size()>0){
+		if(applySubsumptiveDemandTransformationPar && (this.rifDocument.getConclusion()!=null || conclusion!=null) && !this.rifDocument.getRules().isEmpty()){
 			// Preprocessing Step:
 			String transformedQuery = (String) this.rifDocument.accept(new LloydToporTransformationVisitor(conclusion), null);
 			this.parseAndPrepareRIFDocument(transformedQuery);
@@ -688,7 +688,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		} else {
 			throw new Exception("Unkwon QueryEvaluator Type: " + this.evaluator.getClass());
 		}
-		if(result.getPredicateResults().size()==0){
+		if(result.getPredicateResults().isEmpty()){
 			return null;
 		} else {
 			return result;
@@ -723,7 +723,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 		for(final TriplePattern tp: this.evaluator.getTriplePatternsOfQuery()){
 			conclusion += tp.getSubject().toString() + " [ " + tp.getPredicate().toString() + " -> " + tp.getObject().toString() + " ] ";
 		}
-		if(conclusion.length()>0){
+		if(!conclusion.isEmpty()){
 			conclusion = "AND(" + conclusion + ")";
 		}
 
@@ -797,7 +797,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 					}
 				} else {
 					final BasicIndexScan bi = (BasicIndexScan) tpOrIndexScan;
-					if(bi.getTriplePattern()!=null && bi.getTriplePattern().size()>0){
+					if(bi.getTriplePattern()!=null && !bi.getTriplePattern().isEmpty()){
 						final LinkedList<TriplePattern> matchingTPs = new LinkedList<TriplePattern>();
 						for(final TriplePattern inIndexScan: bi.getTriplePattern()){
 							if(BasicIndexRuleEvaluator.isMatching(inIndexScan, generateItems)){
@@ -805,7 +805,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 								break;
 							}
 						}
-						if(matchingTPs.size()>0){
+						if(!matchingTPs.isEmpty()){
 							// modify BasicIndex in toBeConnectedTo! (delete tp in current bi, add new BasicIndex with tp, join both operators and additionally add tp for generate operator!)
 							for(final TriplePattern tp: matchingTPs){
 								final TriplePattern newTP = new TriplePattern(tp.getPos(0), tp.getPos(1), tp.getPos(2));
@@ -853,7 +853,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 					}
 				}
 			}
-			if(generate.getSucceedingOperators().size()==0){
+			if(generate.getSucceedingOperators().isEmpty()){
 				// this generate operator is not connected to any other operator and thus can be deleted!
 				deletePrecedingOperators(generate);
 			}
@@ -954,7 +954,7 @@ public class BasicIndexRuleEvaluator extends QueryEvaluator<Node> {
 	 * @param toDelete a {@link lupos.engine.operators.BasicOperator} object.
 	 */
 	public static void deletePrecedingOperators(final BasicOperator toDelete){
-		if(toDelete.getSucceedingOperators().size()>0){
+		if(!toDelete.getSucceedingOperators().isEmpty()){
 			// maybe result of this operation is somewhere else used => end of recursion
 			return;
 		}

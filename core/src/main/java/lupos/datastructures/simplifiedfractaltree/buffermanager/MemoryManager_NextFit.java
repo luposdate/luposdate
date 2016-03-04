@@ -126,7 +126,7 @@ public class MemoryManager_NextFit<K extends Comparable<K> & Serializable, V ext
 						return p; // x = page, y = left bound
 					} else if (j == tmp.size() - 1) {
 						final ArrayList<Point> list = this.getRemaining(i, size - (this.pageSize - gab.x), new ArrayList<Point>());
-						if (list.size() > 0) {
+						if (!list.isEmpty()) {
 							final Pointer p = new Pointer(i, gab.x, size);
 							this.map.get(new Integer(i)).remove(j);
 							for (int l = 0; l < list.size(); l++) {

@@ -113,7 +113,7 @@ public class GraphHelper {
 		long height = 0;
 		HashMap<GraphWrapper, GraphBox> boxes = operatorgraph.getBoxes();
 		
-		if(boxes.size()==0){
+		if(boxes.isEmpty()){
 			return new Tuple<Double, Double>(1.0, 1.0);
 		}
 		

@@ -68,7 +68,7 @@ public class RuleConnectGenPat extends Rule {
 	protected boolean checkPrecondition(final Map<String, BasicOperator> mso) {
 		final Generate generate = (Generate) mso.get("generate");
 		// Connect still not switched Generates
-		return (generate.getSucceedingOperators().size() > 0)
+		return (!generate.getSucceedingOperators().isEmpty())
 				&& (!(generate.getSucceedingOperators().get(0).getOperator() instanceof TriplePattern));
 	}
 
@@ -98,7 +98,7 @@ public class RuleConnectGenPat extends Rule {
 		}
 		rootOperator.removePrecedingOperator(generate);
 		// Set new successors of Generate object
-		if (possiblePats.size() > 0) {
+		if (!possiblePats.isEmpty()) {
 			// System.out.println(generate.toString() + "----"
 			// + possiblePats.toString());
 			generate.setSucceedingOperators(possiblePats);

@@ -140,7 +140,7 @@ public class FederatedQueryVectoredFetchAsNeeded extends FederatedQueryWithoutSu
 		while(resultFromEndpoint_it.hasNext()){
 			final Bindings bindingsFromEndpoint = resultFromEndpoint_it.next();
 			final Set<Variable> vs = bindingsFromEndpoint.getVariableSet();
-			if(vs.size()>0){
+			if(!vs.isEmpty()){
 				final String vname = vs.iterator().next().getName();
 				final Integer index = Integer.parseInt(vname.substring(vname.lastIndexOf('_')+1));
 				QueryResult qr = mapBindingsToIndex.get(index);

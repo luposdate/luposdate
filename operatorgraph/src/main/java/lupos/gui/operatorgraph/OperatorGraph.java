@@ -1008,6 +1008,6 @@ public class OperatorGraph extends JPanel implements IXPref {
 	 * @return a boolean.
 	 */
 	public boolean isEmpty() {
-		return this.boxes.size() == 0;
+		return this.boxes.isEmpty();
 	}
 }

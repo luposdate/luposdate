@@ -263,7 +263,7 @@ public class SevenMemoryIndices extends Indices {
 
 	private final void removeTriple(final String key, final Triple t, final MapOfCollections<String, Triple, Collection<Triple>> map){
 		if(map.removeFromCollection(key, t)){
-			if(map.get(key).size()==0){ // there must be a collection, otherwise removeFromCollection(...) would not have returned true!
+			if(map.get(key).isEmpty()){ // there must be a collection, otherwise removeFromCollection(...) would not have returned true!
 				map.remove(key);
 			}
 		}

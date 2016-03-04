@@ -189,7 +189,7 @@ public class ListOperator extends AbstractTermOperator {
 //			}
 //		}
 		
-		if (!this.isChild && this.getSucceedingElementsWithoutTermSucceedingElements().size() != 0) {
+		if (!this.isChild && !this.getSucceedingElementsWithoutTermSucceedingElements().isEmpty()) {
 			sb.append(" " + this.selectedClassification + " ");
 			for (int j = 0; j < this.getSucceedingElementsWithoutTermSucceedingElements().size(); j++) {
 				sb.append(this.getSucceedingElementsWithoutTermSucceedingElements().get(j).serializeOperator());

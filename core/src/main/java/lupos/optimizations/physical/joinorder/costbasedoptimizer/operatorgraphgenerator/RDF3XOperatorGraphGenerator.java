@@ -214,7 +214,7 @@ public class RDF3XOperatorGraphGenerator extends OperatorGraphGenerator {
 		Join join;
 		Operator last;
 		if (this.RDF3XSORT) {
-			if (sortCriterium.size() == 0 || equalCriterium(sortCriterium, inp.getOrder())) {
+			if (sortCriterium.isEmpty() || equalCriterium(sortCriterium, inp.getOrder())) {
 				join = new MergeJoinWithoutSorting();
 				join.setEstimatedCardinality(inp.getCardinality());
 				last = join;

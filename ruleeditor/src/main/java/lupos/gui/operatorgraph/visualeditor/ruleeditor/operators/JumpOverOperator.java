@@ -130,7 +130,7 @@ public class JumpOverOperator extends AbstractRuleOperator {
 			return ret;
 		}
 
-		if(this.getPrecedingOperators().size() == 0 && this.getSucceedingOperators().size() == 0) {
+		if(this.getPrecedingOperators().isEmpty() && this.getSucceedingOperators().isEmpty()) {
 			if(showErrors) {
 				JOptionPane.showOptionDialog(this.panel.getParentQG().visualEditor, "A JumpOverOperator must have preceding or succeeding elements!", "Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, null, null);
 			}

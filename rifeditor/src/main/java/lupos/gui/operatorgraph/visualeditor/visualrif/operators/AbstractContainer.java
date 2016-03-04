@@ -116,7 +116,7 @@ public abstract class AbstractContainer extends OperatorContainer {
 		titled = BorderFactory.createTitledBorder(lineBorder," "+title+" ", 0, 0, font, Color.BLACK);
 		this.panel.setBorder(titled);
 
-		if(this.getOperators().size() == 0) {
+		if(this.getOperators().isEmpty()) {
 			this.panel.setPreferredSize(new Dimension(150, 100));
 
 			panel.setPreferredSize(new Dimension(150 - 14, 100 - 2));

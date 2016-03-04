@@ -487,7 +487,7 @@ public class TomP2P extends P2PTripleNetwork {
 					logger.error("Unknown data: " + d.getObject(), e);
 				}
 			}
-			if (result.isEmpty() || result.size() == 0) {
+			if (result.isEmpty() || result.isEmpty()) {
 				logger.debug(String.format("Got no triple in key \"%s\" (%s)",
 						locationKey, hash));
 			}

@@ -211,7 +211,7 @@ public class LocalExecutor {
 	 * @return the variables of the result operator!
 	 */
 	public static Collection<Variable> getVariables(final BasicOperator root){
-		if(root.getSucceedingOperators().size()==0) {
+		if(root.getSucceedingOperators().isEmpty()) {
 			return root.getUnionVariables();
 		} else {
 			return LocalExecutor.getVariables(root.getSucceedingOperators().get(0).getOperator());

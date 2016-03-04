@@ -382,7 +382,7 @@ public class DBDelayProducer extends ProducerBaseNoDuplicates {
 			triplelist.addAll(this.trainToEvents(ti));
 		}
 
-		return (triplelist.size() == 0) ? null : triplelist;
+		return (triplelist.isEmpty()) ? null : triplelist;
 	}
 
 	/**

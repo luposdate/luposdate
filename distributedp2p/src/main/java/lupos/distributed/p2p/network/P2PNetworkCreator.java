@@ -166,7 +166,7 @@ public class P2PNetworkCreator {
 		 * @return yes/no
 		 */
 		public boolean hasArguments() {
-			return this.arguments != null && this.arguments.size() > 0;
+			return this.arguments != null && !this.arguments.isEmpty();
 		}
 	}
 
@@ -466,7 +466,7 @@ public class P2PNetworkCreator {
 							"Implementation \"%s\"not found.", name));
 				}
 				// set arguments, if set
-				if (arguments != null && arguments.size() > 0) {
+				if (arguments != null && !arguments.isEmpty()) {
 					p2pImplementation.setArguments(arguments);
 				} else {
 					p2pImplementation.setArguments(null);

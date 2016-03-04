@@ -66,7 +66,7 @@ public class SplitCartesianProduct implements SplitHeuristic {
 				}
 			}
 			int index;
-			if (existingLists.size() == 0) {
+			if (existingLists.isEmpty()) {
 				// make new list
 				index = listOrReferences.size();
 				final LinkedList<LeafNodePlan> newList = new LinkedList<LeafNodePlan>();

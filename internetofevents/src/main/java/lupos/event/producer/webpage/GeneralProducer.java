@@ -183,7 +183,7 @@ public class GeneralProducer extends ProducerBaseNoDuplicates {
 					// evaluate regex for information selection
 					boolean addValues=true;
 					// if regex given
-					if (this.regexString.get(i).length()>0) {
+					if (!this.regexString.get(i).isEmpty()) {
 						final Pattern pattern = Pattern.compile(this.regexString.get(i));
 						final Matcher matcher = pattern.matcher(data);
 						// if regex valid, extract information

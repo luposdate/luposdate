@@ -90,7 +90,7 @@ public class RuleEliminateUnnecessaryGenerate extends Rule {
 		// generate.setSucceedingOperators(null);
 
 		// are there no other operators than generate???
-		if (tp.getSucceedingOperators().size() == 0) {
+		if (tp.getSucceedingOperators().isEmpty()) {
 			for (final BasicOperator bo : tp.getPrecedingOperators()) {
 				bo.removeSucceedingOperator(tp);
 			}
@@ -98,7 +98,7 @@ public class RuleEliminateUnnecessaryGenerate extends Rule {
 			// tp.setSucceedingOperators(null);
 			deleted.add(tp);
 		}
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else

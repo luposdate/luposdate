@@ -80,7 +80,7 @@ public class InnerNode<K extends Serializable, V extends Serializable> extends N
 	 */
 	public void readNextEntry() {
 		final Tuple<K, Integer> result = this.nodeDeSerializer
-				.getNextInnerNodeEntry(this.readKeys.size() == 0 ? null : this.readKeys
+				.getNextInnerNodeEntry(this.readKeys.isEmpty() ? null : this.readKeys
 						.get(this.readKeys.size() - 1), this.in);
 		if (result == null) {
 			try {

@@ -109,7 +109,7 @@ public class LeafNodePlan extends Plan {
 			this.setCardinality(0.0);
 			tp.setCardinality(0);
 		} else {
-			if (this.selectivity.size() == 0) {
+			if (this.selectivity.isEmpty()) {
 				this.cost = 1.0;
 				this.setCardinality(0.0);
 				tp.setCardinality(0);

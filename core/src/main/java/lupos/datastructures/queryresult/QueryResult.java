@@ -723,7 +723,7 @@ public class QueryResult implements Iterable<Bindings>, Serializable {
 	 * <p>release.</p>
 	 */
 	public void release() {
-		if (this.bindings.size() > 0) {
+		if (!this.bindings.isEmpty()) {
 			if (this.bindings instanceof CollectionImplementation) {
 				((CollectionImplementation<Bindings>) this.bindings).release();
 			} else if (this.bindings instanceof PagedCollection) {

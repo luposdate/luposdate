@@ -438,7 +438,7 @@ public class PartitionSubgraphRule extends Rule {
 		/*
 		 * just make sure, that the formation in operator graph is right!
 		 */
-		BasicOperator opp = sg1.getPrecedingOperators().size() > 0 ? sg1
+		BasicOperator opp = !sg1.getPrecedingOperators().isEmpty() ? sg1
 				.getPrecedingOperators().get(0) : null;
 
 		/*
@@ -658,7 +658,7 @@ public class PartitionSubgraphRule extends Rule {
 	 */
 	private BasicIndexScan getIndexScan(final BasicOperator root) {
 		final List<OperatorIDTuple> succs = root.getSucceedingOperators();
-		if (succs == null | succs.size() == 0)
+		if (succs == null | succs.isEmpty())
 			return null;
 		for (final OperatorIDTuple succ : succs) {
 			final BasicOperator op = succ.getOperator();

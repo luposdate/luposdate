@@ -81,7 +81,7 @@ public class EmptyIndexScanSubmittingQueryResultWithOneEmptyBindings extends Emp
 		final QueryResult queryResult = QueryResult.createInstance();
 		if(this.rdfGraph!=null && this.rdfGraph.isVariable()){
 			final Variable graphConstraint = (Variable) this.rdfGraph;
-			if (this.root.namedGraphs != null && this.root.namedGraphs.size() > 0) {
+			if (this.root.namedGraphs != null && !this.root.namedGraphs.isEmpty()) {
 				// Convert the named graphs' names into URILiterals
 				// to be applicable later on
 				for (final String name : this.root.namedGraphs) {

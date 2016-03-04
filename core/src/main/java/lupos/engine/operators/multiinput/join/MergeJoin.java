@@ -129,11 +129,10 @@ public class MergeJoin extends Join {
 	/** {@inheritDoc} */
 	@Override
 	public Message preProcessMessage(final EndOfEvaluationMessage msg) {
-		if (this.left != null && this.right != null && this.left.size() > 0
-				&& this.right.size() > 0) {
+		if (this.left != null && this.right != null && !this.left.isEmpty()
+				&& !this.right.isEmpty()) {
 			this.comp.setVariables(this.intersectionVariables);
-			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables
-					.size() == 0) ? MergeJoin.cartesianProductIterator(
+			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables.isEmpty()) ? MergeJoin.cartesianProductIterator(
 					QueryResult.createInstance(this.left.iterator()), QueryResult
 							.createInstance(this.right.iterator())) : MergeJoin
 					.mergeJoinIterator(this.left.iterator(), this.right.iterator(), this.comp,
@@ -275,7 +274,7 @@ public class MergeJoin extends Join {
 				}
 			}
 		} while (processFurther == true);
-		if (result.size() > 0) {
+		if (!result.isEmpty()) {
 			return result;
 		} else {
 			return null;
@@ -1230,8 +1229,8 @@ public class MergeJoin extends Join {
 	public static QueryResult mergeJoin(final SortedBag<Bindings> ssb1,
 			final SortedBag<Bindings> ssb2, final Comparator<Bindings> comp,
 			final Collection<Variable> vars, final BindingsFactory bindingsFactory) {
-		if (ssb1 == null || ssb2 == null || ssb1.size() == 0
-				|| ssb2.size() == 0) {
+		if (ssb1 == null || ssb2 == null || ssb1.isEmpty()
+				|| ssb2.isEmpty()) {
 			return null;
 		}
 		return QueryResult.createInstance(MergeJoin.mergeJoinIterator(ssb1
@@ -1242,8 +1241,8 @@ public class MergeJoin extends Join {
 	private OptionalResult mergeJoinOptionalResult(
 			final SortedBag<Bindings> ssb1, final SortedBag<Bindings> ssb2,
 			final Comparator<Bindings> comp) {
-		if (ssb1 == null || ssb2 == null || ssb1.size() == 0
-				|| ssb2.size() == 0) {
+		if (ssb1 == null || ssb2 == null || ssb1.isEmpty()
+				|| ssb2.isEmpty()) {
 			return null;
 		}
 
@@ -1563,10 +1562,10 @@ public class MergeJoin extends Join {
 	@Override
 	public Message preProcessMessageDebug(final EndOfEvaluationMessage msg,
 			final DebugStep debugstep) {
-		if (this.left != null && this.right != null && this.left.size() > 0
-				&& this.right.size() > 0) {
+		if (this.left != null && this.right != null && !this.left.isEmpty()
+				&& !this.right.isEmpty()) {
 			this.comp.setVariables(this.intersectionVariables);
-			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables.size() == 0) ?
+			final ParallelIterator<Bindings> currentResult = (this.intersectionVariables.isEmpty()) ?
 					MergeJoin.cartesianProductIterator(QueryResult.createInstance(this.left.iterator()), QueryResult.createInstance(this.right.iterator())) :
 						MergeJoin.mergeJoinIterator(this.left.iterator(), this.right.iterator(), this.comp, this.intersectionVariables, this.bindingsFactory);
 			if (currentResult != null && currentResult.hasNext()) {

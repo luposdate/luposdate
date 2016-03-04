@@ -137,7 +137,7 @@ public class RuleFactorOutUnionInJoin extends Rule {
 
 			toMove.setSucceedingOperator(new OperatorIDTuple(joinNew, id));
 		}
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else

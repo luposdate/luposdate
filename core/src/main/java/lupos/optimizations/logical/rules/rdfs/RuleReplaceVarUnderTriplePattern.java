@@ -127,7 +127,7 @@ public class RuleReplaceVarUnderTriplePattern extends Rule {
 		// should have been done manually: rootOperator.sendMessage(new
 		// BoundVariablesMessage());
 		deleted.add(repVar);
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else

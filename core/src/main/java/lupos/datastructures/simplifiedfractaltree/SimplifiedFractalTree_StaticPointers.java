@@ -140,7 +140,7 @@ public class SimplifiedFractalTree_StaticPointers<K extends Comparable<K> & Seri
 		if (this.bufferedList.size() <= index) {
 			return null;
 		}
-		if (this.bufferedList.size() > 0) {
+		if (!this.bufferedList.isEmpty()) {
 			FractalTreeEntry<K, V> entry = this.bufferedList.get(index);
 			if (entry.key != null && entry.key.compareTo((K) key) == 0) {
 				return entry.value;
@@ -229,7 +229,7 @@ public class SimplifiedFractalTree_StaticPointers<K extends Comparable<K> & Seri
 		if (index >= this.bufferedList.size()) {
 			return -1;
 		}
-		if (this.bufferedList.size() > 0) {
+		if (!this.bufferedList.isEmpty()) {
 			entry = this.bufferedList.get(index);
 			if (entry.key != null && entry.key.compareTo(key) == 0) {
 				return index;
@@ -347,7 +347,7 @@ public class SimplifiedFractalTree_StaticPointers<K extends Comparable<K> & Seri
 	/** {@inheritDoc} */
 	@Override
 	protected void merge(final FractalTreeEntry<K, V> element) {
-		if (this.bufferedList.size() == 0) {
+		if (this.bufferedList.isEmpty()) {
 			this.bufferedList.add(0, element);
 		} else if (this.bufferedList.get(0).key == null) {
 			this.bufferedList.set(0, element);

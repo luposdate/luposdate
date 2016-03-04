@@ -245,7 +245,7 @@ public abstract class RuleEngine {
 		Set<BasicOperator> set = mapStartNodes.get(basicOperator.getClass());
 		if (set != null) {
 			set.remove(basicOperator);
-			if (set.size() > 0)
+			if (!set.isEmpty())
 				mapStartNodes.put(basicOperator.getClass(), set);
 			else
 				mapStartNodes.remove(basicOperator.getClass());
@@ -264,7 +264,7 @@ public abstract class RuleEngine {
 			set = mapStartNodes.get(Join.class);
 			if (set != null) {
 				set.remove(basicOperator);
-				if (set.size() > 0)
+				if (!set.isEmpty())
 					mapStartNodes.put(Join.class, set);
 				else
 					mapStartNodes.remove(Join.class);
@@ -278,7 +278,7 @@ public abstract class RuleEngine {
 			set = mapStartNodes.get(Optional.class);
 			if (set != null) {
 				set.remove(basicOperator);
-				if (set.size() > 0)
+				if (!set.isEmpty())
 					mapStartNodes.put(Optional.class, set);
 				else
 					mapStartNodes.remove(Optional.class);

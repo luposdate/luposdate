@@ -211,7 +211,7 @@ public class SplitStarShapedJoinOrPath implements SplitHeuristic {
 				// compute the cardinality of the join result as well as its cost 
 				double cardMax0 = 0.0;
 				if (selectivityMax0 != null) {
-					if (selectivityMax0.size() > 0) {
+					if (!selectivityMax0.isEmpty()) {
 						cardMax0 = selectivityMax0.values().iterator().next().getSum();
 					}
 				}				
@@ -220,7 +220,7 @@ public class SplitStarShapedJoinOrPath implements SplitHeuristic {
 				// compute the cardinality of the join result as well as its cost 
 				double cardMax1 = 0.0;
 				if (selectivityMax1 != null) {
-					if (selectivityMax1.size() > 0) {
+					if (!selectivityMax1.isEmpty()) {
 						cardMax1 = selectivityMax1.values().iterator().next().getSum();
 					}
 				}				

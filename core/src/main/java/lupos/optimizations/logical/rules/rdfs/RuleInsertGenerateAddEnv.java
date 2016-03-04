@@ -159,7 +159,7 @@ public class RuleInsertGenerateAddEnv extends Rule {
 		rootOperator.sendMessage(new BoundVariablesMessage());
 		added.add(genAdd);
 		deleted.add(repLit);
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else

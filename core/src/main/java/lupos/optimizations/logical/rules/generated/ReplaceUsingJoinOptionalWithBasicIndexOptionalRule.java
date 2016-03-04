@@ -159,7 +159,7 @@ public class ReplaceUsingJoinOptionalWithBasicIndexOptionalRule extends Rule {
           // repairing the operand ID
           optional_new.getOperatorIDTuple(this.suc).setId(this.operandID);
         }
-        if(this.indexScan.getSucceedingOperators().size()==0){
+        if(this.indexScan.getSucceedingOperators().isEmpty()){
           this.deleteOperator(this.indexScan, _startNodes);
         }
     }

@@ -303,7 +303,7 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 
 
 
-			if( this.ruleVariableList.size() > 0 ) {
+			if(!this.ruleVariableList.isEmpty()) {
 				sb.append("\n\tForall");
 			}
 
@@ -314,7 +314,7 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 				}
 			}
 
-			if( this.ruleVariableList.size() > 0 ) {
+			if(!this.ruleVariableList.isEmpty()) {
 				sb.append(" (\n");
 			}
 
@@ -336,7 +336,7 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 
 			sb.append("\n");
 
-			if( this.ruleVariableList.size() > 0 ) {
+			if(!this.ruleVariableList.isEmpty()) {
 				sb.append(")\n");
 			}
 		}

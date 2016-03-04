@@ -232,7 +232,7 @@ public abstract class Operator implements IPrefix {
 				sucOp.getOperator().delete(true);
 			}
 			else {
-				if(sucOp.getOperator().getPrecedingOperators().size() == 0) {
+				if(sucOp.getOperator().getPrecedingOperators().isEmpty()) {
 					sucOp.getOperator().panel.getParentQG().addToRootList(sucOp.getOperator().panel.getParentQG().createGraphWrapper(sucOp.getOperator()));
 				}
 			}
@@ -508,7 +508,7 @@ public abstract class Operator implements IPrefix {
 
 		this.annotationLabels.get(child).delete();
 		
-		if(child.getPrecedingOperators().size() == 0) {
+		if(child.getPrecedingOperators().isEmpty()) {
 			VisualGraph<Operator> parentGQ = this.annotationLabels.get(child).getParentQG();
 			parentGQ.addToRootList(parentGQ.createGraphWrapper(child));
 		}

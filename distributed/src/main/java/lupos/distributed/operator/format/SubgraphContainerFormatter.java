@@ -239,7 +239,7 @@ public class SubgraphContainerFormatter implements OperatorFormatter {
 					 * get the node id of the operator
 					 */
 					counterID = map.get(op);
-					if (op.getPrecedingOperators().size() == 0) {
+					if (op.getPrecedingOperators().isEmpty()) {
 						//if there is no preceding, it should be the root (node_id = 1)
 						edge.put("from", 1);
 						edge.put("to", counterID);

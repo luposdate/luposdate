@@ -170,7 +170,7 @@ public abstract class Bindings implements Serializable, Comparable<Bindings> {
 		}
 		sv.removeAll(svb);
 		// different variables?
-		if (sv.size() > 0) {
+		if (!sv.isEmpty()) {
 			svb.removeAll(this.getVariableSet());
 			// let minimum variable of both bindings decide which bindings is
 			// smaller!

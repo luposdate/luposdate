@@ -189,7 +189,7 @@ public class PushRuleFilterRule extends Rule {
             
             if(this.op instanceof lupos.engine.operators.multiinput.join.Join) {
                 // check if the join has preceding this.ops in a loop
-                if(this.op.getCycleOperands() != null && this.op.getCycleOperands().size() > 0) {
+                if(this.op.getCycleOperands() != null && !this.op.getCycleOperands().isEmpty()) {
                     return false;
                 }
             }

@@ -227,7 +227,7 @@ public abstract class Rule {
 					if (this.inSubgraph(mso, opID)) {
 						succs.remove(i);
 						opID.getOperator().removePrecedingOperator(op2);
-						if (opID.getOperator().getPrecedingOperators().size() == 0) {
+						if (opID.getOperator().getPrecedingOperators().isEmpty()) {
 							deleted.add(opID.getOperator());
 						}
 					}
@@ -259,7 +259,7 @@ public abstract class Rule {
 		rootOperator.setParents();
 		rootOperator.detectCycles();
 		rootOperator.sendMessage(new BoundVariablesMessage());
-		if (deleted.size() > 0 || added.size() > 0) {
+		if (!deleted.isEmpty() || !added.isEmpty()) {
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		} else {

@@ -112,7 +112,7 @@ public class ExternalSorter implements Sorter {
 
 		// final merge phase: merge all runs (which are stored on disk)
 		Run result;
-		if(this.runsOnDisk.size()==0){
+		if(this.runsOnDisk.isEmpty()){
 			System.err.println("No runs there to be merged!");
 			return null;
 		} else if(this.runsOnDisk.size()==1){

@@ -82,7 +82,7 @@ public class PreOptimization {
 					pat.addPrecedingOperator(generate);
 				}
 			}
-			if (possiblePats.size() > 0) {
+			if (!possiblePats.isEmpty()) {
 				try {
 					Thread.sleep(50);
 				} catch (final InterruptedException e) {

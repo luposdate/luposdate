@@ -118,7 +118,7 @@ public abstract class Rule {
 	@SuppressWarnings("unchecked")
 	protected void deleteOperatorWithoutParentsRecursive(BasicOperator op, HashMap<Class<?>, HashSet<BasicOperator>> startNodes) {
 		// operator has still preceding operator => don't do anything
-		if(op.getPrecedingOperators().size() > 0) {
+		if(!op.getPrecedingOperators().isEmpty()) {
 			return;
 		}
 
@@ -160,7 +160,7 @@ public abstract class Rule {
 	 * This method is used within deleteOperatorWithParentsAndChildren(...)
 	 */
 	private void deletePrecedingOperators(BasicOperator op, HashMap<Class<?>, HashSet<BasicOperator>> startNodes){
-		if(op.getPrecedingOperators().size()==0){
+		if(op.getPrecedingOperators().isEmpty()){
 			return;
 		}
 		

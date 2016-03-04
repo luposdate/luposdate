@@ -507,7 +507,7 @@ public abstract class AbstractTermOperator extends Operator {
 		 */
 		public String checkName(final String basename, String newname, int index) {
 			boolean exists = false;
-			if (this.termNames.size() > 0) {
+			if (!this.termNames.isEmpty()) {
 				for (int i = 0; i < this.termNames.size(); i++) {
 					if (newname.equalsIgnoreCase(this.termNames.get(i))) {
 						newname = basename + index;

@@ -173,7 +173,7 @@ public final class Sugiyama {
 			}
 		
 		
-			while (positions.size() != 0) {
+			while (!positions.isEmpty()) {
 				NodeWrapper smallestPos = positions.getFirst();
 				for (int i = 1; i < positions.size(); i++) {
 					NodeWrapper temp = positions.get(i);

@@ -255,7 +255,7 @@ public abstract class IndexOnLeftOperandJoin extends Join {
 				if(keyJoin != null){
 					fromLeft = this.leftOperandsData.get(keyJoin);
 				} else {
-					if(this.cartesianProduct!=null && this.cartesianProduct.size()>0){
+					if(this.cartesianProduct!=null && !this.cartesianProduct.isEmpty()){
 						fromLeft = this.cartesianProduct;
 					} else {
 						fromLeft = null;

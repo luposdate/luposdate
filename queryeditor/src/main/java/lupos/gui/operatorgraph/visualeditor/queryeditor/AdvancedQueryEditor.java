@@ -487,7 +487,7 @@ public class AdvancedQueryEditor extends QueryEditor {
 				.isEmpty()) && !(resultQueryEvaluator instanceof GraphResult))
 				|| ((resultQueryEvaluator instanceof GraphResult) && (((GraphResult) resultQueryEvaluator)
 						.getGraphResultTriples() == null || ((GraphResult) resultQueryEvaluator)
-						.getGraphResultTriples().size() == 0))) {
+				.getGraphResultTriples().isEmpty()))) {
 			System.out.println("no result");
 
 			final JLabel l_noResult = new JLabel();
@@ -741,7 +741,7 @@ public class AdvancedQueryEditor extends QueryEditor {
 				for (final Variable v : variables) {
 					allVariables.remove(v.getName());
 				}
-				if (allVariables.size() > 0) {
+				if (!allVariables.isEmpty()) {
 					this.outputTableResult(rows, tableHead,
 							resultQueryEvaluator, allVariables);
 					return;
@@ -809,7 +809,7 @@ public class AdvancedQueryEditor extends QueryEditor {
 				statusBar.clear();
 			}
 		});
-		buttonBackward.setEnabled(backwardList.size() > 0);
+		buttonBackward.setEnabled(!backwardList.isEmpty());
 		navigatePanel.add(buttonBackward);
 
 		buttonForward = new JButton(">");
@@ -822,15 +822,15 @@ public class AdvancedQueryEditor extends QueryEditor {
 				statusBar.clear();
 			}
 		});
-		buttonForward.setEnabled(forwardList.size() > 0);
+		buttonForward.setEnabled(!forwardList.isEmpty());
 		navigatePanel.add(buttonForward);
 
 		prefixesPanel.add(navigatePanel, BorderLayout.CENTER);
 	}
 
 	private void updateAfterNavigation(final String newQuery) {
-		buttonBackward.setEnabled(backwardList.size() > 0);
-		buttonForward.setEnabled(forwardList.size() > 0);
+		buttonBackward.setEnabled(!backwardList.isEmpty());
+		buttonForward.setEnabled(!forwardList.isEmpty());
 		updateAll(newQuery, false);
 	}
 

@@ -92,7 +92,7 @@ public class RuleSplitJoinOperandsWithSameId extends Rule {
 		}
 		transformOperands(0, leftOperands, join, added);
 		transformOperands(1, rightOperands, join, added);
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else

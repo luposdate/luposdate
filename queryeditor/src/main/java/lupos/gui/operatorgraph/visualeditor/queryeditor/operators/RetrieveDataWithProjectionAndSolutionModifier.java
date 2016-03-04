@@ -151,7 +151,7 @@ public abstract class RetrieveDataWithProjectionAndSolutionModifier extends Retr
 	public StringBuffer serializeProjections() {
 		StringBuffer ret = new StringBuffer();
 
-		if(this.projectionElements.size() == 0 || !((RetrieveDataPanel) this.panel).getElementStatus("projection")) {
+		if(this.projectionElements.isEmpty() || !((RetrieveDataPanel) this.panel).getElementStatus("projection")) {
 			ret.append("*");
 		}
 		else {

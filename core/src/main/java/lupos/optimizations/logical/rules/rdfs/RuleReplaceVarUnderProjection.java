@@ -117,7 +117,7 @@ public class RuleReplaceVarUnderProjection extends Rule {
 		rootOperator.sendMessage(new BoundVariablesMessage());
 		deleted.add(replaceVar);
 		added.add(replaceVar_new);
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else

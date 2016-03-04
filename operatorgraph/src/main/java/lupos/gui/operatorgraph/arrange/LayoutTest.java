@@ -68,7 +68,7 @@ public class LayoutTest {
 		
 		for (GraphWrapper gw : boxes.keySet()) {
 			LinkedList <GraphWrapper> descendants = gw.getPrecedingElements();
-			if (descendants.size() != 0) {
+			if (!descendants.isEmpty()) {
 				for (GraphWrapper pre : descendants) {
 					int x = boxes.get(gw).getX() - boxes.get(pre).getX();
 					int y = boxes.get(gw).getY() - boxes.get(pre).getY();

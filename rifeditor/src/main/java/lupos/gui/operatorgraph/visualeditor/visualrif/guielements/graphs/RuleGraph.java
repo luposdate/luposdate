@@ -522,7 +522,7 @@ public class RuleGraph  extends VisualGraphOperator{
 	public String checkName(final String basename, String newname, int index) {
 		boolean exists = false;
 
-		if (this.operatorNames.size() > 0) {
+		if (!this.operatorNames.isEmpty()) {
 			for (int i = 0; i < this.operatorNames.size(); i++) {
 				if (newname.equalsIgnoreCase(this.operatorNames.get(i))) {
 					newname = basename + index;

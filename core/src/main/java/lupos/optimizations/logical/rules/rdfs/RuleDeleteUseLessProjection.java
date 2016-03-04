@@ -127,7 +127,7 @@ public class RuleDeleteUseLessProjection extends Rule {
 		// should be no problem to leave this out: rootOperator.sendMessage(new
 		// BoundVariablesMessage());
 		deleted.add(projection);
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else

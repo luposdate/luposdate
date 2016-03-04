@@ -175,7 +175,7 @@ public class GraphRow {
 	 * @return a int.
 	 */
 	public int getWidth() {
-		if(this.boxes.size()==0){
+		if(this.boxes.isEmpty()){
 			return 0;
 		}
 		GraphBox mostLeft = this.boxes.get(0);

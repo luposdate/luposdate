@@ -181,7 +181,7 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 		boolean empty = true;
 
 		for(final VisualGraph<Operator> visualGraph : this.visualGraphs) {
-			if(visualGraph.getBoxes().size() != 0) {
+			if(!visualGraph.getBoxes().isEmpty()) {
 				empty = false;
 
 				break;
@@ -228,7 +228,7 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 
 		final LinkedList<GraphWrapper> rootNodes = this.visualGraphs.get(0).getRootList(false);
 
-		if(rootNodes.size() > 0) {
+		if(!rootNodes.isEmpty()) {
 			return (RuleOperator) rootNodes.get(0).getElement();
 		}
 
@@ -331,7 +331,7 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 
 			jumpOps_right.removeAll(jumpOps_left);
 
-			if(jumpOps_right.size() > 0) {
+			if(!jumpOps_right.isEmpty()) {
 				throw new ModificationException("ERROR: It is not allowed to add JumpOverOperators on the right side which are not present on the left side!", null);
 			}
 
@@ -362,7 +362,7 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 			final LinkedList<HashSet<ConnectionContainer>> connections = this.getConnections();
 			final HashSet<ConnectionContainer> rightConnections = connections.get(1);
 
-			if(visualGraph1.getRootList(false).size() > 0) {
+			if(!visualGraph1.getRootList(false).isEmpty()) {
 				this.analyze_manage_node(variableList_right, (AbstractRuleOperator) visualGraph1.getRootList(false).get(0).getElement(), 0, new HashSet<AbstractRuleOperator>(), new HashMap<Operator, HashSet<Operator>>());
 			}
 
@@ -591,7 +591,7 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 
 		final LinkedList<Operator> precedingOperators = node.getPrecedingOperators();
 
-		if(precedingOperators.size() > 0) {
+		if(!precedingOperators.isEmpty()) {
 			for(int i = 0; i < precedingOperators.size(); i += 1) {
 				final AbstractRuleOperator precOp = (AbstractRuleOperator) precedingOperators.get(i);
 
@@ -640,7 +640,7 @@ public class RuleEditorPane extends VisualEditor<Operator> {
 
 		final LinkedList<OperatorIDTuple<Operator>> succedingOperators = node.getSucceedingOperators();
 
-		if(succedingOperators.size() > 0) {
+		if(!succedingOperators.isEmpty()) {
 			for(int i = 0; i < succedingOperators.size(); i += 1) {
 				final OperatorIDTuple<Operator> sucOpIDTup = succedingOperators.get(i);
 				final AbstractRuleOperator sucOp = (AbstractRuleOperator) sucOpIDTup.getOperator();

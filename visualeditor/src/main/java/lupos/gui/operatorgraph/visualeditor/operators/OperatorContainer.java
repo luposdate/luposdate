@@ -145,7 +145,7 @@ public abstract class OperatorContainer extends Operator {
 		this.panel = new ContainerPanel(this, gw, panel, recursiveQueryGraph, parent);
 		this.panel.setBorder(new LineBorder(bgColor));
 
-		if(this.operators.size() == 0) {
+		if(this.operators.isEmpty()) {
 			this.panel.setPreferredSize(new Dimension(150, 100));
 
 			panel.setPreferredSize(new Dimension(150 - 14, 100 - 2));

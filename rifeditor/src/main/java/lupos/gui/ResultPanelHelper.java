@@ -206,7 +206,7 @@ public final class ResultPanelHelper {
 
 		boolean tablesOccur = false;
 		for (final QueryResult qr : resultQueryEvaluator) {
-			if (!(qr instanceof BooleanResult) && (qr.size() > 0))
+			if (!(qr instanceof BooleanResult) && (!qr.isEmpty()))
 				tablesOccur = true;
 		}
 

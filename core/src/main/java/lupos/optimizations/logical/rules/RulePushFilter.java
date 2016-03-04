@@ -118,7 +118,7 @@ public class RulePushFilter extends RuleFilter {
 		if (operator instanceof Join) {
 			// check if the join has preceding operators in a loop
 			if (operator.getCycleOperands() != null
-					&& operator.getCycleOperands().size() > 0) {
+					&& !operator.getCycleOperands().isEmpty()) {
 				return false;
 			}
 		}

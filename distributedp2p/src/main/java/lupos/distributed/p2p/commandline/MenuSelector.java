@@ -364,7 +364,7 @@ public class MenuSelector<T> {
 						tmpList.add(result);
 					}
 				}
-				if (tmpList.size() > 0) {
+				if (!tmpList.isEmpty()) {
 					this.multiResult = tmpList.toArray(new MenuItem[tmpList.size()]);
 					return tmpList.get(0);
 				} else {

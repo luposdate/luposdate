@@ -544,14 +544,14 @@ public class DocumentationPanel extends JPanel {
 		LinkedList<String> seeAlsoList_RulePackages = this.seeAlsoList_rulePackages;
 		LinkedList<String> seeAlsoList_Rules = this.seeAlsoList_rules;
 
-		if(seeAlsoList_RulePackages.size() > 0 || seeAlsoList_Rules.size() > 0) {
+		if(!seeAlsoList_RulePackages.isEmpty() || !seeAlsoList_Rules.isEmpty()) {
 			content.append("<h2>See Also:</h2>\n");
 
-			if(seeAlsoList_RulePackages.size() > 0) {
+			if(!seeAlsoList_RulePackages.isEmpty()) {
 				content.append("<b>RulePackages:</b> " + this.formatSeeAlso(TypeEnum.RulePackage, seeAlsoList_RulePackages) + "<br>\n");
 			}
 
-			if(seeAlsoList_Rules.size() > 0) {
+			if(!seeAlsoList_Rules.isEmpty()) {
 				content.append("<b>Rules:</b> " + this.formatSeeAlso(TypeEnum.Rule, seeAlsoList_Rules) + "<br>\n");
 			}
 		}

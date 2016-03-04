@@ -123,7 +123,7 @@ public class MemorySortSortedRunOnDisk extends Run {
 			}
 			lastString = string;
 		}
-		if(this.diskCollection.size()==0){
+		if(this.diskCollection.isEmpty()){
 			throw new RuntimeException("Empty runs are not allowed to become a MemorySortSortedRunOnDisk!");
 		}
 		this.diskCollection.close();

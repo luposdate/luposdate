@@ -193,7 +193,7 @@ public abstract class Plan implements Comparable<Plan>, Cloneable {
 			if (this.selectivity == null) {
 				return 0.0;
 			} else {
-				if (this.selectivity.size() == 0 || cardinalityOtherOperand == 0.0) {
+				if (this.selectivity.isEmpty() || cardinalityOtherOperand == 0.0) {
 					return 1.0;
 				} else {
 					return cardinalityOtherOperand;
@@ -268,7 +268,7 @@ public abstract class Plan implements Comparable<Plan>, Cloneable {
 		protected int permutationOfOrderings(
 				final LinkedList<Variable> possibleOrdering,
 				final HashSet<Variable> remainingJoinPartner) {
-			if (remainingJoinPartner.size() == 0) {
+			if (remainingJoinPartner.isEmpty()) {
 				// the possible ordering of the result (one of its permutations) is now complete => check if the operands can fulfill the ordering!
 				if (!this.canUseMergeJoin(possibleOrdering)){
 					return -1;

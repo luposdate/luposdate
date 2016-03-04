@@ -110,7 +110,7 @@ public class EventQueryBuilder {
 		String filter = "    FILTER(";
 		for(EventWindowData d : eventWindowDataList) {
 			for(PropertyFilterData d2 : d.propertyFilterData) {
-				if(d2.filters.size() > 0) {					
+				if(!d2.filters.isEmpty()) {					
 					for(Filter f : d2.filters) {
 						if(!noFilter) // false on first filter
 							filter += " && ";

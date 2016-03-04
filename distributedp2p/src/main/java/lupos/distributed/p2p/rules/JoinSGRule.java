@@ -367,7 +367,7 @@ public class JoinSGRule extends Rule {
 	 */
 	private BasicIndexScan getIndexScan(final BasicOperator root) {
 		final List<OperatorIDTuple> succs = root.getSucceedingOperators();
-		if (succs == null | succs.size() == 0)
+		if (succs == null | succs.isEmpty())
 			return null;
 		for (final OperatorIDTuple succ : succs) {
 			final BasicOperator op = succ.getOperator();

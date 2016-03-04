@@ -51,7 +51,7 @@ public class RuleDeleteEmptyReplaceVar extends Rule {
 	protected boolean checkPrecondition(final Map<String, BasicOperator> mso) {
 		final ReplaceVar replaceVar = (ReplaceVar) mso.get("replaceVar");
 		// No substitution is left
-		return (replaceVar.getSubstitutionsVariableLeft().size() == 0);
+		return (replaceVar.getSubstitutionsVariableLeft().isEmpty());
 	}
 
 	/** {@inheritDoc} */
@@ -97,7 +97,7 @@ public class RuleDeleteEmptyReplaceVar extends Rule {
 		// should have been done manually: rootOperator.sendMessage(new
 		// BoundVariablesMessage());
 		deleted.add(replaceVar);
-		if (deleted.size() > 0 || added.size() > 0)
+		if (!deleted.isEmpty() || !added.isEmpty())
 			return new Tuple<Collection<BasicOperator>, Collection<BasicOperator>>(
 					added, deleted);
 		else

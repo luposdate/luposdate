@@ -56,7 +56,7 @@ public class Delete extends MultipleURIOperator {
 		if (bindings instanceof GraphResult) {
 			final GraphResult gr = (GraphResult) bindings;
 			for (final Triple t : gr.getGraphResultTriples()) {
-				if (cu == null || cu.size() == 0) {
+				if (cu == null || cu.isEmpty()) {
 					final Collection<Indices> ci = dataset.getDefaultGraphIndices();
 					for (final Indices indices : ci) {
 						indices.remove(t);

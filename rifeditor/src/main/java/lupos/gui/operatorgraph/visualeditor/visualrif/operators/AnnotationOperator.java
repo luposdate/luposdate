@@ -97,7 +97,7 @@ public class AnnotationOperator extends Operator {
 			return true;
 		}
 		visited.add(this);
-		if (this.getSucceedingOperators().size() == 0){
+		if (this.getSucceedingOperators().isEmpty()){
 			if (showErrors) {
 				JOptionPane.showOptionDialog(
 						this.panel.getParentQG().visualEditor,

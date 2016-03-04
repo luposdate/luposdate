@@ -192,7 +192,7 @@ implements SPARQL1_1ParserVisitor {
 
 			int numberJoinPartner = numberUnionOrGraphConstraints;
 
-			if (rdfTermToJoin.size() > 0) {
+			if (!rdfTermToJoin.isEmpty()) {
 				numberJoinPartner++;
 			}
 
@@ -220,7 +220,7 @@ implements SPARQL1_1ParserVisitor {
 					}
 				}
 
-				if (rdfTermToJoin.size() > 0) {
+				if (!rdfTermToJoin.isEmpty()) {
 					final TripleContainer opContainer = new TripleContainer(
 							rdfTermToJoin);
 
