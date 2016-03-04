@@ -230,22 +230,11 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 
 		// create JMenuItem to add a connection between two Operators...
 		final JMenuItem rifMI = new JMenuItem("RIF Code");
-		rifMI.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent ae) {
-				DocumentEditorPane.this.generateRif();
-
-			}
-		});
+		rifMI.addActionListener(ae -> DocumentEditorPane.this.generateRif());
 
 		// create JMenuItem to add a connection between two Operators...
 		final JMenuItem visualMI = new JMenuItem("Visual RIF");
-		visualMI.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent ae) {
-				DocumentEditorPane.this.evaluate();
-			}
-		});
+		visualMI.addActionListener(ae -> DocumentEditorPane.this.evaluate());
 
 		final JMenu generateMenu = new JMenu("Generate");
 
@@ -301,12 +290,7 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 
 		// create JMenuItem
 		final JMenuItem annoMI = new JMenuItem("Annotation");
-		annoMI.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent ae) {
-				DocumentEditorPane.this.that.prepareOperatorForAdd(AnnotationOperator.class);
-			}
-		});
+		annoMI.addActionListener(ae -> DocumentEditorPane.this.that.prepareOperatorForAdd(AnnotationOperator.class));
 
 		// create JMenuItem to add JumpOver-Operator...
 		final JMenuItem conMI = new JMenuItem("Connection");
@@ -396,12 +380,7 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 
 		final JButton buttonRifCode = new JButton("Rif Code");
 
-		final ActionListener alRifCodeEditor = new ActionListener() {
-	      @Override
-		public void actionPerformed(final ActionEvent ae) {
-	    	  DocumentEditorPane.this.generateRif();
-	      }
-	    };
+		final ActionListener alRifCodeEditor = ae -> DocumentEditorPane.this.generateRif();
 	    buttonRifCode.addActionListener(alRifCodeEditor);
 
 		final JPanel panelRifCodeEditor = new JPanel();
@@ -411,12 +390,7 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 
 		final JButton buttonVisualRif = new JButton("Visual Rif");
 
-		final ActionListener alVisualRif = new ActionListener() {
-	      @Override
-		public void actionPerformed(final ActionEvent ae) {
-	    	  DocumentEditorPane.this.evaluate();
-	      }
-	    };
+		final ActionListener alVisualRif = ae -> DocumentEditorPane.this.evaluate();
 	    buttonVisualRif.addActionListener(alVisualRif);
 
 
@@ -462,12 +436,7 @@ public class DocumentEditorPane extends VisualEditor<Operator> {
 	public JMenu buildEditMenu() {
 		this.copyMI = new JMenuItem("Copy");
 		this.copyMI.setEnabled(false);
-		this.copyMI.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent ae) {
-				DocumentEditorPane.this.copyElements();
-			}
-		});
+		this.copyMI.addActionListener(ae -> DocumentEditorPane.this.copyElements());
 
 		// TODO
 		this.pasteMI = new JMenuItem("Paste");

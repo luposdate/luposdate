@@ -244,12 +244,7 @@ public abstract class DebugViewerCreator {
 		bt_coreAST.setEnabled(graphWrapper != null);
 
 		if (graphWrapper != null) {
-			bt_coreAST.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(final ActionEvent ae) {
-					new Viewer(graphWrapper, "Abstract syntax tree of the Core " + queryOrRule(), false, DebugViewerCreator.this.fromJar);
-				}
-			});
+			bt_coreAST.addActionListener(ae -> new Viewer(graphWrapper, "Abstract syntax tree of the Core " + queryOrRule(), false, DebugViewerCreator.this.fromJar));
 		}
 
 		return bt_coreAST;

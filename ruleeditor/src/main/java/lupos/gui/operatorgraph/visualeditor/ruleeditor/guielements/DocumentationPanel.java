@@ -173,11 +173,7 @@ public class DocumentationPanel extends JPanel {
 			visualRepresentation.add(this.jCB_showVisualRepresentation, BorderLayout.NORTH);
 			
 			final JPanel innerVisualRepresPanel = new JPanel(new BorderLayout()); 
-			this.jCB_showVisualRepresentation.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent ie) {
-					innerVisualRepresPanel.setVisible(ie.getStateChange() == ItemEvent.SELECTED);
-				}
-			});
+			this.jCB_showVisualRepresentation.addItemListener(ie -> innerVisualRepresPanel.setVisible(ie.getStateChange() == ItemEvent.SELECTED));
 						
 			innerVisualRepresPanel.add(new JLabel("Transition text:"), BorderLayout.NORTH);
 			
@@ -261,11 +257,7 @@ public class DocumentationPanel extends JPanel {
 			// - file panel - end -
 
 			this.jCB_useGeneratedVisualRepresentation = new JCheckBox("use generated visual representation", true);
-			this.jCB_useGeneratedVisualRepresentation.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent ie) {
-					filePanel.setVisible(ie.getStateChange() != ItemEvent.SELECTED);
-				}
-			});
+			this.jCB_useGeneratedVisualRepresentation.addItemListener(ie -> filePanel.setVisible(ie.getStateChange() != ItemEvent.SELECTED));
 			
 			JPanel interVisReprPanel = new JPanel(new BorderLayout());
 

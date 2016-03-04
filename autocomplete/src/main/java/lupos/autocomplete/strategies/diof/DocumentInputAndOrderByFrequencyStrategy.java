@@ -185,15 +185,7 @@ public abstract class DocumentInputAndOrderByFrequencyStrategy extends Strategy 
 			final HashMap<String, Integer> hashMap) {
 		final List<Entry<String, Integer>> list = new ArrayList<Entry<String, Integer>>();
 		list.addAll(hashMap.entrySet());
-		Collections.sort(list, new Comparator<Entry<String, Integer>>() {
-
-			@Override
-			public int compare(final Entry<String, Integer> arg0,
-					final Entry<String, Integer> arg1) {
-				return arg1.getValue().compareTo(arg0.getValue());
-			}
-
-		});
+		Collections.sort(list, (arg0, arg1) -> arg1.getValue().compareTo(arg0.getValue()));
 		return list;
 
 	}

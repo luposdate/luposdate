@@ -332,27 +332,15 @@ public class DataEditor extends VisualEditor<Operator> {
 	private JMenu buildFileMenu() {
 		// create JMenuItem to start an empty query...
 		final JMenuItem emptyQueryMI = new JMenuItem("New empty data");
-		emptyQueryMI.addActionListener(new ActionListener() {
-			public void actionPerformed(final ActionEvent ae) {
-				clearCanvas();
-			}
-		});
+		emptyQueryMI.addActionListener(ae -> clearCanvas());
 
 		// create JMenuItem to load data from a file...
 		final JMenuItem loadDataMI = new JMenuItem("Load data");
-		loadDataMI.addActionListener(new ActionListener() {
-			public void actionPerformed(final ActionEvent ae) {
-				loadDataDialog();
-			}
-		});
+		loadDataMI.addActionListener(ae -> loadDataDialog());
 
 		// create JMenuItem to end the program...
 		final JMenuItem endMI = new JMenuItem("End program");
-		endMI.addActionListener(new ActionListener() {
-			public void actionPerformed(final ActionEvent ae) {
-				closeWindow();
-			}
-		});
+		endMI.addActionListener(ae -> closeWindow());
 
 		// create File Menu and add components to it...
 		final JMenu fileMenu = new JMenu("File");
@@ -384,11 +372,7 @@ public class DataEditor extends VisualEditor<Operator> {
 
 		// create JMenuItem to serialize the QueryGraph...
 		final JMenuItem serializeMI = new JMenuItem("Generate N3 Data");
-		serializeMI.addActionListener(new ActionListener() {
-			public void actionPerformed(final ActionEvent ae) {
-				generateN3Data(false);
-			}
-		});
+		serializeMI.addActionListener(ae -> generateN3Data(false));
 
 		// create Graph menu and add components to it...
 		final JMenu graphMenu = new JMenu("Graph");
@@ -406,19 +390,11 @@ public class DataEditor extends VisualEditor<Operator> {
 		// create JMenuItem to add a connection between two Operators...
 		final JMenuItem addConnectionMI = new JMenuItem(
 		"Add connection between two operators");
-		addConnectionMI.addActionListener(new ActionListener() {
-			public void actionPerformed(final ActionEvent ae) {
-				connectionMode = new DataConnection(myself);
-			}
-		});
+		addConnectionMI.addActionListener(ae -> connectionMode = new DataConnection(myself));
 
 		// create JMenuItem to add RDFTerm-Operator...
 		final JMenuItem rdfTermOpMI = new JMenuItem("RDFTerm");
-		rdfTermOpMI.addActionListener(new ActionListener() {
-			public void actionPerformed(final ActionEvent ae) {
-				prepareOperatorForAdd(DataRDFTerm.class);
-			}
-		});
+		rdfTermOpMI.addActionListener(ae -> prepareOperatorForAdd(DataRDFTerm.class));
 
 		// create Operator menu and add components to it...
 		final JMenu operatorMenu = new JMenu("Add");
