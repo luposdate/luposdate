@@ -29,6 +29,9 @@ public class InferenceHelper {
 	/** Constant <code>genSet</code> */
 	protected static InferenceRulesGeneratorSetup genSet;
 
+	private InferenceHelper() {
+	}
+
 	/**
 	 * <p>getRIFInferenceRulesForRDFSOntology.</p>
 	 *

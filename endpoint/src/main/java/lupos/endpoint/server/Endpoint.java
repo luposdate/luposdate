@@ -97,6 +97,9 @@ public class Endpoint {
 	private static final int delayForStoppingInSeconds = 30; // the time the server gets for stopping to finish its work
 	public static final int portForStopping = 4242; // the port on which the server listens for stop signal
 
+	private Endpoint() {
+	}
+
 	public static enum EVALUATOR {
 		RDF3X {
 			@Override

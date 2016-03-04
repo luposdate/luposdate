@@ -30,6 +30,9 @@ import lupos.datastructures.items.literal.TypedLiteral;
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-function#")
 public class NumericFunctions {
 
+	private NumericFunctions() {
+	}
+
 	/**
 	 * <p>numeric_add.</p>
 	 *

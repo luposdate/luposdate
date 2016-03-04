@@ -47,6 +47,9 @@ import lupos.rif.datatypes.ListLiteral;
 import lupos.rif.model.RuleList;
 public class BuiltinHelper {
 
+	private BuiltinHelper() {
+	}
+
 	/**
 	 * <p>getSizeOfList.</p>
 	 *

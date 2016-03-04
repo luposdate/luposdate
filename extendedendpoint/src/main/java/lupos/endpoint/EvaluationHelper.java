@@ -91,6 +91,9 @@ public class EvaluationHelper {
 	 */
 	protected final static RuleSets rulesets = new RuleSets("/rif/");
 
+	private EvaluationHelper() {
+	}
+
 	/**
 	 * for initialization purposes...
 	 * to be called only once...

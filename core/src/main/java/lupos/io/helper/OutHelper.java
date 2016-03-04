@@ -56,6 +56,9 @@ import lupos.io.Registration;
 import lupos.optimizations.logical.statistics.VarBucket;
 public final class OutHelper {
 
+	private OutHelper() {
+	}
+
 	/**
 	 * <p>writeLuposTriple.</p>
 	 *

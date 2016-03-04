@@ -85,6 +85,9 @@ public class RDF3XIndexConstruction {
 	/** Constant <code>LIMIT_ELEMENTS_IN_TRIE=50000000</code> */
 	public static long LIMIT_ELEMENTS_IN_TRIE = 50000000;
 
+	private RDF3XIndexConstruction() {
+	}
+
 	/**
 	 * <p>insertUsedStringRepresentations.</p>
 	 *

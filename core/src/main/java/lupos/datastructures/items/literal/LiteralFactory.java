@@ -48,6 +48,9 @@ public class LiteralFactory {
 	 */
 	public static boolean semanticInterpretationOfLiterals = false;
 
+	private LiteralFactory() {
+	}
+
 	/**
 	 * <p>writeLuposLiteral.</p>
 	 *

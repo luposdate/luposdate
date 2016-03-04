@@ -31,7 +31,10 @@ import lupos.gui.operatorgraph.GraphWrapperIDTuple;
 import lupos.gui.operatorgraph.OperatorGraph;
 import lupos.gui.operatorgraph.graphwrapper.GraphWrapper;
 public class LayoutTest {
-	
+
+	private LayoutTest() {
+	}
+
 	/**
 	 * Method gets the number of edges in the graph
 	 * @param graph

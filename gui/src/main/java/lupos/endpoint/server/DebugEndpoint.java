@@ -66,6 +66,9 @@ public class DebugEndpoint {
 	/** Constant <code>logDirectory="c:/luposdate/log/"</code> */
 	public static String logDirectory = "c:/luposdate/log/";
 
+	private DebugEndpoint() {
+	}
+
 	/**
 	 * <p>main.</p>
 	 *

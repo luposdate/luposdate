@@ -67,6 +67,9 @@ public class PhysicalOptimizations {
 	private static HashMap<Class<? extends BasicOperator>, Class<? extends BasicOperator>> replacements = new HashMap<Class<? extends BasicOperator>, Class<? extends BasicOperator>>();
 	private static HashMap<Class<? extends BasicOperator>, Class<? extends BasicOperator>> replacementsMergeJoinAndMergeOptional = new HashMap<Class<? extends BasicOperator>, Class<? extends BasicOperator>>();
 
+	private PhysicalOptimizations() {
+	}
+
 	/**
 	 * Adds a rule that replaces a superclass with its implementation (Both
 	 * classes have to inherit from Operator)

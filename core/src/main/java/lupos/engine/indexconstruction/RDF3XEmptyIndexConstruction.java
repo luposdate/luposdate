@@ -63,6 +63,9 @@ public class RDF3XEmptyIndexConstruction {
 	private static final int k = 1000;
 	private static final int k_ = 1000;
 
+	private RDF3XEmptyIndexConstruction() {
+	}
+
 	/**
 	 * Entry point to create an empty RDF3X disk-based index
 	 *

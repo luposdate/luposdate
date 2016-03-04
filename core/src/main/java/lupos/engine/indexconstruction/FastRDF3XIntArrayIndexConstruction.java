@@ -57,6 +57,9 @@ public class FastRDF3XIntArrayIndexConstruction {
 
 	private static final Logger log = LoggerFactory.getLogger(FastRDF3XIndexConstruction.class);
 
+	private FastRDF3XIntArrayIndexConstruction() {
+	}
+
 	public static void main(final String[] args) {
 
 		log.info("Starting program to construct an RDF3X Index for LUPOSDATE...");

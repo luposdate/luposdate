@@ -44,6 +44,9 @@ import org.apache.xerces.impl.xpath.regex.Match;
 import org.apache.xerces.impl.xpath.regex.RegularExpression;
 public class Helper {
 
+	private Helper() {
+	}
+
 	/**
 	 * <p>booleanEffectiveValue.</p>
 	 *

@@ -89,6 +89,10 @@ public class Client {
 		Client.registerFormatReader(new TripleFormatReader("Turtle", "text/turtle", "Turtle"));
 		Client.registerFormatReader(new TripleFormatReader("RDF XML", "application/rdf+xml", "Rdfxml"));
 	}
+
+	private Client() {
+	}
+
 	public static void registerFormatReader(final MIMEFormatReader formatReader){
 		Client.registeredFormatReaders.put(formatReader.getMIMEType(), formatReader);
 	}

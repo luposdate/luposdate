@@ -82,6 +82,9 @@ import org.json.JSONObject;
  */
 public class LocalExecutor {
 
+	private LocalExecutor() {
+	}
+
 	/**
 	 * This methods transforms a subgraph given as serialized JSON string into an operator graph,
 	 * which is executed and its result is returned serialized as string in JSON format...

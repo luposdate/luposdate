@@ -62,6 +62,9 @@ import lupos.io.Registration;
 import lupos.optimizations.logical.statistics.VarBucket;
 public final class InputHelper {
 
+	private InputHelper() {
+	}
+
 	/**
 	 * <p>readLuposString.</p>
 	 *

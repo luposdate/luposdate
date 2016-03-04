@@ -72,6 +72,9 @@ public class MtGoxProducer extends ProducerBaseNoDuplicates {
 		public static final Literal LAST_TRADE = Literals.createURI(NAMESPACE, "lastTrade");
 		public static final Literal BEST_BID = Literals.createURI(NAMESPACE, "bestBid");
 		public static final Literal BEST_ASK = Literals.createURI(NAMESPACE, "bestAsk");
+
+		private Predicates() {
+		}
 	}
 	
 	/**

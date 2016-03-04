@@ -147,6 +147,9 @@ public class WeatherProducer extends ProducerBaseNoDuplicates {
 		public static final URILiteral LONGITUDE2 = Literals.createURI(NAMESPACE, "longi2");
 		/** elevation of the asked city */
 		public static final URILiteral ELEVATION2 = Literals.createURI(NAMESPACE, "elev2");
+
+		private Predicates() {
+		}
 	}
 
 	

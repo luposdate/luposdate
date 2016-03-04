@@ -23,6 +23,9 @@
  */
 package lupos.owl2rl.tools;
 public class Tools {
+	private Tools() {
+	}
+
 	/**
 	 * <p>forall.</p>
 	 *

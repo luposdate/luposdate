@@ -31,6 +31,9 @@ package lupos.misc;
  */
 public class ByteHelper {
 
+	private ByteHelper() {
+	}
+
 	/**
 	 * Converts a given integer value to a byte array
 	 *

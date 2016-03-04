@@ -35,7 +35,9 @@ import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 public class NquadsParser {
-	
+	private NquadsParser() {
+	}
+
 	// Using the parser NxParser for NQUADS
 	/**
 	 * <p>parseRDFData.</p>

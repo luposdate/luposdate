@@ -2122,6 +2122,9 @@ public class RIFParser implements RIFParserConstants {
 
 class JTBToolkit {
 
+  private JTBToolkit() {
+  }
+
   static NodeToken makeNodeToken(final Token t) {
     return new NodeToken(t.image.intern(), t.kind, t.beginLine, t.beginColumn, t.endLine, t.endColumn);
   }

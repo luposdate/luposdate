@@ -60,6 +60,9 @@ import com.sun.net.httpserver.HttpExchange;
  */
 public class DeltaEndpoint {
 
+	private DeltaEndpoint() {
+	}
+
 	/**
 	 * <p>main.</p>
 	 *

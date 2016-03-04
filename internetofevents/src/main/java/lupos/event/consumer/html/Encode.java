@@ -60,6 +60,9 @@ public class Encode {
  	/** Constant <code>IMAGE="START + IMAGE + END"</code> */
  	public final static String IMAGE = START + "IMAGE" + END;
 
+	private Encode() {
+	}
+
 	/**
 	 * Creates the String for the Content function.
 	 *

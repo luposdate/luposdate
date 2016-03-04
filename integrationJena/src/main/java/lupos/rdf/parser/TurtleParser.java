@@ -41,8 +41,11 @@ import lupos.datastructures.items.literal.TypedLiteralOriginalContent;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 public class TurtleParser {
 	/** Constant <code>readFileNumber=0</code> */
-	public static int readFileNumber=0; 
-	
+	public static int readFileNumber=0;
+
+	private TurtleParser() {
+	}
+
 	/**
 	 * <p>parseRDFData.</p>
 	 *

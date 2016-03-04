@@ -27,6 +27,9 @@ import lupos.geo.geosparql.GeoFunctionRegisterer;
 import lupos.geo.stsparql.functions.StFunctionRegisterer;
 public class Geo_Endpoint {
 
+	private Geo_Endpoint() {
+	}
+
 	/**
 	 * <p>main.</p>
 	 *

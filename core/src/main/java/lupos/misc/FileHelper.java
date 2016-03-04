@@ -35,6 +35,9 @@ public class FileHelper {
 
 	private static final Logger log = LoggerFactory.getLogger(FileHelper.class);
 
+	private FileHelper() {
+	}
+
 	/**
 	 * <p>deleteDirectory.</p>
 	 *

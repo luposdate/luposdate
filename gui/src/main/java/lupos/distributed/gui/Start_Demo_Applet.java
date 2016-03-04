@@ -35,6 +35,9 @@ import lupos.sparql1_1.Node;
  */
 public class Start_Demo_Applet {
 
+	private Start_Demo_Applet() {
+	}
+
 	/**
 	 * This method starts the Demo_Applet. It is assumed that the first command line argument contains
 	 * the class name of the distributed query evaluator.

@@ -59,6 +59,9 @@ public class GeoHelper
     /** Constant <code>stSPARQLFunctionUri="stURI"</code> */
     public static final String stSPARQLFunctionUri = stURI;
 
+    private GeoHelper() {
+    }
+
     /**
      * <p>getGeoSPARQLGeometry.</p>
      *

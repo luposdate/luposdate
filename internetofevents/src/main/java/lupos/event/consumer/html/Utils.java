@@ -40,7 +40,10 @@ import java.util.Scanner;
  * @version $Id: $Id
  */
 public class Utils {
-	
+
+	private Utils() {
+	}
+
 	/**
 	 * Writes a files with a certain path with content.
 	 *

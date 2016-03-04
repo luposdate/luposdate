@@ -98,6 +98,9 @@ public class P2PNetworkCreator {
 		 * implementation)
 		 */
 		public static final String cSTORAGE_PATH = "StoragePath";
+
+		private P2PConfigurationConstants() {
+		}
 	}
 
 	/**

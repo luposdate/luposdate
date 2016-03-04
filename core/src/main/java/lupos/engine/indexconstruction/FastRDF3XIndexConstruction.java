@@ -107,6 +107,9 @@ public class FastRDF3XIndexConstruction {
 	/** Constant <code>map="new String[]{S, P, O}"</code> */
 	protected final static String[] map = new String[]{"S", "P", "O"};
 
+	private FastRDF3XIndexConstruction() {
+	}
+
 
 	/**
 	 * Constructs the large-scale indices for RDF3X.

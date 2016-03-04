@@ -39,6 +39,9 @@ public class QueryHandlerHelper {
 	public static final int HTTP_METHOD_NOT_ALLOWED = 405;
 	public static final int HTTP_INTERNAL_SERVER_ERROR = 500;
 
+	private QueryHandlerHelper() {
+	}
+
 	public static void setDefaultHeaders(final HttpExchange t) {
 		t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
 		t.getResponseHeaders().add("Content-Type", "application/json");

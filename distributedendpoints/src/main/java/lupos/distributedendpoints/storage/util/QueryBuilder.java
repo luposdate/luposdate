@@ -38,6 +38,9 @@ import lupos.engine.operators.tripleoperator.TriplePattern;
  */
 public class QueryBuilder {
 
+	private QueryBuilder() {
+	}
+
 	/**
 	 * Builds an insert-data-query, which inserts all given triples
 	 *

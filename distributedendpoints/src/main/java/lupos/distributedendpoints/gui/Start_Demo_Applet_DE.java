@@ -42,6 +42,9 @@ import lupos.gui.Demo_Applet;
  */
 public class Start_Demo_Applet_DE {
 
+	private Start_Demo_Applet_DE() {
+	}
+
 	/**
 	 * <p>main.</p>
 	 *

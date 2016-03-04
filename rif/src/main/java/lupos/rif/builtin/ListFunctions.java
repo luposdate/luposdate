@@ -41,6 +41,9 @@ import com.google.common.collect.Lists;
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-function#")
 public class ListFunctions {
 
+	private ListFunctions() {
+	}
+
 	/**
 	 * <p>make_list.</p>
 	 *

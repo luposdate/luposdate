@@ -34,6 +34,9 @@ import lupos.geo.stsparql.functions.StFunctionRegisterer;
  */
 public class Geo_Demo_Applet {
 
+	private Geo_Demo_Applet() {
+	}
+
 	/**
 	 * <p>main.</p>
 	 *

@@ -23,6 +23,9 @@
  */
 package lupos.misc;
 public class Helper {
+	private Helper() {
+	}
+
 	/**
 	 * This method just is a workaround such that maven can compile and do not proclaim when an enum is directly casted!
 	 *

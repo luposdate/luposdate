@@ -27,6 +27,9 @@ import lupos.geo.geosparql.GeoFunctionRegisterer;
 import lupos.geo.stsparql.functions.StFunctionRegisterer;
 public class Geo_RDF3X_Client {
 
+	private Geo_RDF3X_Client() {
+	}
+
 	/**
 	 * <p>main.</p>
 	 *

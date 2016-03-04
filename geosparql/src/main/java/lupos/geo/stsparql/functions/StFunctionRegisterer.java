@@ -41,6 +41,9 @@ import lupos.geo.stsparql.functions.relations.Touches;
 import lupos.geo.stsparql.functions.relations.Within;
 public class StFunctionRegisterer {
 
+	private StFunctionRegisterer() {
+	}
+
 	/**
 	 * <p>registerStFunctions.</p>
 	 */

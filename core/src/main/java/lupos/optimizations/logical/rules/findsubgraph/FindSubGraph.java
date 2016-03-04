@@ -37,6 +37,9 @@ import lupos.engine.operators.multiinput.optional.Optional;
 import lupos.engine.operators.singleinput.Projection;
 public class FindSubGraph {
 
+	private FindSubGraph() {
+	}
+
 	/**
 	 * This method checks if a given graph S is a subgraph of another graph T
 	 * starting at given nodes. Only the operatortype is checked and the

@@ -47,7 +47,10 @@ import org.openrdf.rio.ntriples.NTriplesParser;
 import org.openrdf.rio.rdfxml.RDFXMLParser;
 import org.openrdf.rio.turtle.TurtleParser;
 public class SesameturtleParser {
-	
+
+	private SesameturtleParser() {
+	}
+
 	/**
 	 * <p>parseRDFData.</p>
 	 *

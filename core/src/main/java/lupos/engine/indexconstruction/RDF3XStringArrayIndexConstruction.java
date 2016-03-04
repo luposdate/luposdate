@@ -62,6 +62,9 @@ public class RDF3XStringArrayIndexConstruction {
 
 	private static final Logger log = LoggerFactory.getLogger(RDF3XStringArrayIndexConstruction.class);
 
+	private RDF3XStringArrayIndexConstruction() {
+	}
+
 	public static void main(final String[] args) {
 		log.info("Starting program to construct an RDF3X String Index for LUPOSDATE...");
 		log.debug("[help is printed when using less than 5 command line arguments]");

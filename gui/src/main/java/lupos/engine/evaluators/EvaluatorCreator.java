@@ -61,6 +61,9 @@ import xpref.datatypes.IntegerDatatype;
 import xpref.datatypes.StringDatatype;
 public final class EvaluatorCreator {
 
+	private EvaluatorCreator() {
+	}
+
 	public enum EVALUATORS{
 		RDF3X {
 			@Override

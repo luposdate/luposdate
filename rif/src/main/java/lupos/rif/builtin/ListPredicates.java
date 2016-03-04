@@ -34,6 +34,9 @@ import lupos.rif.model.RuleList;
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-predicate#")
 public class ListPredicates {
 
+	private ListPredicates() {
+	}
+
 	/**
 	 * <p>is_list.</p>
 	 *

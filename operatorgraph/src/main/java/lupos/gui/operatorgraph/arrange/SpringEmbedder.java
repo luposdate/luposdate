@@ -49,6 +49,9 @@ public class SpringEmbedder {
 	
 	private static long TIMEINTERVAL = 2500; // maximum time interval after which layouting is aborted 
 
+	private SpringEmbedder() {
+	}
+
 	/**
 	 * Method computes the repulsing force between two
 	 * nodes a and b. The result will be stored in force.

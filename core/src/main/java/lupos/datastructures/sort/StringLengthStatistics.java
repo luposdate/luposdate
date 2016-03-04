@@ -40,6 +40,9 @@ public class StringLengthStatistics {
 	// scale used for divisions with BigDecimal numbers...
 	private final static int scale = 256;
 
+	private StringLengthStatistics() {
+	}
+
 	public static void main(final String[] args) throws Exception{
 		System.out.println("Determining string length statistics of a large collection of Strings or RDF terms of large RDF data...");
 		if(args.length<2){

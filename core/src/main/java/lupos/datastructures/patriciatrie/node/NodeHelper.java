@@ -38,6 +38,9 @@ import lupos.misc.Triple;
 import lupos.misc.Tuple;
 public final class NodeHelper {
 
+	private NodeHelper() {
+	}
+
 	/**
 	 * Adds a key to the node.
 	 *

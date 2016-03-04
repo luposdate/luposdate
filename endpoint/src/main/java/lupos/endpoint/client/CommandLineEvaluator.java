@@ -31,6 +31,9 @@ import lupos.engine.operators.singleinput.federated.FederatedQueryBitVectorJoinN
 import lupos.sparql1_1.operatorgraph.ServiceApproaches;
 public class CommandLineEvaluator {
 
+	private CommandLineEvaluator() {
+	}
+
 	/**
 	 * <p>main.</p>
 	 *

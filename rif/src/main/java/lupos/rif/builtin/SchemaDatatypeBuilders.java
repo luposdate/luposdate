@@ -31,6 +31,9 @@ import lupos.datastructures.items.literal.TypedLiteral;
 @Namespace(value = "http://www.w3.org/2001/XMLSchema#")
 public class SchemaDatatypeBuilders {
 
+	private SchemaDatatypeBuilders() {
+	}
+
 	/**
 	 * <p>buildBoolean.</p>
 	 *

@@ -28,6 +28,9 @@ import java.io.UnsupportedEncodingException;
 
 import lupos.engine.operators.tripleoperator.TripleConsumer;
 public class RdfxmlParser {
+	private RdfxmlParser() {
+	}
+
 	/**
 	 * <p>parseRDFData.</p>
 	 *

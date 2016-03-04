@@ -40,6 +40,9 @@ import lupos.misc.Tuple;
  */
 public class RndmLayout {
 
+	private RndmLayout() {
+	}
+
 	/**
 	 * <p>arrange.</p>
 	 *

@@ -51,6 +51,9 @@ import lupos.io.LuposObjectInputStream;
 import lupos.io.Registration;
 import lupos.optimizations.logical.statistics.VarBucket;
 public final class LengthHelper {
+	private LengthHelper() {
+	}
+
 	/**
 	 * <p>lengthLuposTriple.</p>
 	 *

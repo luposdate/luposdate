@@ -27,6 +27,9 @@ import lupos.datastructures.items.literal.Literal;
 
 @Namespace(value = "http://www.w3.org/2007/rif-builtin-predicate#")
 public class LiteralPredicates {
+	private LiteralPredicates() {
+	}
+
 	/**
 	 * <p>literal_equal.</p>
 	 *

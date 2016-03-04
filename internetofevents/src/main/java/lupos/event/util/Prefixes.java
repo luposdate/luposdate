@@ -27,4 +27,7 @@ public class Prefixes {
 	public static final String RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	/** Constant <code>XSD="http://www.w3.org/2001/XMLSchema#"</code> */
 	public static final String XSD = "http://www.w3.org/2001/XMLSchema#";
+
+	private Prefixes() {
+	}
 }

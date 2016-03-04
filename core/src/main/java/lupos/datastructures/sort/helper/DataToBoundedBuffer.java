@@ -47,6 +47,9 @@ import lupos.misc.IOCostsInputStream;
  * @version $Id: $Id
  */
 public class DataToBoundedBuffer {
+	private DataToBoundedBuffer() {
+	}
+
 	/**
 	 * Read in and parse strings in a file (each line in the file is one string)
 	 * @param dataFiles the data

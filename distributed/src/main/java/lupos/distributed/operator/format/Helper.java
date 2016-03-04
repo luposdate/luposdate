@@ -42,6 +42,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 public class Helper {
 
+	private Helper() {
+	}
+
 	/**
 	 * Creates a json object from a given object
 	 *
