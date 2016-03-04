@@ -205,9 +205,8 @@ public class SeqNodeManager {
 		this.releaseInputStream();
 		this.releaseOutputStream();
 
-		try {
-			final WriterRandomAccessFile file = new WriterRandomAccessFile(new File(this.fileName), "rw");
-
+		try (final WriterRandomAccessFile file = new WriterRandomAccessFile(new File(this.fileName), "rw")) {
+			
 			// Output the content
 			try {
 				file.write(this.completeMetadata ? 1 : 0);
@@ -221,7 +220,6 @@ public class SeqNodeManager {
 
 			// ENDE TODO
 
-			file.close();
 		} catch (final FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (final IOException e) {
