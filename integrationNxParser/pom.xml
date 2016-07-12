@@ -27,7 +27,7 @@
 			
       		<dependency>
   			<groupId>org.semanticweb.yars</groupId>
-  			<artifactId>nxparser</artifactId>
+  			<artifactId>nxparser-parsers</artifactId>
 		</dependency>
 			
 	</dependencies>

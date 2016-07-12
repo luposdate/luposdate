@@ -26,14 +26,15 @@ package lupos.rdf.parser;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
-
-import org.semanticweb.yars.nx.Node;
-import org.semanticweb.yars.nx.parser.NxParser;
+import java.util.Iterator;
 
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
+
+import org.semanticweb.yars.nx.Node;
+import org.semanticweb.yars.nx.parser.NxParser;
 public class NquadsParser {
 	private NquadsParser() {
 	}
@@ -51,10 +52,11 @@ public class NquadsParser {
 	public static int parseRDFData(final InputStream in, final TripleConsumer tc,
 			final String encoding) throws UnsupportedEncodingException {
 		// ignore encoding as it is not supported by the NxParser!
-		final NxParser nxp = new NxParser(in);
+		final NxParser nxp = new NxParser();
 		int number = 0;
-		while (nxp.hasNext()) {
-			final Node[] ns = nxp.next();
+		final Iterator<Node[]> it = nxp.parse(in);
+		while (it.hasNext()) {
+			final Node[] ns = it.next();
 			number++;
 			if (number % 1000000 == 0){
 				System.err.println("#triples:" + number);
@@ -63,7 +65,7 @@ public class NquadsParser {
 				tc.consume(new Triple(transformToLiteral(ns[0]),
 						transformToLiteral(ns[1]),
 						transformToLiteral(ns[2])));
-			} catch (URISyntaxException e) {
+			} catch (final URISyntaxException e) {
 				System.err.println(e);
 				e.printStackTrace();
 			}
@@ -80,21 +82,23 @@ public class NquadsParser {
 	 */
 	public static Literal transformToLiteral(final Node node) throws URISyntaxException {
 		if (node instanceof org.semanticweb.yars.nx.Resource) {
-			return LiteralFactory.createURILiteral(node.toN3());
+			return LiteralFactory.createURILiteral(node.toString());
 		} else if (node instanceof org.semanticweb.yars.nx.BNode) {
-			return LiteralFactory.createAnonymousLiteral(node.toN3());
+			return LiteralFactory.createAnonymousLiteral(node.toString());
 		} else if (node instanceof org.semanticweb.yars.nx.Literal) {
 			final org.semanticweb.yars.nx.Literal literal = (org.semanticweb.yars.nx.Literal) node;
-			if (literal.getDatatype() != null)
+			if (literal.getDatatype() != null) {
 				return LiteralFactory.createTypedLiteral(
-						"\"" + literal.getData() + "\"", literal.getDatatype()
-						.toN3());
-			if (literal.getLanguageTag() != null)
+						"\"" + literal.getLabel() + "\"", literal.getDatatype()
+						.toString());
+			}
+			if (literal.getLanguageTag() != null) {
 				return LiteralFactory.createLanguageTaggedLiteral("\""
-						+ literal.getData() + "\"", literal.getLanguageTag());
-			return LiteralFactory.createLiteral("\"" + literal.getData() + "\"");
+						+ literal.getLabel() + "\"", literal.getLanguageTag());
+			}
+			return LiteralFactory.createLiteral("\"" + literal.getLabel() + "\"");
 		} else {
-			return LiteralFactory.createLiteral(node.toN3());
+			return LiteralFactory.createLiteral(node.toString());
 		}
 	}
 }
