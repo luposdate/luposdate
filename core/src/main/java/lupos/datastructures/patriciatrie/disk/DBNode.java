@@ -63,6 +63,10 @@ public class DBNode extends Node implements IDBNode {
 
 			final int contentLength = nodeInputStream.readInt();
 
+			if(contentLength<0){
+				return node;
+			}
+
 			node.increaseArraySizes(0, contentLength);
 
 			for (int i = 0; i < contentLength; i++) {
