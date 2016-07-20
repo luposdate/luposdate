@@ -63,7 +63,7 @@ public class DBNode extends Node implements IDBNode {
 
 			final int contentLength = nodeInputStream.readInt();
 
-			if(contentLength<0){
+			if(contentLength<0){ // TODO: this is included in order to avoid errors, but the whole implementation does not work correctly => need for debugging!
 				return node;
 			}
 
