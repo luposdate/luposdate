@@ -107,6 +107,11 @@ public class FastRDF3XIndexConstruction {
 	/** Constant <code>map="new String[]{S, P, O}"</code> */
 	protected final static String[] map = new String[]{"S", "P", "O"};
 
+	public static volatile int numberOfTriples = 0; // to store the final number of triples
+
+	public static long totalCountingSortTime = 0;
+	public static long totalMappingToTempIDsTime = 0;
+
 	private FastRDF3XIndexConstruction() {
 	}
 
@@ -138,8 +143,8 @@ public class FastRDF3XIndexConstruction {
 	public static void main(final GenerateIndicesAndWriteOut generateIndicesAndWriteOut, final String[] args) {
 		try {
 			// analyze command line parameters
-			final Date start = new Date();
-			log.debug("Starting time: {}", start);
+			final long start = System.currentTimeMillis();
+			log.debug("Starting time: {}", (new Date()).toString() + " ("+start+")");
 
 			LiteralFactory.setType(LiteralFactory.MapType.NOCODEMAP);
 			Indices.setUsedDatastructure(DATA_STRUCT.DBBPTREE);
@@ -194,6 +199,8 @@ public class FastRDF3XIndexConstruction {
 			}
 			runGenerator.endOfBlock();
 
+			log.debug("Start merging tries...");
+			final long startMergeTries = System.currentTimeMillis();
 			// merge local dictionaries
 			final List<TrieSet> listOfTries = runGenerator.getTries();
 			final TrieSet final_trie = new DBSeqTrieSet(dir + "FinalTrie");
@@ -203,6 +210,8 @@ public class FastRDF3XIndexConstruction {
 				final_trie.copy(listOfTries.get(0));
 			}
 
+			log.debug("Start creating dictionary...");
+			final long startCreateDictionary = System.currentTimeMillis();
 			// create real dictionary
 			final Generator<String, Integer> smsi = new Generator<String, Integer>() {
 
@@ -273,9 +282,190 @@ public class FastRDF3XIndexConstruction {
 			}
 			final_trie.release();
 
+			log.debug("Start mapping local ids to global ids...");
 			// map local ids to global ids of initial runs
-			int runNumber = 0;
-			for(final TrieSet trie: listOfTries) {
+			final long startMappingToGlobalIDs = System.currentTimeMillis();
+			GlobalIdsMapper.setData(listOfTries, simap, dir);
+
+			final GlobalIdsMapper[] mappers = new GlobalIdsMapper[8];
+			for(int i=0; i<mappers.length; i++){
+				mappers[i] = new GlobalIdsMapper();
+				mappers[i].start();
+			}
+
+			for(final GlobalIdsMapper mapper: mappers){
+				mapper.join();
+			}
+
+			log.debug("Start merging initial runs...");
+			final long endMappingToGlobalIDs = System.currentTimeMillis();
+
+			// merge initial runs...
+			int index = 0;
+			final Thread[] threads = new Thread[6];
+			final String finalDir = dir;
+			for(int primaryPos=0; primaryPos<3; primaryPos++) {
+				final int other_condition1 = (primaryPos==0)?1:0;
+				final int other_condition2 = (primaryPos==2)?1:2;
+				final int finalPrimaryPos = primaryPos;
+				threads[index] = new Thread(){
+					@Override
+					public void run(){
+						try {
+							FastRDF3XIndexConstruction.mergeRuns(finalDir, listOfTries.size(), finalPrimaryPos, other_condition1, other_condition2);
+						} catch (final IOException e) {
+							System.err.println(e);
+							e.printStackTrace();
+						}
+					}
+				};
+				threads[index].start();
+				index++;
+
+				threads[index] = new Thread(){
+					@Override
+					public void run(){
+						try {
+							FastRDF3XIndexConstruction.numberOfTriples = FastRDF3XIndexConstruction.mergeRuns(finalDir, listOfTries.size(), finalPrimaryPos, other_condition2, other_condition1);
+						} catch (final IOException e) {
+							System.err.println(e);
+							e.printStackTrace();
+						}
+					}
+				};
+				threads[index].start();
+				index++;
+			}
+			for(final Thread thread: threads){
+				thread.join();
+			}
+			final int size = FastRDF3XIndexConstruction.numberOfTriples;
+
+			log.debug("Start generating evaluation indices...");
+			final long endMergeInitialRuns = System.currentTimeMillis();
+			generateIndicesAndWriteOut.generateIndicesAndWriteOut(defaultGraphs, size, dir, writeindexinfo);
+
+			final long end = System.currentTimeMillis();
+			log.debug("_______________________________________________________________");
+			log.info("Done, RDF3X index constructed!");
+			log.debug("End time: {}", (new Date()).toString() + " ("+end+")");
+
+			log.debug("Used time: {}", new TimeInterval(start, end));
+			log.debug("  for build local pat. tries and local sorting: {}", new TimeInterval(start, startMergeTries) + " (" + (startMergeTries-start) + " msec)");
+			log.debug("    for mapping to temp IDs: {}", new TimeInterval(FastRDF3XIndexConstruction.totalMappingToTempIDsTime) + " (" + FastRDF3XIndexConstruction.totalMappingToTempIDsTime + " msec)");
+			log.debug("    for local sorting: {}", new TimeInterval(FastRDF3XIndexConstruction.totalCountingSortTime) + " (" + FastRDF3XIndexConstruction.totalCountingSortTime + " msec)");
+			log.debug("  for merging tries: {}", new TimeInterval(startMergeTries, startCreateDictionary) + " (" + (startCreateDictionary-startMergeTries) + " msec)");
+			log.debug("  for generating global dictionary: {}", new TimeInterval(startCreateDictionary, startMappingToGlobalIDs) + " (" + (startMappingToGlobalIDs-startCreateDictionary) + " msec)");
+			log.debug("  for mapping initial runs to global ids: {}", new TimeInterval(startMappingToGlobalIDs, endMappingToGlobalIDs) + " (" + (endMappingToGlobalIDs-startMappingToGlobalIDs) + " msec)");
+			log.debug("  for merging initial runs: {}", new TimeInterval(endMappingToGlobalIDs, endMergeInitialRuns) + " (" + (endMergeInitialRuns-endMappingToGlobalIDs) + " msec)");
+			log.debug("  for generating evaluation indices: {}", new TimeInterval(endMergeInitialRuns, end) + " (" + (end-endMergeInitialRuns) + " msec)");
+			log.debug("Number of imported triples: {}", size);
+		} catch (final Exception e) {
+			log.error(e.getMessage(), e);
+		}
+	}
+
+	public static interface GenerateIndicesAndWriteOut {
+		public int generateIndicesAndWriteOut(final Collection<URILiteral> defaultGraphs, final int size, final String dir, final String writeindexinfo) throws IOException;
+	}
+
+	@SuppressWarnings("rawtypes")
+	protected static int generateIndicesAndWriteOut(final Collection<URILiteral> defaultGraphs, final int size, final String dir, final String writeindexinfo) throws IOException{
+		// generate indices (evaluation indices plus histogram indices)
+		final SixIndices indices = new SixIndices(defaultGraphs.iterator().next());
+		final Thread[] threads = new Thread[6];
+		int index = 0;
+		for(int primaryPos=0; primaryPos<3; primaryPos++) {
+			final int other_condition1 = (primaryPos==0)?1:0;
+			final int other_condition2 = (primaryPos==2)?1:2;
+			final CollationOrder order1 = CollationOrder.valueOf(FastRDF3XIndexConstruction.map[primaryPos] + FastRDF3XIndexConstruction.map[other_condition1] + FastRDF3XIndexConstruction.map[other_condition2]);
+			final String prefixFilename = dir + FastRDF3XIndexConstruction.map[primaryPos] + "_Final_Run_";
+			final int primaryPosFixed = primaryPos;
+			threads[index] = new Thread(){
+				@Override
+				public void run(){
+					try {
+						indices.generate(order1, new GeneratorFromFinalRun(prefixFilename + FastRDF3XIndexConstruction.map[other_condition1] + FastRDF3XIndexConstruction.map[other_condition2], size, primaryPosFixed, other_condition1, other_condition2));
+						indices.generateStatistics(order1);
+					} catch (final IOException e) {
+						System.err.println(e);
+						e.printStackTrace();
+					}
+				}
+			};
+			threads[index].start();
+			index++;
+
+			final CollationOrder order2 = CollationOrder.valueOf(FastRDF3XIndexConstruction.map[primaryPos] + FastRDF3XIndexConstruction.map[other_condition2] + FastRDF3XIndexConstruction.map[other_condition1]);
+			threads[index] = new Thread(){
+				@Override
+				public void run(){
+					try {
+						indices.generate(order2, new GeneratorFromFinalRun(prefixFilename + FastRDF3XIndexConstruction.map[other_condition2] + FastRDF3XIndexConstruction.map[other_condition1], size, primaryPosFixed, other_condition2, other_condition1));
+						indices.generateStatistics(order2);
+					} catch (final IOException e) {
+						System.err.println(e);
+						e.printStackTrace();
+					}
+				}
+			};
+			threads[index].start();
+			index++;
+		}
+
+		for(final Thread thread: threads){
+			try {
+				thread.join();
+			} catch (final InterruptedException e) {
+				System.err.println(e);
+				e.printStackTrace();
+			}
+		}
+
+		indices.constructCompletely();
+
+		// write out index info
+
+		final OutputStream out = new BufferedOutputStream(new FileOutputStream(writeindexinfo));
+
+		BufferManager.getBufferManager().writeAllModifiedPages();
+
+		OutHelper.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID(), out);
+
+		((lupos.datastructures.paged_dbbptree.DBBPTree) ((StringIntegerMapJava) LazyLiteral.getHm()).getOriginalMap()).writeLuposObject(out);
+		((StringArray) LazyLiteral.getV()).writeLuposStringArray(out);
+		OutHelper.writeLuposInt(1, out);
+		LiteralFactory.writeLuposLiteral(defaultGraphs.iterator().next(), out);
+		indices.writeIndexInfo(out);
+		OutHelper.writeLuposInt(0, out);
+		out.close();
+		return indices.getIndex(CollationOrder.SPO).size();
+	}
+
+	public static class GlobalIdsMapper extends Thread {
+
+		private static List<TrieSet> tries;
+		private static lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer> simap;
+		private static String dir;
+		private static int index = 0;
+
+		public static void setData(final List<TrieSet> tries, final lupos.datastructures.paged_dbbptree.DBBPTree<String, Integer> simap, final String dir){
+			GlobalIdsMapper.tries = tries;
+			GlobalIdsMapper.simap = simap;
+			GlobalIdsMapper.dir = dir;
+		}
+
+		public static synchronized int getNextIndex(){
+			final int result = index;
+			GlobalIdsMapper.index++;
+			return result;
+		}
+
+		@Override
+		public void run(){
+			int runNumber = GlobalIdsMapper.getNextIndex();
+			while(runNumber<tries.size()){
+				final TrieSet trie = tries.get(runNumber);
 				// determine mapping
 				final int[] mapping = new int[trie.size()];
 				final SIPParallelIterator<java.util.Map.Entry<String, Integer>, String> iterator = (SIPParallelIterator<java.util.Map.Entry<String, Integer>, String>) simap.entrySet().iterator();
@@ -309,75 +499,16 @@ public class FastRDF3XIndexConstruction {
 
 				// wait for the six threads for finishing their job (otherwise maybe too much memory consumption)
 				for(final Thread thread: threads){
-					thread.join();
+					try {
+						thread.join();
+					} catch (final InterruptedException e) {
+						System.err.println(e);
+						e.printStackTrace();
+					}
 				}
-
-				runNumber++;
+				runNumber = GlobalIdsMapper.getNextIndex();
 			}
-
-			// merge initial runs...
-			int size = 0;
-			for(int primaryPos=0; primaryPos<3; primaryPos++) {
-				final int other_condition1 = (primaryPos==0)?1:0;
-				final int other_condition2 = (primaryPos==2)?1:2;
-				size = FastRDF3XIndexConstruction.mergeRuns(dir, listOfTries.size(), primaryPos, other_condition1, other_condition2);
-				size = FastRDF3XIndexConstruction.mergeRuns(dir, listOfTries.size(), primaryPos, other_condition2, other_condition1);
-			}
-
-			generateIndicesAndWriteOut.generateIndicesAndWriteOut(defaultGraphs, size, dir, writeindexinfo);
-
-			final Date end = new Date();
-			log.debug("_______________________________________________________________");
-			log.info("Done, RDF3X index constructed!");
-			log.debug("End time: {}", end);
-
-			log.debug("Used time: {}", new TimeInterval(start, end));
-			log.debug("Number of imported triples: {}", size);
-		} catch (final Exception e) {
-			log.error(e.getMessage(), e);
 		}
-	}
-
-	public static interface GenerateIndicesAndWriteOut {
-		public int generateIndicesAndWriteOut(final Collection<URILiteral> defaultGraphs, final int size, final String dir, final String writeindexinfo) throws IOException;
-	}
-
-	@SuppressWarnings("rawtypes")
-	protected static int generateIndicesAndWriteOut(final Collection<URILiteral> defaultGraphs, final int size, final String dir, final String writeindexinfo) throws IOException{
-		// generate indices (evaluation indices plus histogram indices)
-		final SixIndices indices = new SixIndices(defaultGraphs.iterator().next());
-
-		for(int primaryPos=0; primaryPos<3; primaryPos++) {
-			final int other_condition1 = (primaryPos==0)?1:0;
-			final int other_condition2 = (primaryPos==2)?1:2;
-			final CollationOrder order1 = CollationOrder.valueOf(FastRDF3XIndexConstruction.map[primaryPos] + FastRDF3XIndexConstruction.map[other_condition1] + FastRDF3XIndexConstruction.map[other_condition2]);
-			final String prefixFilename = dir + FastRDF3XIndexConstruction.map[primaryPos] + "_Final_Run_";
-			indices.generate(order1, new GeneratorFromFinalRun(prefixFilename + FastRDF3XIndexConstruction.map[other_condition1] + FastRDF3XIndexConstruction.map[other_condition2], size, primaryPos, other_condition1, other_condition2));
-			indices.generateStatistics(order1);
-
-			final CollationOrder order2 = CollationOrder.valueOf(FastRDF3XIndexConstruction.map[primaryPos] + FastRDF3XIndexConstruction.map[other_condition2] + FastRDF3XIndexConstruction.map[other_condition1]);
-			indices.generate(order2, new GeneratorFromFinalRun(prefixFilename + FastRDF3XIndexConstruction.map[other_condition2] + FastRDF3XIndexConstruction.map[other_condition1], size, primaryPos, other_condition2, other_condition1));
-			indices.generateStatistics(order2);
-		}
-
-		indices.constructCompletely();
-
-		// write out index info
-
-		final OutputStream out = new BufferedOutputStream(new FileOutputStream(writeindexinfo));
-
-		BufferManager.getBufferManager().writeAllModifiedPages();
-
-		OutHelper.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID(), out);
-
-		((lupos.datastructures.paged_dbbptree.DBBPTree) ((StringIntegerMapJava) LazyLiteral.getHm()).getOriginalMap()).writeLuposObject(out);
-		((StringArray) LazyLiteral.getV()).writeLuposStringArray(out);
-		OutHelper.writeLuposInt(1, out);
-		LiteralFactory.writeLuposLiteral(defaultGraphs.iterator().next(), out);
-		indices.writeIndexInfo(out);
-		OutHelper.writeLuposInt(0, out);
-		out.close();
-		return indices.getIndex(CollationOrder.SPO).size();
 	}
 
 	/**
@@ -478,6 +609,7 @@ public class FastRDF3XIndexConstruction {
 			if(this.index==0){
 				return;
 			}
+			final long startMappingToTempIds = System.currentTimeMillis();
 			// create mapping preliminary id of triples => local id of triples, which reflects the order
 			final int[] mapping = new int[this.map.size()];
 			int local_id = 0;
@@ -492,6 +624,16 @@ public class FastRDF3XIndexConstruction {
 					triple[j] = mapping[triple[j]];
 				}
 			}
+
+			final long startCountingSort = System.currentTimeMillis();
+			// sort id triples according to six collation orders and write them out as runs (in parallel)...
+			final CountingSorter threadS = new CountingSorter(this.blockOfIdTriples, this.index, 0, this.dir + "S_Run_"+this.runNumber+"_", mapping.length);
+			threadS.start();
+			final CountingSorter threadP = new CountingSorter(this.blockOfIdTriples, this.index, 1, this.dir + "P_Run_"+this.runNumber+"_", mapping.length);
+			threadP.start();
+			final CountingSorter threadO = new CountingSorter(this.blockOfIdTriples, this.index, 2, this.dir + "O_Run_"+this.runNumber+"_", mapping.length);
+			threadO.start();
+
 			// write out patricia trie
 			final DBSeqTrieSet disk_set = new DBSeqTrieSet(this.dir+"Set_"+this.runNumber);
 			try {
@@ -503,14 +645,6 @@ public class FastRDF3XIndexConstruction {
 			// free resources of map in main memory
 			this.map.clear();
 
-			// sort id triples according to six collation orders and write them out as runs (in parallel)...
-			final Thread threadS = new CountingSorter(this.blockOfIdTriples, this.index, 0, this.dir + "S_Run_"+this.runNumber+"_", mapping.length);
-			threadS.start();
-			final Thread threadP = new CountingSorter(this.blockOfIdTriples, this.index, 1, this.dir + "P_Run_"+this.runNumber+"_", mapping.length);
-			threadP.start();
-			final Thread threadO = new CountingSorter(this.blockOfIdTriples, this.index, 2, this.dir + "O_Run_"+this.runNumber+"_", mapping.length);
-			threadO.start();
-
 			try {
 				threadS.join();
 				threadP.join();
@@ -518,6 +652,9 @@ public class FastRDF3XIndexConstruction {
 			} catch (final InterruptedException e) {
 				log.error(e.getMessage(), e);
 			}
+
+			FastRDF3XIndexConstruction.totalCountingSortTime += (System.currentTimeMillis() - startCountingSort);
+			FastRDF3XIndexConstruction.totalMappingToTempIDsTime += (startCountingSort - startMappingToTempIds);
 
 			this.runNumber++;
 			this.index = 0;
@@ -552,6 +689,7 @@ public class FastRDF3XIndexConstruction {
 
 		@Override
 		public void run(){
+			final long startTime = System.nanoTime();
 			// start counting sort
 			final int[] numberOfOccurences = new int[this.max_code];
 			int numberOfBorders = 0;
@@ -584,6 +722,7 @@ public class FastRDF3XIndexConstruction {
 				blockOfSortedIdTriples[numberOfOccurences[key] - 1]=this.blockOfIdTriples[i];
 				numberOfOccurences[key]--;
 			}
+
 			// now we have to do sorting according to the secondary and tertiary condition
 			final int other_condition1 = (this.pos==0)?1:0;
 			final int other_condition2 = (this.pos==2)?1:2;

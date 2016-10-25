@@ -72,7 +72,7 @@ public class RDF3XStringArrayIndexConstruction {
 
 		if (args.length < 5) {
 			log.error("Usage: java -Xmx768M lupos.engine.indexconstruction.RDF3XStringArrayIndexConstruction <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [LIMIT_TRIPLES_IN_MEMORY [<datafile2> [<datafile3> ...]]]");
-			log.error("Example: java -Xmx768M lupos.engine.indexconstruction.FastRDF3XStringArrayIndexConstruction data.n3 N3 UTF-8 NONE /luposdateindex 500000");
+			log.error("Example: java -Xmx768M lupos.engine.indexconstruction.RDF3XStringArrayIndexConstruction data.n3 N3 UTF-8 NONE /luposdateindex 500000");
 			return;
 		}
 
@@ -127,7 +127,7 @@ public class RDF3XStringArrayIndexConstruction {
 			OutHelper.writeLuposInt(lupos.datastructures.paged_dbbptree.DBBPTree.getCurrentFileID(), out);
 
 			OutHelper.writeLuposInt(1, out); // only one default graph!
-			LiteralFactory.writeLuposLiteral(defaultGraphs.iterator().next(), out); // write uri of deault graph
+			LiteralFactory.writeLuposLiteral(defaultGraphs.iterator().next(), out); // write uri of default graph
 
 			for(int order=0; order<6; order++){
 				final CollationOrder collationOrder = CollationOrder.values()[order];

@@ -59,7 +59,7 @@ public class ExtendedEndpoint {
 		// register the standard luposdate sparql evaluators...
 		EvaluationHelper.registerEvaluators();
 
-		final int port = Endpoint.init(new String[] { INDEX_DIR });
+		int port = Endpoint.init(new String[] { INDEX_DIR });
 
 		boolean startW3CEndpoint = false;
 		boolean rebuildIndex = false;
@@ -69,6 +69,12 @@ public class ExtendedEndpoint {
 				startW3CEndpoint = true;
 			} else if(par.equalsIgnoreCase("--rebuild-index")){
 				rebuildIndex = true;
+			} else if(par.startsWith("--port")){
+				try {
+					port = Integer.parseInt(par.substring("--port".length()));
+				} catch (final NumberFormatException e){
+					System.out.println("Warning: Given port is not an integer number => use default port!");
+				}
 			}
 		}
 
