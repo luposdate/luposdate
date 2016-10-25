@@ -23,27 +23,33 @@
  */
 package lupos.rdf.parser;
 
+import java.io.BufferedReader;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+
 import lupos.datastructures.items.Triple;
 import lupos.datastructures.items.literal.Literal;
 import lupos.datastructures.items.literal.LiteralFactory;
 import lupos.datastructures.items.literal.URILiteral;
 import lupos.engine.evaluators.CommonCoreQueryEvaluator;
 import lupos.engine.operators.tripleoperator.TripleConsumer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.net.URISyntaxException;
-import java.util.HashMap;
 public abstract class Parser {
 
-	private static final Logger log = LoggerFactory.getLogger(Parser.class);
+	protected static final Logger log = LoggerFactory.getLogger(Parser.class);
 
 	private int counter = 0;
 
 	private static int maxTriples = 0;
 
-	private BufferedReader reader = null;
+	protected BufferedReader reader = null;
 
 	/**
 	 * <p>getTripleNumber.</p>
@@ -67,43 +73,17 @@ public abstract class Parser {
 		try {
 			this.reader = new BufferedReader(new InputStreamReader(in, encoding));
 			Triple t = this.nextTriple();
-			// System.out.println(t);
-			// Triple last=t;
-			// String lastLine=line;
-			// int lastPos=pos;
 			while (t != null) {
-				// last=t;
-				// lastLine=line;
-				// lastPos=pos;
-				// System.out.println(t);
 				tc.consume(t);
 				t = this.nextTriple();
-				// if (YagoParser.maxTriples > 0
-				// && counter > YagoParser.maxTriples - 1)
-				// System.out.println("Last triple:" + t);
-				if (t != null
-						&& (t.getSubject() == null || t.getPredicate() == null || t
-								.getSubject() == null)) {
+				if (t != null && (t.getSubject() == null || t.getPredicate() == null || t.getSubject() == null)) {
 					log.debug("Triple:" + t);
 					log.debug("Line:" + this.line + "###############pos:"
 							+ this.pos);
 				}
-
-				// System.out.println(t);
 			}
 			this.prefixe = null;
-			log.debug("Line:" + this.line + "###############pos:" + this.pos/*
-																		 * +"\nlast triple:"
-																		 * +
-																		 * last+
-																		 * "\nlast line:"
-																		 * +
-																		 * lastLine
-																		 * +
-																		 * "############pos:"
-																		 * +
-																		 * lastPos
-																		 */);
+			log.debug("Line:" + this.line + "###############pos:" + this.pos);
 		} catch (final EOFException e) {
 			this.prefixe = null;
 		} finally {
@@ -120,7 +100,7 @@ public abstract class Parser {
 	private Literal subject = null;
 	private Literal predicate = null;
 
-	private Triple nextTriple() throws EOFException {
+	protected Triple nextTriple() throws EOFException {
 		this.counter++;
 		if (CommonCoreQueryEvaluator.printNumberOfTriples && this.counter % 1000000 == 0)
 		 {
@@ -205,7 +185,7 @@ public abstract class Parser {
 	 */
 	protected abstract char handlePrefix() throws EOFException;
 
-	private Literal nextLiteral() throws EOFException {
+	protected Literal nextLiteral() throws EOFException {
 		char next = this.jumpOverBlanks();
 		while (next == '@') {
 			next = this.handlePrefix();
