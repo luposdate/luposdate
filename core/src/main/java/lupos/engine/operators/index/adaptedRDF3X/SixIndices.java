@@ -180,15 +180,17 @@ public class SixIndices extends Indices {
     	if (Indices.usedDatastructure == Indices.DATA_STRUCT.DBBPTREE && (LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERAL || LiteralFactory.getMapType() == LiteralFactory.MapType.LAZYLITERALWITHOUTINITIALPREFIXCODEMAP)) {
     		try {
 
-    			if(this.statisticsIndicesForFastHistogramComputation==null){
-    				this.statisticsIndicesForFastHistogramComputation = new lupos.datastructures.paged_dbbptree.LazyLiteralTripleKeyDBBPTreeStatistics[CollationOrder.values().length];
-     				for (int i = 0; i < this.statisticsIndicesForFastHistogramComputation.length; i++) {
-    					try {
-    						this.statisticsIndicesForFastHistogramComputation[i] = new lupos.datastructures.paged_dbbptree.LazyLiteralTripleKeyDBBPTreeStatistics(null, 1500, 1500, CollationOrder.values()[i]);
-    					} catch (final IOException e) {
-    						System.err.println(e);
-    						e.printStackTrace();
-    					}
+				synchronized(this){
+					if(this.statisticsIndicesForFastHistogramComputation==null){
+	    				this.statisticsIndicesForFastHistogramComputation = new lupos.datastructures.paged_dbbptree.LazyLiteralTripleKeyDBBPTreeStatistics[CollationOrder.values().length];
+	     				for (int i = 0; i < this.statisticsIndicesForFastHistogramComputation.length; i++) {
+	    					try {
+	    						this.statisticsIndicesForFastHistogramComputation[i] = new lupos.datastructures.paged_dbbptree.LazyLiteralTripleKeyDBBPTreeStatistics(null, 1500, 1500, CollationOrder.values()[i]);
+	    					} catch (final IOException e) {
+	    						System.err.println(e);
+	    						e.printStackTrace();
+	    					}
+	    				}
     				}
     			}
 

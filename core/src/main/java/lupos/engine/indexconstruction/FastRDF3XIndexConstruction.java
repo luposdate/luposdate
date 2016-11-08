@@ -60,6 +60,7 @@ import lupos.datastructures.items.literal.URILiteral;
 import lupos.datastructures.items.literal.codemap.StringIntegerMapJava;
 import lupos.datastructures.paged_dbbptree.DBBPTree.Generator;
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StringIntegerNodeDeSerializer;
+import lupos.datastructures.parallel.BoundedBuffer;
 import lupos.datastructures.patriciatrie.TrieSet;
 import lupos.datastructures.patriciatrie.diskseq.DBSeqTrieSet;
 import lupos.datastructures.patriciatrie.exception.TrieNotCopyableException;
@@ -102,6 +103,8 @@ public class FastRDF3XIndexConstruction {
 	// how many triples are loaded into main memory to be sorted in the initial runs?
 	/** Constant <code>LIMIT_TRIPLES_IN_MEMORY=50000000</code> */
 	public static int LIMIT_TRIPLES_IN_MEMORY = 50000000;
+
+	public static int NUMBER_OF_PARALLEL_TRIES = 1;
 
 	// just for mapping from 0 to 2 to S, P and O
 	/** Constant <code>map="new String[]{S, P, O}"</code> */
@@ -189,7 +192,12 @@ public class FastRDF3XIndexConstruction {
 			}
 
 			// first generate block-wise dictionaries for each block and id-triples with local ids of the local dictionary
-			final CreateLocalDictionaryAndLocalIds runGenerator = new CreateLocalDictionaryAndLocalIds(dir);
+			final DictionaryAndLocalIDsGenerator runGenerator;
+			if(FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_TRIES==1){
+				runGenerator = new CreateLocalDictionaryAndLocalIds(dir);
+			} else {
+				runGenerator = new CreateParallelLocalDictionaryAndLocalIds(FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_TRIES, dir);
+			}
 			for(final URILiteral uri: defaultGraphs) {
 				try {
 					CommonCoreQueryEvaluator.readTriples(dataFormat, uri.openStream(), runGenerator);
@@ -562,16 +570,92 @@ public class FastRDF3XIndexConstruction {
 		return size;
 	}
 
+	public static interface DictionaryAndLocalIDsGenerator extends TripleConsumer {
+		public void endOfBlock();
+		public List<TrieSet> getTries();
+	}
+
+
+
+	public static class CreateParallelLocalDictionaryAndLocalIds implements DictionaryAndLocalIDsGenerator{
+
+		private final Thread[] threads;
+		private final BoundedBuffer<Triple> buffer = new BoundedBuffer<Triple>();
+
+		public CreateParallelLocalDictionaryAndLocalIds(final int numberOfThreads, final String dir){
+			this.threads = new Thread[numberOfThreads];
+			for(int i=0; i<numberOfThreads; i++){
+				this.threads[i] = new CreateLocalDictionaryAndLocalIdsWorker(this.buffer, new CreateLocalDictionaryAndLocalIds(dir));
+				this.threads[i].start();
+			}
+		}
+
+		@Override
+		public void consume(final Triple triple) {
+			try {
+				this.buffer.put(triple);
+			} catch (final InterruptedException e) {
+				System.err.println(e);
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void endOfBlock() {
+			this.buffer.endOfData();
+			for(final Thread thread: this.threads){
+				try {
+					thread.join();
+				} catch (final InterruptedException e) {
+					System.err.println(e);
+					e.printStackTrace();
+				}
+			}
+		}
+
+		@Override
+		public List<TrieSet> getTries() {
+			return CreateLocalDictionaryAndLocalIds.listOfTries;
+		}
+
+	}
+
+	public static class CreateLocalDictionaryAndLocalIdsWorker extends Thread {
+
+		private final CreateLocalDictionaryAndLocalIds creator;
+
+		private final BoundedBuffer<Triple> buffer;
+
+		public CreateLocalDictionaryAndLocalIdsWorker(final BoundedBuffer<Triple> buffer, final CreateLocalDictionaryAndLocalIds creator){
+			this.creator = creator;
+			this.buffer = buffer;
+		}
+
+		@Override
+		public void run(){
+			try {
+				Triple triple;
+				while((triple=this.buffer.get()) != null){
+					this.creator.consume(triple);
+				}
+				this.creator.endOfBlock();
+			} catch (final InterruptedException e) {
+				System.err.println(e);
+				e.printStackTrace();
+			}
+		}
+	}
+
 	/**
 	 * for creating a 'local' dictionary for each initial run and creating id-triples of the initial runs according to the local dictionary
 	 */
-	public static class CreateLocalDictionaryAndLocalIds implements TripleConsumer{
+	public static class CreateLocalDictionaryAndLocalIds implements DictionaryAndLocalIDsGenerator{
 
 		private final RBTrieMap<Integer> map = new RBTrieMap<Integer>();
 		private final int[][] blockOfIdTriples = new int[FastRDF3XIndexConstruction.LIMIT_TRIPLES_IN_MEMORY][];
 		private int index = 0;
-		private int runNumber = 0;
-		private final List<TrieSet> listOfTries = new LinkedList<TrieSet>();
+		private static int runNumber = 0;
+		private static final List<TrieSet> listOfTries = new LinkedList<TrieSet>();
 		private final String dir;
 
 		public CreateLocalDictionaryAndLocalIds(final String dir){
@@ -605,6 +689,7 @@ public class FastRDF3XIndexConstruction {
 			return code;
 		}
 
+		@Override
 		public void endOfBlock(){
 			if(this.index==0){
 				return;
@@ -625,20 +710,27 @@ public class FastRDF3XIndexConstruction {
 				}
 			}
 
+			final int localRunNumber;
+			final DBSeqTrieSet disk_set;
+			synchronized(listOfTries){
+				localRunNumber = runNumber;
+				runNumber++;
+				disk_set = new DBSeqTrieSet(this.dir+"Set_"+localRunNumber);
+				listOfTries.add(disk_set);
+			}
+
 			final long startCountingSort = System.currentTimeMillis();
 			// sort id triples according to six collation orders and write them out as runs (in parallel)...
-			final CountingSorter threadS = new CountingSorter(this.blockOfIdTriples, this.index, 0, this.dir + "S_Run_"+this.runNumber+"_", mapping.length);
+			final CountingSorter threadS = new CountingSorter(this.blockOfIdTriples, this.index, 0, this.dir + "S_Run_"+localRunNumber+"_", mapping.length);
 			threadS.start();
-			final CountingSorter threadP = new CountingSorter(this.blockOfIdTriples, this.index, 1, this.dir + "P_Run_"+this.runNumber+"_", mapping.length);
+			final CountingSorter threadP = new CountingSorter(this.blockOfIdTriples, this.index, 1, this.dir + "P_Run_"+localRunNumber+"_", mapping.length);
 			threadP.start();
-			final CountingSorter threadO = new CountingSorter(this.blockOfIdTriples, this.index, 2, this.dir + "O_Run_"+this.runNumber+"_", mapping.length);
+			final CountingSorter threadO = new CountingSorter(this.blockOfIdTriples, this.index, 2, this.dir + "O_Run_"+localRunNumber+"_", mapping.length);
 			threadO.start();
 
 			// write out patricia trie
-			final DBSeqTrieSet disk_set = new DBSeqTrieSet(this.dir+"Set_"+this.runNumber);
 			try {
 				disk_set.copy(this.map);
-				this.listOfTries.add(disk_set);
 			} catch (final TrieNotCopyableException e) {
 				log.error(e.getMessage(), e);
 			}
@@ -656,12 +748,12 @@ public class FastRDF3XIndexConstruction {
 			FastRDF3XIndexConstruction.totalCountingSortTime += (System.currentTimeMillis() - startCountingSort);
 			FastRDF3XIndexConstruction.totalMappingToTempIDsTime += (startCountingSort - startMappingToTempIds);
 
-			this.runNumber++;
 			this.index = 0;
 		}
 
+		@Override
 		public List<TrieSet> getTries(){
-			return this.listOfTries;
+			return listOfTries;
 		}
 	}
 
