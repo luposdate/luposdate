@@ -199,10 +199,10 @@ public class FastRDF3XIndexConstruction {
 			}
 
 			// first generate block-wise dictionaries for each block and id-triples with local ids of the local dictionary
-			final DictionaryAndLocalIDsGenerator[] runGenerators = new DictionaryAndLocalIDsGenerator[FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_TRIES];
 			if(!dataFormat.startsWith("MULTIPLE")){
 				FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_TRIES = 1; // parallel trie construction does not make sense without partitioned input!
 			}
+			final DictionaryAndLocalIDsGenerator[] runGenerators = new DictionaryAndLocalIDsGenerator[FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_TRIES];
 			for(int i=0; i<FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_TRIES; i++){
 				runGenerators[i] = new CreateLocalDictionaryAndLocalIds(dir);
 			}
