@@ -378,13 +378,13 @@
 				<artifactId>jts</artifactId>
 				<version>1.13</version>
 			</dependency>
-
+<!--
 			<dependency>
 				<groupId>net.tomp2p</groupId>
-				<artifactId>TomP2P</artifactId>
-				<version>4.4</version>
+				<artifactId>tomp2p-all</artifactId>
+				<version>5.0-Beta8</version> previously 4.4
 			</dependency>
-
+-->
 			<dependency>
 				<groupId>args4j</groupId>
 				<artifactId>args4j</artifactId>
@@ -445,11 +445,11 @@
     		<url>https://repository.cloudera.com/artifactory/gradle-libs</url>
 		</repository>		
 
-		<repository>
-			<id>repository.tomp2p.net</id>
-			<url>http://tomp2p.net/dev/mvn</url>
+<!--	<repository>
+			<id>tomp2p.net</id>
+			<url>https://tomp2p.net/dev/mvn</url>
 		</repository>
-
+-->
 	</repositories>
 	
 	<distributionManagement>

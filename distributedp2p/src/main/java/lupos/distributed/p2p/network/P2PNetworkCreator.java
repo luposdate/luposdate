@@ -33,9 +33,8 @@ import java.util.concurrent.Callable;
 
 import lupos.distributed.p2p.network.impl.Chordless;
 import lupos.distributed.p2p.network.impl.EndpointNetwork;
-import lupos.distributed.p2p.network.impl.TomP2P;
-import lupos.distributed.p2p.network.impl.TomP2P.TomP2P_Peer;
-import lupos.distributed.p2p.storage.StorageWithDistributionStrategy;
+// import lupos.distributed.p2p.network.impl.TomP2P;
+// import lupos.distributed.p2p.network.impl.TomP2P.TomP2P_Peer;
 
 import org.apache.log4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -178,18 +177,19 @@ public class P2PNetworkCreator {
 	 */
 	static {
 		list = new HashMap<>();
+/*
 		try {
 			// register our TomP2P-Implementation
 			registerNetworkFactory(TOM_P2P, new P2PImplementation() {
 				/*
 				 * default port
 				 */
-				private int port = 4000;
+//				private int port = 4000;
 				/*
 				 * connecting the peer to a master node?, if yes, port and ip-address
 				 * are to be set!
 				 */
-				private boolean connectWithMaster = false;
+/*				private boolean connectWithMaster = false;
 				private String mIp = null;
 				private Integer mPort = null;
 				private String storage = null;
@@ -202,19 +202,19 @@ public class P2PNetworkCreator {
 							/*
 							 * set the port, if specified via config
 							 */
-							if (this.hasArgument(P2PConfigurationConstants.cPORT)) {
+/*							if (this.hasArgument(P2PConfigurationConstants.cPORT)) {
 								this.port = (int) this.getArgument(P2PConfigurationConstants.cPORT);
 							}
 							/*
 							 * sets the path to be used, if disk-storage is used
 							 */
-							if (this.hasArgument(P2PConfigurationConstants.cSTORAGE_PATH)) {
+/*							if (this.hasArgument(P2PConfigurationConstants.cSTORAGE_PATH)) {
 								this.storage = (String) this.getArgument(P2PConfigurationConstants.cSTORAGE_PATH);
 							}
 							/*
 							 * set the master-peer, if specified via config
 							 */
-							if (this.hasArgument(P2PConfigurationConstants.cMASTER_IP)
+/*							if (this.hasArgument(P2PConfigurationConstants.cMASTER_IP)
 									&& this.hasArgument(P2PConfigurationConstants.cMASTER_PORT)) {
 								this.connectWithMaster = true;
 								this.mIp = (String) this.getArgument(P2PConfigurationConstants.cMASTER_IP);
@@ -238,8 +238,7 @@ public class P2PNetworkCreator {
 							p.setStorage(this.storage);
 						}
 						return new TomP2P(p);
-					} catch (BindException
-							| org.jboss.netty.channel.ChannelException e) {
+					} catch (final Exception e) {
 						Logger.getLogger(this.getClass())
 								.warn(String
 										.format("Port %d already used, so try next one.",
@@ -254,13 +253,14 @@ public class P2PNetworkCreator {
 						/*
 						 * try next port
 						 */
-						return this.call();
+/*						return this.call();
 					}
 				}
 			});
 		} catch (final RuntimeException e) {
 			e.printStackTrace();
 		}
+*/
 		try {
 			// register our Chordless-Implementation
 			registerNetworkFactory(CHORDLESS, new P2PImplementation() {
