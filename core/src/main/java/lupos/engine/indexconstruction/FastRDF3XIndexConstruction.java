@@ -105,6 +105,7 @@ public class FastRDF3XIndexConstruction {
 	public static int LIMIT_TRIPLES_IN_MEMORY = 50000000;
 
 	public static int NUMBER_OF_PARALLEL_TRIES = 1;
+	public static int NUMBER_OF_PARALLEL_INPUT = 2;
 
 	// just for mapping from 0 to 2 to S, P and O
 	/** Constant <code>map="new String[]{S, P, O}"</code> */
@@ -122,7 +123,7 @@ public class FastRDF3XIndexConstruction {
 	/**
 	 * Constructs the large-scale indices for RDF3X.
 	 * The command line arguments are
-	 * datafile dataformat encoding NONE|BZIP2|HUFFMAN|GZIP directory_for_indices [LIMIT_TRIPLES_IN_MEMORY [datafile2 [datafile3 ...]]]
+	 * datafile dataformat encoding NONE|BZIP2|HUFFMAN|GZIP directory_for_indices [LIMIT_TRIPLES_IN_MEMORY [PARALLEL_TRIES [PARALLEL_INPUT [datafile2 [datafile3 ...]]]]]
 	 * If you want to import more than one file you can use the additional parameters datafilei!
 	 *
 	 * @param args
@@ -135,8 +136,8 @@ public class FastRDF3XIndexConstruction {
 		log.debug("_______________________________________________________________");
 
 		if (args.length < 5) {
-			log.error("Usage: java -Xmx768M lupos.engine.indexconstruction.FastRDF3XIndexConstruction <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [LIMIT_TRIPLES_IN_MEMORY [<datafile2> [<datafile3> ...]]]");
-			log.error("Example: java -Xmx768M lupos.engine.indexconstruction.FastRDF3XIndexConstruction data.n3 N3 UTF-8 NONE /luposdateindex 500000");
+			log.error("Usage: java -Xmx768M lupos.engine.indexconstruction.FastRDF3XIndexConstruction <datafile> <dataformat> <encoding> <NONE|BZIP2|HUFFMAN|GZIP> <directory for indices> [LIMIT_TRIPLES_IN_MEMORY [PARALLEL_TRIES [PARALLEL_INPUT [<datafile2> [<datafile3> ...]]]]]");
+			log.error("Example: java -Xmx768M lupos.engine.indexconstruction.FastRDF3XIndexConstruction data.n3 N3 UTF-8 NONE /luposdateindex 500000 4 2");
 			return;
 		}
 
@@ -187,30 +188,110 @@ public class FastRDF3XIndexConstruction {
 			if(args.length>5) {
 				FastRDF3XIndexConstruction.LIMIT_TRIPLES_IN_MEMORY = Integer.parseInt(args[5]);
 			}
-			for(int i=6; i<args.length; i++) {
+			if(args.length>6) {
+				FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_TRIES = Integer.parseInt(args[6]);
+			}
+			if(args.length>7) {
+				FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_INPUT = Integer.parseInt(args[7]);
+			}
+			for(int i=8; i<args.length; i++) {
 				defaultGraphs.add(LiteralFactory.createURILiteralWithoutLazyLiteral("<file:" + args[i]+ ">"));
 			}
 
 			// first generate block-wise dictionaries for each block and id-triples with local ids of the local dictionary
-			final DictionaryAndLocalIDsGenerator runGenerator;
-			if(FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_TRIES==1){
-				runGenerator = new CreateLocalDictionaryAndLocalIds(dir);
-			} else {
-				runGenerator = new CreateParallelLocalDictionaryAndLocalIds(FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_TRIES, dir);
+			final DictionaryAndLocalIDsGenerator[] runGenerators = new DictionaryAndLocalIDsGenerator[FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_TRIES];
+			if(!dataFormat.startsWith("MULTIPLE")){
+				FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_TRIES = 1; // parallel trie construction does not make sense without partitioned input!
 			}
+			for(int i=0; i<FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_TRIES; i++){
+				runGenerators[i] = new CreateLocalDictionaryAndLocalIds(dir);
+			}
+
 			for(final URILiteral uri: defaultGraphs) {
 				try {
-					CommonCoreQueryEvaluator.readTriples(dataFormat, uri.openStream(), runGenerator);
+					if(dataFormat.startsWith("MULTIPLE")){ // read input in parallel!
+						// Parallel parsers, but each directly feeding its "private" CreateLocalDictionaryAndLocalIds => Overhead of bounded buffer (in an alternative approach) is avoided!
+
+						final String typeWithoutMultiple = dataFormat.substring("MULTIPLE".length());
+						final Collection<String> filenames = FileHelper.readInputStreamToCollection(uri.openStream());
+						final BoundedBuffer<String> filenamesBB = new BoundedBuffer<String>(
+								filenames.size());
+						for (final String filename : filenames) {
+							try {
+								filenamesBB.put(filename);
+							} catch (final InterruptedException e) {
+								log.error(e.getMessage(), e);
+							}
+						}
+						filenamesBB.endOfData();
+						final Thread[] threads = new Thread[FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_INPUT*FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_TRIES];
+						for(int j = 0; j<FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_TRIES; j++){
+							final int index = j;
+							final TripleConsumer synchronizedTC = (FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_INPUT==1)? // synchronized triple consumer is not necessary for CreateParallelLocalDictionaryAndLocalIds (synchronization is done in its bounded buffer!)
+									runGenerators[index]:
+									new TripleConsumer() {
+										@Override
+										public synchronized void consume(final Triple triple) {
+											runGenerators[index].consume(triple);
+										}
+									};
+							for (int i = 0; i < FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_INPUT; i++) {
+								threads[j*FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_TRIES+i] = new Thread() {
+									@Override
+									public void run() {
+										try {
+											while (filenamesBB.hasNext()) {
+												final String filename = filenamesBB.get();
+												if (filename == null) {
+													break;
+												}
+												log.debug("Reading data from file: {}", filename);
+												String type2;
+												if (typeWithoutMultiple.compareTo("DETECT") == 0) {
+													final int index = filename.lastIndexOf('.');
+													if (index == -1) {
+														log.error("Type of {} ould not be automatically detected! ",filename);
+													}
+													type2 = filename.substring(index + 1).toUpperCase();
+												} else {
+													type2 = typeWithoutMultiple;
+												}
+												try {
+													CommonCoreQueryEvaluator.readTriplesWithoutMultipleFiles(type2, new FileInputStream(filename), synchronizedTC);
+												} catch (final Throwable e) {
+													log.error(e.getMessage(), e);
+												}
+											}
+										} catch (final InterruptedException e) {
+											log.error(e.getMessage(), e);
+										}
+									}
+								};
+								threads[j*FastRDF3XIndexConstruction.NUMBER_OF_PARALLEL_TRIES+i].start();
+							}
+						}
+						for (int i = 0; i < threads.length; i++) {
+							try {
+								threads[i].join();
+							} catch (final InterruptedException e) {
+								log.error(e.getMessage(), e);
+							}
+						}
+					} else {
+						CommonCoreQueryEvaluator.readTriples(dataFormat, uri.openStream(), runGenerators[0]);
+					}
 				} catch (final Exception e) {
 					log.error(e.getMessage(), e);
 				}
 			}
-			runGenerator.endOfBlock();
+			for(final DictionaryAndLocalIDsGenerator runGenerator: runGenerators){
+				runGenerator.endOfBlock();
+			}
 
 			log.debug("Start merging tries...");
 			final long startMergeTries = System.currentTimeMillis();
 			// merge local dictionaries
-			final List<TrieSet> listOfTries = runGenerator.getTries();
+			final List<TrieSet> listOfTries = runGenerators[0].getTries();
 			final TrieSet final_trie = new DBSeqTrieSet(dir + "FinalTrie");
 			if(listOfTries.size()>1){
 				final_trie.merge(listOfTries);
@@ -358,7 +439,7 @@ public class FastRDF3XIndexConstruction {
 			log.info("Done, RDF3X index constructed!");
 			log.debug("End time: {}", (new Date()).toString() + " ("+end+")");
 
-			log.debug("Used time: {}", new TimeInterval(start, end));
+			log.debug("Used time: {}", new TimeInterval(start, end), " (", end-start, " msec)");
 			log.debug("  for build local pat. tries and local sorting: {}", new TimeInterval(start, startMergeTries) + " (" + (startMergeTries-start) + " msec)");
 			log.debug("    for mapping to temp IDs: {}", new TimeInterval(FastRDF3XIndexConstruction.totalMappingToTempIDsTime) + " (" + FastRDF3XIndexConstruction.totalMappingToTempIDsTime + " msec)");
 			log.debug("    for local sorting: {}", new TimeInterval(FastRDF3XIndexConstruction.totalCountingSortTime) + " (" + FastRDF3XIndexConstruction.totalCountingSortTime + " msec)");
@@ -573,77 +654,6 @@ public class FastRDF3XIndexConstruction {
 	public static interface DictionaryAndLocalIDsGenerator extends TripleConsumer {
 		public void endOfBlock();
 		public List<TrieSet> getTries();
-	}
-
-
-
-	public static class CreateParallelLocalDictionaryAndLocalIds implements DictionaryAndLocalIDsGenerator{
-
-		private final Thread[] threads;
-		private final BoundedBuffer<Triple> buffer = new BoundedBuffer<Triple>();
-
-		public CreateParallelLocalDictionaryAndLocalIds(final int numberOfThreads, final String dir){
-			this.threads = new Thread[numberOfThreads];
-			for(int i=0; i<numberOfThreads; i++){
-				this.threads[i] = new CreateLocalDictionaryAndLocalIdsWorker(this.buffer, new CreateLocalDictionaryAndLocalIds(dir));
-				this.threads[i].start();
-			}
-		}
-
-		@Override
-		public void consume(final Triple triple) {
-			try {
-				this.buffer.put(triple);
-			} catch (final InterruptedException e) {
-				System.err.println(e);
-				e.printStackTrace();
-			}
-		}
-
-		@Override
-		public void endOfBlock() {
-			this.buffer.endOfData();
-			for(final Thread thread: this.threads){
-				try {
-					thread.join();
-				} catch (final InterruptedException e) {
-					System.err.println(e);
-					e.printStackTrace();
-				}
-			}
-		}
-
-		@Override
-		public List<TrieSet> getTries() {
-			return CreateLocalDictionaryAndLocalIds.listOfTries;
-		}
-
-	}
-
-	public static class CreateLocalDictionaryAndLocalIdsWorker extends Thread {
-
-		private final CreateLocalDictionaryAndLocalIds creator;
-
-		private final BoundedBuffer<Triple> buffer;
-
-		public CreateLocalDictionaryAndLocalIdsWorker(final BoundedBuffer<Triple> buffer, final CreateLocalDictionaryAndLocalIds creator){
-			this.creator = creator;
-			this.buffer = buffer;
-		}
-
-		@Override
-		public void run(){
-			try {
-				Triple triple;
-				while((triple=this.buffer.get()) != null){
-					this.creator.consume(triple);
-				}
-				this.creator.endOfBlock();
-			} catch (final InterruptedException e) {
-				System.err.println(e);
-				e.printStackTrace();
-			}
-		}
 	}
 
 	/**

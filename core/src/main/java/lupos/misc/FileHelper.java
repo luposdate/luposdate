@@ -23,14 +23,25 @@
  */
 package lupos.misc;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 public class FileHelper {
 
 	private static final Logger log = LoggerFactory.getLogger(FileHelper.class);
@@ -98,16 +109,16 @@ public class FileHelper {
 	 * @return a boolean.
 	 */
 	static public boolean deleteFilesStartingWithPattern(final String dir, final String pattern){
-		File dirFile = new File(dir);
-		String filesToDelete[] = dirFile.list(new FilenameFilter(){
+		final File dirFile = new File(dir);
+		final String filesToDelete[] = dirFile.list(new FilenameFilter(){
 			@Override
-			public boolean accept(File arg0, String arg1) {
+			public boolean accept(final File arg0, final String arg1) {
 				return arg1.startsWith(pattern);
 			}
 		});
 		boolean flag=true;
 		if(filesToDelete!=null){
-			for(String fileName: filesToDelete){
+			for(final String fileName: filesToDelete){
 				flag = deleteFile(dir+fileName) && flag;
 			}
 		}
@@ -150,8 +161,9 @@ public class FileHelper {
 
 					stream = this.getClass().getResourceAsStream(filenameParameter);
 					return new java.io.InputStreamReader(stream);
-				} else
+				} else {
 					return new FileReader(new File(filenameParameter));
+				}
 			}
 		});
 	}
@@ -171,7 +183,7 @@ public class FileHelper {
 			}
 		});
 	}
-	
+
 	/**
 	 * <p>getInputStreamFromJarOrFile.</p>
 	 *
@@ -182,11 +194,11 @@ public class FileHelper {
 	public static InputStream getInputStreamFromJarOrFile(final String resourceName) throws FileNotFoundException {
 		try {
 			return FileHelper.class.getResource(resourceName).openStream();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			return new FileInputStream(new File(FileHelper.class.getResource(resourceName).getFile()));
-		}		
+		}
 	}
-	
+
 	/**
 	 * <p>readFile.</p>
 	 *
@@ -291,8 +303,9 @@ public class FileHelper {
 
 			while ((line = reader.readLine()) != null) {
 				// let lines with comments away...
-				if (!line.startsWith("#"))
+				if (!line.startsWith("#")) {
 					content.add(line);
+				}
 			}
 		} catch (final IOException ioe) {
 			log.error(ioe.getMessage(), ioe);
@@ -308,7 +321,7 @@ public class FileHelper {
 		}
 		return content;
 	}
-	
+
 	/**
 	 * <p>readInputStreamToString.</p>
 	 *
@@ -356,8 +369,9 @@ public class FileHelper {
 
 			while ((line = reader.readLine()) != null) {
 				// let lines with comments away...
-				if (!line.startsWith("#"))
+				if (!line.startsWith("#")) {
 					content.add(line);
+				}
 			}
 		} catch (final FileNotFoundException fnfe) {
 			log.error("File {} not found, exiting.", filename);
@@ -392,13 +406,15 @@ public class FileHelper {
 			int i = 0;
 			while ((line = reader.readLine()) != null) {
 				if (removeLine) {
-					if (i != lineNumber)
+					if (i != lineNumber) {
 						log.info(line);
+					}
 				} else {
-					if (i >= lineNumber - 5 && i <= lineNumber + 5)
+					if (i >= lineNumber - 5 && i <= lineNumber + 5) {
 						log.info(i + ":" + line);
-					else if (i > lineNumber + 5)
+					} else if (i > lineNumber + 5) {
 						break;
+					}
 				}
 				i++;
 			}
@@ -416,7 +432,34 @@ public class FileHelper {
 			}
 		}
 	}
-	
+
+	public static void printFileContent(final String filename, final int lineNumber, final int end) {
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(filename));
+			String line;
+			int i = 0;
+			while ((line = reader.readLine()) != null) {
+				if(i>=lineNumber && (end==-1 || i<=end)){
+					System.out.println(line);
+				}
+				i++;
+			}
+		} catch (final FileNotFoundException fnfe) {
+			log.error("File {} not found, exiting.",filename);
+		} catch (final IOException ioe) {
+			log.error(ioe.getMessage(), ioe);
+		} finally {
+			try {
+				if (reader != null) {
+					reader.close();
+				}
+			} catch (final IOException ioe) {
+				log.error(ioe.getMessage(), ioe);
+			}
+		}
+	}
+
 	/**
 	 * <p>searchFile.</p>
 	 *
@@ -475,14 +518,18 @@ public class FileHelper {
 		if (args.length < 2){
 			log.error("Usage: java lupos.misc.FileHelper command commandoptions[-r] Filename linenumber");
 			log.error("       command: print commandoptions: [-r] Filename linenumber");
+			log.error("       command: print commandoptions: [-a] Filename linenumber [linenumber]");
 			log.error("       command: replace commandoptions: infile toBeReplaced replacement outfile");
-			log.error("       command: contains commandoptions: Filename searchTe");
+			log.error("       command: contains commandoptions: Filename searchText");
 		} else {
 			if(args[0].compareTo("print") == 0){
 				if (args[1].compareTo("-r") == 0) {
-					printFileContent(args[2], new Integer(args[1]), true);
-				} else
+					printFileContent(args[2], new Integer(args[3]), true);
+				} else if (args[1].compareTo("-a") == 0) {
+					printFileContent(args[2], new Integer(args[3]), (args.length>4)? new Integer(args[4]) : -1);
+				} else {
 					printFileContent(args[1], new Integer(args[2]), false);
+				}
 			} else if(args[0].compareTo("replace") == 0){
 				final String content = FileHelper.fastReadFile(args[1]);
 				final String result = content.replaceAll(args[2], args[3]);
