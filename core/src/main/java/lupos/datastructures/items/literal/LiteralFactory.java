@@ -658,7 +658,7 @@ public class LiteralFactory {
 	 *
 	 * @param mapType a {@link lupos.datastructures.items.literal.LiteralFactory.MapType} object.
 	 */
-	public static void setTypeWithoutInitializing(final MapType mapType) {
+	public static synchronized void setTypeWithoutInitializing(final MapType mapType) {
 		LiteralFactory.mapType = mapType;
 	}
 

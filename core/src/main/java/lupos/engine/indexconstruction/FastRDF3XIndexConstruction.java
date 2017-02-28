@@ -791,7 +791,6 @@ public class FastRDF3XIndexConstruction {
 
 		@Override
 		public void run(){
-			final long startTime = System.nanoTime();
 			// start counting sort
 			final int[] numberOfOccurences = new int[this.max_code];
 			int numberOfBorders = 0;
@@ -1073,6 +1072,8 @@ public class FastRDF3XIndexConstruction {
 					previousMappedPrimaryCode = primaryMappedCode;
 				}
 
+				in.close();
+				out.close();
 				FileHelper.deleteFile(this.filename);
 			} catch (final FileNotFoundException e) {
 				log.error(e.getMessage(), e);

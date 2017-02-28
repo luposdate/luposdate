@@ -145,7 +145,7 @@ public class TestRDF3XEngine {
 
 			// the whole database is dumped into files...
 			// (10000 triples in one file...)
-			evaluator.dump("D://dump", 10000);
+			evaluator.dump("C://tmp/dump", 10000);
 
 		} catch (final Exception e) {
 			System.err.println(e);

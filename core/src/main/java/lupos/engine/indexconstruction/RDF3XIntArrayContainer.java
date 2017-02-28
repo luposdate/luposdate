@@ -84,6 +84,7 @@ public class RDF3XIntArrayContainer {
 			final GraphIndices graphIndices = readSixIndices(in);
 			this.namedGraphs.put(graphIndices.uri, graphIndices);
 		}
+		in.close();
 	}
 
 	public Integer lookup(final String rdfTerm){

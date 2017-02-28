@@ -54,13 +54,14 @@ import lupos.datastructures.paged_dbbptree.node.nodedeserializer.NodeDeSerialize
 import lupos.datastructures.paged_dbbptree.node.nodedeserializer.StandardNodeDeSerializer;
 import lupos.datastructures.queryresult.ParallelIterator;
 import lupos.datastructures.queryresult.SIPParallelIterator;
+import lupos.datastructures.sorteddata.MapIteratorProvider;
 import lupos.io.Registration;
 import lupos.io.helper.InputHelper;
 import lupos.io.helper.OutHelper;
 import lupos.misc.FileHelper;
 import lupos.misc.Tuple;
-public class DBBPTree<K extends Serializable, V extends Serializable>
-implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
+
+public class DBBPTree<K extends Serializable, V extends Serializable> implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V>, MapIteratorProvider<K, V> {
 
 	private static final long serialVersionUID = -3345017876896171725L;
 
@@ -285,11 +286,9 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 			@Override
 			public boolean contains(final Object arg0) {
-				final V value = DBBPTree.this
-				.get(((java.util.Map.Entry<K, V>) arg0).getKey());
+				final V value = DBBPTree.this.get(((java.util.Map.Entry<K, V>) arg0).getKey());
 				if (value != null) {
-					return (value.equals(((java.util.Map.Entry<K, V>) arg0)
-							.getValue()));
+					return (value.equals(((java.util.Map.Entry<K, V>) arg0).getValue()));
 				} else {
 					return false;
 				}
@@ -312,370 +311,16 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 
 			@Override
 			public SIPParallelIterator<java.util.Map.Entry<K, V>, K> iterator() {
-				if (this.size() == 0) {
-					return new SIPParallelIterator<java.util.Map.Entry<K, V>, K>() {
-					@Override
-					public boolean hasNext() {
-						return false;
-					}
-
-					@Override
-					public java.util.Map.Entry<K, V> next() {
-						return null;
-					}
-
-					@Override
-					public void remove() {
-					}
-
-					@Override
-					public java.util.Map.Entry<K, V> next(final K k) {
-						return null;
-					}
-
-					@Override
-					public void close() {
-					}
-				};
-				}
-				try {
-					return new SIPParallelIterator<java.util.Map.Entry<K, V>, K>() {
-						private InputStream in =
-								new PageInputStream(DBBPTree.this.firstLeafPage,
-										DBBPTree.this.pageManager);
-						{
-							this.innerNodes = new LinkedList<Tuple<K, InputStream>>();
-							InputHelper.readLuposBoolean(this.in);
-						}
-						private List<Tuple<K, InputStream>> innerNodes;
-						private int entrynumber = 0;
-						private K lastKey = null;
-						private V lastValue = null;
-
-						@Override
-						public boolean hasNext() {
-							return (this.entrynumber < DBBPTree.this.size());
-						}
-
-						private java.util.Map.Entry<K, V> getFirst(
-								final int filename, final K k) {
-							if (filename < 0) {
-								return null;
-							}
-							try {
-								final InputStream in_local = new PageInputStream(filename, DBBPTree.this.pageManager);
-								final boolean leaf = InputHelper.readLuposBoolean(in_local);
-								if (leaf) { // leaf node reached!
-									this.lastKey = null;
-									this.lastValue = null;
-									while (true) {
-										final DBBPTreeEntry<K, V> e = DBBPTree.this.getNextLeafEntry(in_local, this.lastKey, this.lastValue);
-										if (e == null || e.key == null) {
-											in_local.close();
-											this.close();
-											return null;
-										}
-										final K key = e.key;
-										this.lastKey = key;
-										this.lastValue = e.value;
-										final int compare = DBBPTree.this.comparator
-										.compare(key, k);
-										if (compare == 0) {
-											this.in = in_local;
-											return new MapEntry<K, V>(
-													e.key, e.value);
-										} else if (compare > 0) {
-											this.in = in_local;
-											return new MapEntry<K, V>(
-													e.key, e.value);
-										}
-									}
-								} else {
-									K lastKey = null;
-									while (true) {
-										final Tuple<K, Integer> nextEntry = DBBPTree.this.getNextInnerNodeEntry(lastKey, in_local);
-										if (nextEntry == null || nextEntry.getSecond() <= 0) {
-											in_local.close();
-											this.close();
-											return null;
-										}
-										lastKey = nextEntry.getFirst();
-										if (nextEntry.getFirst() == null) {
-											this.innerNodes
-											.add(new Tuple<K, InputStream>(null, in_local));
-											return this.getFirst(nextEntry
-													.getSecond(), k);
-										}
-										final int compare = DBBPTree.this.comparator
-										.compare(nextEntry
-												.getFirst(), k);
-										if (compare >= 0) {
-											this.innerNodes
-											.add(new Tuple<K, InputStream>(nextEntry.getFirst(), in_local));
-											return this.getFirst(nextEntry.getSecond(), k);
-										}
-									}
-								}
-
-							} catch (final FileNotFoundException e) {
-								e.printStackTrace();
-								System.err.println(e);
-							} catch (final IOException e) {
-								System.err.println("filename:"+filename);
-								e.printStackTrace();
-								System.err.println(e);
-							}
-							return null;
-						}
-
-						private java.util.Map.Entry<K, V> getFirstUsingCache(
-								final int index, final K kkey) {
-							if (index < 0) {
-								return null;
-							}
-							try {
-								if (this.innerNodes.size() <= index) {
-									this.close();
-									return null;
-									// close();
-									// innerNodes.clear();
-									// return getFirst(rootFilename,
-									// triplekey);
-								}
-								final Tuple<K, InputStream> current = this.innerNodes.get(index);
-								final InputStream in = current
-								.getSecond();
-								K lastKey = current.getFirst();
-								if (lastKey == null
-										|| DBBPTree.this.comparator
-										.compare(lastKey, kkey) >= 0) {
-									return this.getFirstUsingCache(index + 1,
-											kkey);
-								}
-								while (this.innerNodes.size() > index + 1) {
-									final Tuple<K, InputStream> toBeDeleted = this.innerNodes.remove(this.innerNodes.size() - 1);
-									try {
-										toBeDeleted.getSecond().close();
-									} catch (final IOException e) {
-										e.printStackTrace();
-										System.err.println(e);
-									}
-								}
-								while (true) {
-									final Tuple<K, Integer> nextEntry = DBBPTree.this.getNextInnerNodeEntry(lastKey, in);
-									if (nextEntry == null || nextEntry.getSecond() <= 0) {
-										in.close();
-										this.close();
-										return null;
-									}
-									lastKey = nextEntry.getFirst();
-									if (nextEntry.getFirst() == null) {
-										current.setFirst(null);
-										return this.getFirst(nextEntry
-												.getSecond(), kkey);
-									}
-									final int compare = DBBPTree.this.comparator.compare(
-											nextEntry.getFirst(), kkey);
-									if (compare >= 0) {
-										current.setFirst(nextEntry
-												.getFirst());
-										return this.getFirst(nextEntry
-												.getSecond(), kkey);
-									}
-								}
-
-							} catch (final FileNotFoundException e) {
-								e.printStackTrace();
-								System.err.println(e);
-							} catch (final IOException e) {
-								e.printStackTrace();
-								System.err.println(e);
-							}
-							return null;
-						}
-
-						@Override
-						public java.util.Map.Entry<K, V> next() {
-							if(!this.hasNext()) {
-								return null;
-							}
-							try {
-								final DBBPTreeEntry<K, V> e = DBBPTree.this.getNextLeafEntry(this.in, this.lastKey, this.lastValue);
-								if (e != null) {
-									if (e.key == null) {
-										if (e.filenameOfNextLeafNode >= 0) {
-											this.in.close();
-											try{
-												this.in =
-														new PageInputStream(
-																e.filenameOfNextLeafNode,
-																DBBPTree.this.pageManager);
-												InputHelper.readLuposBoolean(this.in);
-												this.lastKey = null;
-												this.lastValue = null;
-												return this.next();
-											} catch(final Exception e1){
-												System.err.println(e1);
-												e1.printStackTrace();
-												return null;
-											}
-										}
-									} else {
-										this.lastKey = e.key;
-										this.lastValue = e.value;
-										this.entrynumber++;
-										return new MapEntry<K, V>(e.key,
-												e.value);
-									}
-								}
-							} catch (final FileNotFoundException e1) {
-								System.err.println(e1);
-								e1.printStackTrace();
-							} catch (final IOException e1) {
-								System.err.println(e1);
-								e1.printStackTrace();
-							}
-							return null;
-						}
-
-						@Override
-						public void remove() {
-							throw (new UnsupportedOperationException(
-							"This iterator is ReadOnly."));
-						}
-
-						@Override
-						protected void finalize() throws Throwable {
-							try {
-								this.in.close();
-							} finally {
-								super.finalize();
-							}
-						}
-
-						@Override
-						public void close() {
-							for (final Tuple<K, InputStream> tuple : this.innerNodes) {
-								try {
-									tuple.getSecond().close();
-								} catch (final IOException e) {
-								}
-							}
-							try {
-								this.in.close();
-							} catch (final IOException e) {
-								System.err.println(e);
-								e.printStackTrace();
-							}
-						}
-
-						private java.util.Map.Entry<K, V> getNext(final K k) {
-							try {
-								final DBBPTreeEntry<K, V> e = DBBPTree.this.getNextLeafEntry(this.in, this.lastKey, this.lastValue);
-								if (e != null) {
-									if (e.key == null) {
-										if (e.filenameOfNextLeafNode >= 0) {
-											this.in.close();
-											this.in =
-													new PageInputStream(
-															e.filenameOfNextLeafNode,
-															DBBPTree.this.pageManager);
-											InputHelper.readLuposBoolean(this.in);
-											this.lastKey = null;
-											this.lastValue = null;
-											while (true) {
-												final DBBPTreeEntry<K, V> e1 = DBBPTree.this.getNextLeafEntry(this.in, this.lastKey, this.lastValue);
-												if (e1 != null) {
-													if (e1.key == null) {
-														// read over one
-														// complete leaf
-														// node!
-														// using sideways
-														// information
-														// passing and jump
-														// directly to the
-														// corresponding
-														// leaf node!
-														if (e.filenameOfNextLeafNode >= 0) {
-															this.in.close();
-															if (this.innerNodes.isEmpty()) {
-																return this.getFirst(
-																		DBBPTree.this.rootPage,
-																		k);
-															} else {
-																return this.getFirstUsingCache(
-																		0,
-																		k);
-															}
-														}
-													} else {
-														this.entrynumber++;
-														this.lastKey = e1.key;
-														this.lastValue = e1.value;
-														if (DBBPTree.this.comparator
-																.compare(
-																		k,
-																		e1.key) <= 0) {
-															return new MapEntry<K, V>(
-																	e1.key,
-																	e1.value);
-														}
-													}
-												} else {
-													this.in.close();
-													this.close();
-													return null;
-												}
-											}
-										}
-										this.in.close();
-										this.close();
-										return null;
-									} else {
-										this.lastKey = e.key;
-										this.lastValue = e.value;
-										this.entrynumber++;
-										return new MapEntry<K, V>(e.key,
-												e.value);
-									}
-								}
-							} catch (final FileNotFoundException e1) {
-								System.err.println(e1);
-								e1.printStackTrace();
-							} catch (final IOException e1) {
-								System.err.println(e1);
-								e1.printStackTrace();
-							}
-							return null;
-						}
-
-						@Override
-						public java.util.Map.Entry<K, V> next(final K k) {
-							java.util.Map.Entry<K, V> result;
-							do {
-								result = this.getNext(k);
-							} while (result != null
-									&& DBBPTree.this.comparator.compare(k, result
-											.getKey()) > 0);
-							return result;
-						}
-					};
-				} catch (final IOException e) {
-					System.err.println(e);
-					e.printStackTrace();
-					return null;
-				}
+				return DBBPTree.this.iterator();
 			}
 
 			@Override
 			public boolean remove(final Object arg0) {
-				final V value = DBBPTree.this
-				.remove(((java.util.Map.Entry<K, V>) arg0).getKey());
+				final V value = DBBPTree.this.remove(((java.util.Map.Entry<K, V>) arg0).getKey());
 				if (value == null) {
 					return false;
 				} else {
-					return value.equals(((java.util.Map.Entry<K, V>) arg0)
-							.getValue());
+					return value.equals(((java.util.Map.Entry<K, V>) arg0).getValue());
 				}
 			}
 
@@ -727,6 +372,363 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 				return o;
 			}
 		};
+		}
+	}
+
+	@Override
+	public SIPParallelIterator<java.util.Map.Entry<K, V>, K> iterator(){
+		if (this.size() == 0) {
+			return new SIPParallelIterator<java.util.Map.Entry<K, V>, K>() {
+			@Override
+			public boolean hasNext() {
+				return false;
+			}
+
+			@Override
+			public java.util.Map.Entry<K, V> next() {
+				return null;
+			}
+
+			@Override
+			public void remove() {
+			}
+
+			@Override
+			public java.util.Map.Entry<K, V> next(final K k) {
+				return null;
+			}
+
+			@Override
+			public void close() {
+			}
+		};
+		}
+		try {
+			return new SIPParallelIterator<java.util.Map.Entry<K, V>, K>() {
+				private InputStream in =
+						new PageInputStream(DBBPTree.this.firstLeafPage,
+								DBBPTree.this.pageManager);
+				{
+					this.innerNodes = new LinkedList<Tuple<K, InputStream>>();
+					InputHelper.readLuposBoolean(this.in);
+				}
+				private List<Tuple<K, InputStream>> innerNodes;
+				private int entrynumber = 0;
+				private K lastKey = null;
+				private V lastValue = null;
+
+				@Override
+				public boolean hasNext() {
+					return (this.entrynumber < DBBPTree.this.size());
+				}
+
+				private java.util.Map.Entry<K, V> getFirst(
+						final int filename, final K k) {
+					if (filename < 0) {
+						return null;
+					}
+					try {
+						final InputStream in_local = new PageInputStream(filename, DBBPTree.this.pageManager);
+						final boolean leaf = InputHelper.readLuposBoolean(in_local);
+						if (leaf) { // leaf node reached!
+							this.lastKey = null;
+							this.lastValue = null;
+							while (true) {
+								final DBBPTreeEntry<K, V> e = DBBPTree.this.getNextLeafEntry(in_local, this.lastKey, this.lastValue);
+								if (e == null || e.key == null) {
+									in_local.close();
+									this.close();
+									return null;
+								}
+								final K key = e.key;
+								this.lastKey = key;
+								this.lastValue = e.value;
+								final int compare = DBBPTree.this.comparator
+								.compare(key, k);
+								if (compare == 0) {
+									this.in = in_local;
+									return new MapEntry<K, V>(
+											e.key, e.value);
+								} else if (compare > 0) {
+									this.in = in_local;
+									return new MapEntry<K, V>(
+											e.key, e.value);
+								}
+							}
+						} else {
+							K lastKey = null;
+							while (true) {
+								final Tuple<K, Integer> nextEntry = DBBPTree.this.getNextInnerNodeEntry(lastKey, in_local);
+								if (nextEntry == null || nextEntry.getSecond() <= 0) {
+									in_local.close();
+									this.close();
+									return null;
+								}
+								lastKey = nextEntry.getFirst();
+								if (nextEntry.getFirst() == null) {
+									this.innerNodes
+									.add(new Tuple<K, InputStream>(null, in_local));
+									return this.getFirst(nextEntry
+											.getSecond(), k);
+								}
+								final int compare = DBBPTree.this.comparator
+								.compare(nextEntry
+										.getFirst(), k);
+								if (compare >= 0) {
+									this.innerNodes
+									.add(new Tuple<K, InputStream>(nextEntry.getFirst(), in_local));
+									return this.getFirst(nextEntry.getSecond(), k);
+								}
+							}
+						}
+
+					} catch (final FileNotFoundException e) {
+						e.printStackTrace();
+						System.err.println(e);
+					} catch (final IOException e) {
+						System.err.println("filename:"+filename);
+						e.printStackTrace();
+						System.err.println(e);
+					}
+					return null;
+				}
+
+				private java.util.Map.Entry<K, V> getFirstUsingCache(
+						final int index, final K kkey) {
+					if (index < 0) {
+						return null;
+					}
+					try {
+						if (this.innerNodes.size() <= index) {
+							this.close();
+							return null;
+							// close();
+							// innerNodes.clear();
+							// return getFirst(rootFilename,
+							// triplekey);
+						}
+						final Tuple<K, InputStream> current = this.innerNodes.get(index);
+						final InputStream in = current
+						.getSecond();
+						K lastKey = current.getFirst();
+						if (lastKey == null
+								|| DBBPTree.this.comparator
+								.compare(lastKey, kkey) >= 0) {
+							return this.getFirstUsingCache(index + 1,
+									kkey);
+						}
+						while (this.innerNodes.size() > index + 1) {
+							final Tuple<K, InputStream> toBeDeleted = this.innerNodes.remove(this.innerNodes.size() - 1);
+							try {
+								toBeDeleted.getSecond().close();
+							} catch (final IOException e) {
+								e.printStackTrace();
+								System.err.println(e);
+							}
+						}
+						while (true) {
+							final Tuple<K, Integer> nextEntry = DBBPTree.this.getNextInnerNodeEntry(lastKey, in);
+							if (nextEntry == null || nextEntry.getSecond() <= 0) {
+								in.close();
+								this.close();
+								return null;
+							}
+							lastKey = nextEntry.getFirst();
+							if (nextEntry.getFirst() == null) {
+								current.setFirst(null);
+								return this.getFirst(nextEntry
+										.getSecond(), kkey);
+							}
+							final int compare = DBBPTree.this.comparator.compare(
+									nextEntry.getFirst(), kkey);
+							if (compare >= 0) {
+								current.setFirst(nextEntry
+										.getFirst());
+								return this.getFirst(nextEntry
+										.getSecond(), kkey);
+							}
+						}
+
+					} catch (final FileNotFoundException e) {
+						e.printStackTrace();
+						System.err.println(e);
+					} catch (final IOException e) {
+						e.printStackTrace();
+						System.err.println(e);
+					}
+					return null;
+				}
+
+				@Override
+				public java.util.Map.Entry<K, V> next() {
+					if(!this.hasNext()) {
+						return null;
+					}
+					try {
+						final DBBPTreeEntry<K, V> e = DBBPTree.this.getNextLeafEntry(this.in, this.lastKey, this.lastValue);
+						if (e != null) {
+							if (e.key == null) {
+								if (e.filenameOfNextLeafNode >= 0) {
+									this.in.close();
+									try{
+										this.in =
+												new PageInputStream(
+														e.filenameOfNextLeafNode,
+														DBBPTree.this.pageManager);
+										InputHelper.readLuposBoolean(this.in);
+										this.lastKey = null;
+										this.lastValue = null;
+										return this.next();
+									} catch(final Exception e1){
+										System.err.println(e1);
+										e1.printStackTrace();
+										return null;
+									}
+								}
+							} else {
+								this.lastKey = e.key;
+								this.lastValue = e.value;
+								this.entrynumber++;
+								return new MapEntry<K, V>(e.key,
+										e.value);
+							}
+						}
+					} catch (final FileNotFoundException e1) {
+						System.err.println(e1);
+						e1.printStackTrace();
+					} catch (final IOException e1) {
+						System.err.println(e1);
+						e1.printStackTrace();
+					}
+					return null;
+				}
+
+				@Override
+				public void remove() {
+					throw (new UnsupportedOperationException(
+					"This iterator is ReadOnly."));
+				}
+
+				@Override
+				protected void finalize() throws Throwable {
+					try {
+						this.in.close();
+					} finally {
+						super.finalize();
+					}
+				}
+
+				@Override
+				public void close() {
+					for (final Tuple<K, InputStream> tuple : this.innerNodes) {
+						try {
+							tuple.getSecond().close();
+						} catch (final IOException e) {
+						}
+					}
+					try {
+						this.in.close();
+					} catch (final IOException e) {
+						System.err.println(e);
+						e.printStackTrace();
+					}
+				}
+
+				private java.util.Map.Entry<K, V> getNext(final K k) {
+					try {
+						final DBBPTreeEntry<K, V> e = DBBPTree.this.getNextLeafEntry(this.in, this.lastKey, this.lastValue);
+						if (e != null) {
+							if (e.key == null) {
+								if (e.filenameOfNextLeafNode >= 0) {
+									this.in.close();
+									this.in =
+											new PageInputStream(
+													e.filenameOfNextLeafNode,
+													DBBPTree.this.pageManager);
+									InputHelper.readLuposBoolean(this.in);
+									this.lastKey = null;
+									this.lastValue = null;
+									while (true) {
+										final DBBPTreeEntry<K, V> e1 = DBBPTree.this.getNextLeafEntry(this.in, this.lastKey, this.lastValue);
+										if (e1 != null) {
+											if (e1.key == null) {
+												// read over one
+												// complete leaf
+												// node!
+												// using sideways
+												// information
+												// passing and jump
+												// directly to the
+												// corresponding
+												// leaf node!
+												if (e.filenameOfNextLeafNode >= 0) {
+													this.in.close();
+													if (this.innerNodes.isEmpty()) {
+														return this.getFirst(
+																DBBPTree.this.rootPage,
+																k);
+													} else {
+														return this.getFirstUsingCache(
+																0,
+																k);
+													}
+												}
+											} else {
+												this.entrynumber++;
+												this.lastKey = e1.key;
+												this.lastValue = e1.value;
+												if (DBBPTree.this.comparator
+														.compare(
+																k,
+																e1.key) <= 0) {
+													return new MapEntry<K, V>(
+															e1.key,
+															e1.value);
+												}
+											}
+										} else {
+											this.in.close();
+											this.close();
+											return null;
+										}
+									}
+								}
+								this.in.close();
+								this.close();
+								return null;
+							} else {
+								this.lastKey = e.key;
+								this.lastValue = e.value;
+								this.entrynumber++;
+								return new MapEntry<K, V>(e.key,
+										e.value);
+							}
+						}
+					} catch (final FileNotFoundException e1) {
+						System.err.println(e1);
+						e1.printStackTrace();
+					} catch (final IOException e1) {
+						System.err.println(e1);
+						e1.printStackTrace();
+					}
+					return null;
+				}
+
+				@Override
+				public java.util.Map.Entry<K, V> next(final K k) {
+					java.util.Map.Entry<K, V> result;
+					do {
+						result = this.getNext(k);
+					} while (result != null
+							&& DBBPTree.this.comparator.compare(k, result
+									.getKey()) > 0);
+					return result;
+				}
+			};
+		} catch (final IOException e) {
+			System.err.println(e);
+			e.printStackTrace();
+			return null;
 		}
 	}
 
@@ -1463,7 +1465,6 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	 * @return a {@link lupos.datastructures.paged_dbbptree.node.Node} object.
 	 */
 	public Node<K, V> getNode(final int filename) {
-		final InputStream fis;
 		try {
 			final InputStream in = new PageInputStream(filename, this.pageManager);
 			final boolean leaf = InputHelper.readLuposBoolean(in);
@@ -2372,8 +2373,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 	 * @param loos a {@link java.io.OutputStream} object.
 	 * @throws java.io.IOException if any.
 	 */
-	public void writeLuposObject(final OutputStream loos)
-	throws IOException {
+	public void writeLuposObject(final OutputStream loos) throws IOException {
 		this.pageManager.writeAllModifiedPages();
 		OutHelper.writeLuposInt(this.currentID, loos);
 		OutHelper.writeLuposInt(this.k, loos);
@@ -3289,8 +3289,7 @@ implements SortedMap<K, V>, Serializable, PrefixSearchMinMax<K, V> {
 					return max;
 				}
 			});
-			final SIPParallelIterator<java.util.Map.Entry<String, Integer>, String> iterator = (SIPParallelIterator<java.util.Map.Entry<String, Integer>, String>) dbbptree
-			.entrySet().iterator();
+			final SIPParallelIterator<java.util.Map.Entry<String, Integer>, String> iterator = (SIPParallelIterator<java.util.Map.Entry<String, Integer>, String>) dbbptree.entrySet().iterator();
 
 			int i = 10000;
 
