@@ -70,15 +70,6 @@ public interface ILevel<K,V, R> {
 	public void clear();
 
 	/**
-	* Returns the first entry of a summary
-	*
-	* @return K key which is the first entry of summary
-	* @throws java.lang.ClassNotFoundException
-	* @throws java.net.URISyntaxException
-	*/
-	public K getFirstSummaryEntry() throws ClassNotFoundException, URISyntaxException;
-
-	/**
 	 * Adds a run to this or one of its higher levels (if the run's size fits better to higher levels)
 	 *
 	 * @param generator the run to add as generator

@@ -176,17 +176,6 @@ public abstract class RunCollector<K,V,R> implements ILevel<K,V,R>{
 		this.counter = 0;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * this implementation doesn't support this method, Exception will be thrown
-	 */
-	@Override
-	public K getFirstSummaryEntry() throws ClassNotFoundException, URISyntaxException {
-		 throw new UnsupportedOperationException();
-
-	}
-
 	@Override
 	public ISIPIterator<K, Container<V>> prefixSearch(final Comparator<K> prefixComparator, final K prefixkey) {
 		@SuppressWarnings("unchecked")

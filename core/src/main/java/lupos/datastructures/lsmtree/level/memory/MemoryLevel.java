@@ -91,18 +91,6 @@ public abstract class MemoryLevel<K,V,R> implements IMemoryLevel<K,V,R> {
 		return this.putIntoMemory(key, value);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * this implementation doesn't support this method, Exception will be thrown
-	 */
-	@Override
-	public K getFirstSummaryEntry() throws ClassNotFoundException, URISyntaxException {
-		 throw new UnsupportedOperationException();
-	}
-
-
-
 	@Override
 	public void clear() {
 		this.release();

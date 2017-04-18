@@ -157,31 +157,6 @@ public class DiskRun<K, V> implements ILevel<K, V, Iterator<Map.Entry<K,Containe
 	/**
 	 * {@inheritDoc}
 	 *
-	 */
-	@Override
-	public K getFirstSummaryEntry() throws ClassNotFoundException, URISyntaxException {
-		try {
-			final int pagesize = PageManager.getDefaultPageSize();
-			final int pagenumber = 0;
-			final int offset = 2;
-			final PageAddress pageAddress = new PageAddress(pagenumber, this.summary.getFilename());
-			final byte[] page = this.bufferManager.getPage(pagesize, pageAddress);
-
-			final IKeyValueIterator<Integer, Entry<K, Integer>> it = this.storeKeyValue.getNextSumEntries(this.maxNumberOfEntriesToStore, page, offset, pagesize);
-			final Tuple<Integer, Entry<K, Integer>> entry = it.next(new Tuple<Integer, Entry<K, Integer>>(null, null));
-			return entry.getSecond().getKey();
-
-		} catch (final IOException e) {
-			System.err.println(e);
-			e.printStackTrace();
-		}
-		return null;
-
-	}
-
-	/**
-	 * {@inheritDoc}
-	 *
 	 * @see DiskRunIterator
 	 */
 	@Override
