@@ -17,7 +17,7 @@ import lupos.misc.util.ImmutableIterator;
  * A memory level implementation that stores key-value-pairs in memory
  * and transfers its entries if the memory is full to the next level of the LSM-Tree.
  */
-public class MemoryLevelLazySorting<K,V> extends MemoryLevelIterator<K, V> implements IMemoryLevelIterator<K ,V> {
+public class MemoryLevelLazySorting<K,V> extends MemoryLevelIterator<K, V> implements IMemoryLevelIterator<K ,V>, IMemoryLevel<K,V,Iterator<Map.Entry<K,Container<V>>>> {
 
 	/**
 	 * length of start sequences sorted with insertion sort

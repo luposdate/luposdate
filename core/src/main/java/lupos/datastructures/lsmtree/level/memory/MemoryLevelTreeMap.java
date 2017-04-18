@@ -18,7 +18,7 @@ import lupos.datastructures.lsmtree.level.factory.ILevelFactory;
  * @author Maike Herting
  *
  */
-public class MemoryLevelTreeMap<K,V> extends MemoryLevelIterator<K, V> implements IMemoryLevelIterator<K ,V> {
+public class MemoryLevelTreeMap<K,V> extends MemoryLevelIterator<K, V> implements IMemoryLevelIterator<K ,V>,IMemoryLevel<K,V,Iterator<Map.Entry<K,Container<V>>>> {
 
 	/**
 	 * A tree map is used to store key-value pairs
