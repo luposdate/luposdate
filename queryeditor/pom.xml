@@ -48,8 +48,11 @@
 		</dependency>
 
 		<dependency>
-			<groupId>de.uniluebeck.ifis</groupId>
-			<artifactId>xpref</artifactId>
+   			<groupId>de.uniluebeck.ifis</groupId>
+   			<artifactId>xpref</artifactId>
+   			<version>0.1-SNAPSHOT</version>
+   			<scope>system</scope>
+   			<systemPath>${project.basedir}/../xpref-0.1-20120507.072412-1.jar</systemPath>
 		</dependency>
 
 		<dependency>
