@@ -69,12 +69,15 @@
 			<groupId>de.uniluebeck.ifis</groupId>
 			<artifactId>luposdate.distributed</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>de.uniluebeck.ifis</groupId>
-			<artifactId>xpref</artifactId>
-		</dependency>
 	
+		<dependency>
+   			<groupId>de.uniluebeck.ifis</groupId>
+   			<artifactId>xpref</artifactId>
+   			<version>0.1-SNAPSHOT</version>
+   			<scope>system</scope>
+   			<systemPath>${project.basedir}/../xpref-0.1-20120507.072412-1.jar</systemPath>
+		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
