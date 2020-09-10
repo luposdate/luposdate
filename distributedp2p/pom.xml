@@ -24,6 +24,18 @@
 			<groupId>de.uniluebeck.ifis</groupId>
 			<artifactId>luposdate.gui</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>de.uniluebeck.ifis</groupId>
+			<artifactId>luposdate.operatorgraph</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.uniluebeck.ifis</groupId>
+			<artifactId>luposdate.dataeditor</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.uniluebeck.ifis</groupId>
+			<artifactId>luposdate.queryeditor</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>de.uniluebeck.ifis</groupId>
@@ -40,7 +52,14 @@
 			<artifactId>luposdate.endpoint</artifactId>
 		</dependency>
 		
-		<dependency>
+                <dependency>
+                        <groupId>de.uniluebeck.ifis</groupId>
+                        <artifactId>xpref</artifactId>
+                        <version>0.1-SNAPSHOT</version>
+                        <scope>system</scope>
+                        <systemPath>${project.basedir}/../xpref-0.1-20120507.072412-1.jar</systemPath>
+                </dependency>
+<!--		<dependency>
 			<groupId>cx.ath.troja</groupId>
         	<artifactId>chordless</artifactId>
 		</dependency>
@@ -49,10 +68,14 @@
 			<groupId>cx.ath.troja</groupId>
        		<artifactId>nja</artifactId>
 		</dependency>
+-->
 		
 		<dependency>
 			<groupId>de.uniluebeck.itm</groupId>
 			<artifactId>p2prdf</artifactId>
+			<version>0.1-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/../p2prdf-1.0-20130228.150006-3-onejar.jar</systemPath>
 		</dependency>
 			
 <!-- 	<dependency>
